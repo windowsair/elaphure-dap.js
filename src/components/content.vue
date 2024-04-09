@@ -56,8 +56,8 @@
                         </el-upload>
                     </div>
                     <div class="mt-2 flex-auto h-full">
-                        <el-input v-model="input" class="msg-output w-full h-full" type="textarea" resize="none"
-                            :readonly="true" />
+                        <el-input ref="logDiv" v-model="input" class="msg-output w-full h-full" type="textarea"
+                            resize="none" :readonly="true" />
                     </div>
                     <div class="upload-start h-1/10">
                         <el-button class="mt-4" type="success" @click="startFlash">
@@ -78,7 +78,7 @@
 
 <script setup>
 import { UploadFilled } from '@element-plus/icons-vue'
-import { ref, reactive } from 'vue'
+import { ref, reactive, watch } from 'vue'
 import { useStorage } from '@vueuse/core'
 import deviceIndexOption from '../device/deviceIndex.json'
 
@@ -153,5 +153,10 @@ const clockOptions = [
 ]
 
 const input = ref('Wait to flash...\n')
+const logDiv = ref()
+watch(input, () => {
+    const textDiv = logDiv.value.textarea
+    textDiv.scrollTop = textDiv.scrollHeight
+})
 
 </script>
