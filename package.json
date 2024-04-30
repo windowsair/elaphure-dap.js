@@ -12,6 +12,7 @@
     "@icon-park/vue-next": "^1.4.2",
     "@vueuse/core": "^10.9.0",
     "element-plus": "^2.6.1",
+    "restructure": "^3.0.1",
     "vue": "^3.4.21",
     "vue-i18n": "^9.10.2"
   },
