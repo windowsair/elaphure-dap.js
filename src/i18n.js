@@ -1,14 +1,25 @@
 import { nextTick } from 'vue'
 import { createI18n } from 'vue-i18n'
 
-const SUPPORT_LOCALES = ['en-US', 'zh-CN']
+const SUPPORT_LOCALES = [
+  {
+    index: 'en-US',
+    text: 'English'
+  },
+  {
+    index: 'zh-CN',
+    text: '简体中文'
+  }
+]
+
+export { SUPPORT_LOCALES }
 
 const i18n = createI18n({ locale: navigator.language })
 loadLocaleMessages(i18n, navigator.language)
 
-export { i18n };
+export { i18n }
 
-export function setupI18n(options = { locale: 'en-US'}) {
+export function setupI18n(options = { locale: 'en-US' }) {
   const i18n = createI18n(options)
   setI18nLanguage(i18n, options.locale)
   return i18n

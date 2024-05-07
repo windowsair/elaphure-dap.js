@@ -1,7 +1,7 @@
 <template>
-    <div>
+    <div class="VPContent is-home">
         <el-tabs type="border-card">
-            <el-tab-pane label="DAP Setting" class="h-full">
+            <el-tab-pane label="Device" class="h-full">
                 <div class="mb-2 flex items-center text-sm">
                     <el-radio-group v-model="isRemoteDAP" class="ml-4">
                         <el-radio :value="true" size="large">Remote</el-radio>
@@ -12,12 +12,12 @@
                     <el-input v-if="isRemoteDAP" v-model="dapURI" style="width: 240px" placeholder="dap.local" />
                 </div>
                 <div class="mb-2 flex ml-4 mt-4">
-                    <el-button type="primary" :disabled="isDAPConnected">
+                    <el-button type="primary" :disabled="isDAPConnected" @click="onDAPConnect">
                         {{ isDAPConnected ? "Connected" : isRemoteDAP ? "Connect" : "Select Device" }}
                     </el-button>
                 </div>
             </el-tab-pane>
-            <el-tab-pane label="Flash Setting">
+            <el-tab-pane label="Flash">
                 <div class="m-4">
                     <p class="md-4 ela-text">Select Target Device</p>
                     <el-cascader class="mt-2" placeholder="Type to search:" :options="deviceIndexOption" filterable
@@ -40,7 +40,7 @@
                     <el-checkbox v-model="downloadOption.verify" label="Verify" size="large" />
                 </div>
             </el-tab-pane>
-            <el-tab-pane label="Firmware Upload">
+            <el-tab-pane label="Firmware">
                 <el-container direction="vertical" class="h-full">
                     <div class="flex-none">
                         <el-upload drag :limit="1" :file-list="uploadFileList" :on-change="loadJsonFromFile"
@@ -71,6 +71,57 @@
 </template>
 
 <style>
+.VPContent {
+  flex-grow: 1;
+  flex-shrink: 0;
+  margin: var(--vp-layout-top-height, 0px) auto 0;
+  width: 100%;
+}
+
+.VPContent.is-home {
+  width: 100%;
+  max-width: 100%;
+}
+
+.VPContent.has-sidebar {
+  margin: 0;
+}
+
+@media (min-width: 960px) {
+  .VPContent {
+    padding-top: var(--vp-nav-height);
+  }
+
+  .VPContent.has-sidebar {
+    margin: var(--vp-layout-top-height, 0px) 0 0;
+    padding-left: var(--vp-sidebar-width);
+  }
+}
+
+@media (min-width: 1440px) {
+  .VPContent.has-sidebar {
+    padding-right: calc((100vw - var(--vp-layout-max-width)) / 2);
+    padding-left: calc((100vw - var(--vp-layout-max-width)) / 2 + var(--vp-sidebar-width));
+  }
+}
+
+.content .el-tabs__header {
+  min-height: 40px;
+}
+
+.content .el-tabs__content {
+  height: calc(98vh - 100px);
+}
+
+.content .el-tab-pane {
+  height: 100%;
+}
+
+.content .el-tabs--border-card {
+  border: none;
+  flex-grow: 1;
+}
+
 .msg-output>textarea {
     height: 100%;
 }

@@ -3,11 +3,16 @@ import ElementPlus from 'element-plus'
 import 'element-plus/dist/index.css'
 import 'element-plus/theme-chalk/dark/css-vars.css'
 import './style.css'
+import './icons.css'
+import './vitepress.css'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
+import { siteData } from './config'
+import { dataSymbol } from './components/composables/data'
 import { i18n } from './i18n'
 import App from './App.vue'
 
 const app = createApp(App)
+app.provide(dataSymbol, siteData)
 
 app.use(ElementPlus)
 app.use(i18n)
