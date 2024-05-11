@@ -43,20 +43,10 @@
             <el-tab-pane label="Firmware">
                 <el-container direction="vertical" class="h-full">
                     <div class="flex-none">
-                        <el-upload drag :limit="1" :file-list="uploadFileList" :on-change="loadJsonFromFile"
-                            :auto-upload="false" multiple :show-file-list="false">
-
-                            <div class="upload-input">
-                                <el-icon class="el-icon--upload"><upload-filled /></el-icon>
-                                <div class="el-upload__text">
-                                    Drop file here or <em>click to upload</em>
-                                </div>
-
-                            </div>
-                        </el-upload>
+                        <FirmwareUpload />
                     </div>
                     <div class="mt-2 flex-auto h-full">
-                        <el-input ref="logDiv" v-model="input" class="msg-output w-full h-full" type="textarea"
+                        <el-input ref="logDiv" v-model="dapLogText" class="msg-output w-full h-full" type="textarea"
                             resize="none" :readonly="true" />
                     </div>
                     <div class="upload-start h-1/10">
@@ -127,11 +117,14 @@
 }
 </style>
 
-<script setup>
-import { UploadFilled } from '@element-plus/icons-vue'
+<script setup lang="ts">
+import FirmwareUpload from './FirmwareUpload.vue'
 import { ref, reactive, watch } from 'vue'
 import { useStorage } from '@vueuse/core'
 import deviceIndexOption from '../device/deviceIndex.json'
+import { firmwarePreprocess } from './dap/preprocess'
+import { firmwareFile } from './dap/config'
+import { dapLogText, log } from './dap/log'
 
 const isRemoteDAP = useStorage('remote-dap', false)
 const dapURI = useStorage('dap-uri', '')
@@ -144,20 +137,12 @@ const downloadOption = useStorage('download-option', {
     verify: true,
 })
 
-const uploadFileList = ref()
-let firmware;
+let firmware
 const isELFFormat = ref(false)
 
-const loadJsonFromFile = (file, fileList) => {
-    uploadFileList.value = fileList
-}
 
 const startFlash = () => {
-    let reader = new FileReader()
-    reader.readAsArrayBuffer(uploadFileList.value[0].raw)
-    reader.onload = (e) => {
-        console.log('done')
-    }
+    firmwarePreprocess(firmwareFile.value)
 }
 
 const clockOptions = [
@@ -203,9 +188,9 @@ const clockOptions = [
     },
 ]
 
-const input = ref('Wait to flash...\n')
+log('Wait to flash...')
 const logDiv = ref()
-watch(input, () => {
+watch(dapLogText, () => {
     const textDiv = logDiv.value.textarea
     textDiv.scrollTop = textDiv.scrollHeight
 })
