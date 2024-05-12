@@ -1,43 +1,30 @@
 <template>
-    <div class="VPContent is-home">
-        <el-tabs type="border-card">
-            <el-tab-pane label="Device" class="h-full">
-                <div class="mb-2 flex items-center text-sm">
-                    <el-radio-group v-model="isRemoteDAP" class="ml-4">
-                        <el-radio :value="true" size="large">Remote</el-radio>
-                        <el-radio :value="false" size="large">USB</el-radio>
-                    </el-radio-group>
-                </div>
-                <div class="mb-2 flex ml-4">
-                    <el-input v-if="isRemoteDAP" v-model="dapURI" style="width: 240px" placeholder="dap.local" />
-                </div>
-                <div class="mb-2 flex ml-4 mt-4">
-                    <el-button type="primary" :disabled="isDAPConnected" @click="onDAPConnect">
-                        {{ isDAPConnected ? "Connected" : isRemoteDAP ? "Connect" : "Select Device" }}
-                    </el-button>
-                </div>
-            </el-tab-pane>
-            <el-tab-pane label="Flash">
-                <FlashConfig />
-            </el-tab-pane>
-            <el-tab-pane label="Firmware">
-                <el-container direction="vertical" class="h-full">
-                    <div class="flex-none">
-                        <FirmwareUpload />
-                    </div>
-                    <div class="mt-2 flex-auto h-full">
-                        <el-input ref="logDiv" v-model="dapLogText" class="msg-output w-full h-full" type="textarea"
-                            resize="none" :readonly="true" />
-                    </div>
-                    <div class="upload-start h-1/10">
-                        <el-button class="mt-4" type="success" @click="startFlash">
-                            Start to Flash
-                        </el-button>
-                    </div>
-                </el-container>
-            </el-tab-pane>
-        </el-tabs>
-    </div>
+  <div class="VPContent is-home">
+    <el-tabs type="border-card">
+      <el-tab-pane label="Device" class="h-full">
+        <DeviceConnect />
+      </el-tab-pane>
+      <el-tab-pane label="Flash">
+        <FlashConfig />
+      </el-tab-pane>
+      <el-tab-pane label="Firmware">
+        <el-container direction="vertical" class="h-full">
+          <div class="flex-none">
+            <FirmwareUpload />
+          </div>
+          <div class="mt-2 flex-auto h-full">
+            <el-input ref="logDiv" v-model="dapLogText" class="msg-output w-full h-full" type="textarea" resize="none"
+              :readonly="true" />
+          </div>
+          <div class="upload-start h-1/10">
+            <el-button class="mt-4" type="success" @click="startFlash">
+              Start to Flash
+            </el-button>
+          </div>
+        </el-container>
+      </el-tab-pane>
+    </el-tabs>
+  </div>
 </template>
 
 <style>
@@ -93,33 +80,29 @@
 }
 
 .msg-output>textarea {
-    height: 100%;
+  height: 100%;
 }
 </style>
 
 <script setup lang="ts">
 import FirmwareUpload from './FirmwareUpload.vue'
 import FlashConfig from './FlashConfig.vue'
+import DeviceConnect from './DeviceConnect.vue'
 import { ref, reactive, watch } from 'vue'
 import { useStorage } from '@vueuse/core'
 import { firmwarePreprocess } from './dap/preprocess'
 import { firmwareFile } from './dap/config'
 import { dapLogText, log } from './dap/log'
 
-const isRemoteDAP = useStorage('remote-dap', false)
-const dapURI = useStorage('dap-uri', '')
-const isDAPConnected = ref(false)
-
 const startFlash = () => {
-    firmwarePreprocess(firmwareFile.value)
+  firmwarePreprocess(firmwareFile.value)
 }
-
 
 log('Wait to flash...')
 const logDiv = ref()
 watch(dapLogText, () => {
-    const textDiv = logDiv.value.textarea
-    textDiv.scrollTop = textDiv.scrollHeight
+  const textDiv = logDiv.value.textarea
+  textDiv.scrollTop = textDiv.scrollHeight
 })
 
 </script>
