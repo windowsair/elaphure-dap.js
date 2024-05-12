@@ -1,12 +1,15 @@
-import { fileURLToPath, URL } from "url"
+import { fileURLToPath, URL } from 'url'
 import { defineConfig } from 'vite'
 import AutoImport from 'unplugin-auto-import/vite'
 import Components from 'unplugin-vue-components/vite'
 import { ElementPlusResolver } from 'unplugin-vue-components/resolvers'
 import vue from '@vitejs/plugin-vue'
 import svgLoader from 'vite-svg-loader'
-import wasm from "vite-plugin-wasm"
-import topLevelAwait from "vite-plugin-top-level-await"
+import wasm from 'vite-plugin-wasm'
+import topLevelAwait from 'vite-plugin-top-level-await'
+import DynamicPublicDirectory from 'vite-multiple-assets'
+const dirAssets = ['src/device/deviceList']
+
 
 export default defineConfig({
   resolve: {
@@ -14,6 +17,7 @@ export default defineConfig({
       { find: '@assets', replacement: fileURLToPath(new URL('./src/assets', import.meta.url)) },
     ]
   },
+  assetsInclude: ['src/device/deviceList/**'],
   plugins: [
     vue(),
     AutoImport({
@@ -25,6 +29,7 @@ export default defineConfig({
     svgLoader(),
     wasm(),
     topLevelAwait(),
+    DynamicPublicDirectory(dirAssets)
   ],
   optimizeDeps: {
     exclude: [
