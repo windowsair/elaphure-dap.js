@@ -7,7 +7,7 @@
     </div>
     <div class="m-4">
       <p class="md-4 ela-text">Max Clock</p>
-      <el-cascader class="mt-2" :options="clockOptions" v-model="downloadOption.clock" />
+      <el-cascader class="mt-2" :options="clockOptions" v-model="clock" />
     </div>
     <div class="mb-2 flex items-center text-sm">
       <el-radio-group v-model="downloadOption.erase" class="ml-4">
@@ -27,17 +27,15 @@
 
 <script setup lang="ts">
 import deviceIndexOption from '../device/deviceIndex.json'
-import { type DeviceListInfo, algorithmBin, algorithmInfo } from './dap/config'
+import { type DeviceListInfo, algorithmBin, algorithmInfo, downloadOption } from './dap/config'
 import { useStorage } from '@vueuse/core'
-import { ref } from 'vue'
+import { ref, watch } from 'vue'
 
 const targetDevice = useStorage('target-device', [])
+const clock = ref<number[]>([downloadOption.value.clock])
 
-const downloadOption = useStorage('download-option', {
-  clock: 10000000,
-  erase: 'none',
-  program: true,
-  verify: true,
+watch(clock, (val: number[]) => {
+  downloadOption.value.clock = val[0]
 })
 
 const getFile = async (addr: string, isBin: boolean) => {

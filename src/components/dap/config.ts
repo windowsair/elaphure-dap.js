@@ -1,5 +1,12 @@
 import { ref } from 'vue'
+import { useStorage } from '@vueuse/core'
 
+export const downloadOption = useStorage('download-option', {
+    clock: 10000000,
+    erase: 'none',
+    program: true,
+    verify: true,
+})
 export const firmwareFile = ref<File>()
 export const algorithmBin = ref<Uint8Array>()
 export const algorithmInfo = ref<AlgorithmJson>()
