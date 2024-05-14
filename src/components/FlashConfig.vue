@@ -29,7 +29,7 @@
 import deviceIndexOption from '../device/deviceIndex.json'
 import { type DeviceListInfo, algorithmBin, algorithmInfo, downloadOption } from './dap/config'
 import { useStorage } from '@vueuse/core'
-import { ref, watch } from 'vue'
+import { ref, watch, onMounted } from 'vue'
 
 const targetDevice = useStorage('target-device', [])
 const clock = ref<number[]>([downloadOption.value.clock])
@@ -58,8 +58,11 @@ const getFile = async (addr: string, isBin: boolean) => {
 
 const cascaderRef = ref()
 
-const onDeviceChange = async () => {
+const updateAlgo = async () => {
   const nodes = cascaderRef.value.getCheckedNodes()
+  if (!nodes.length)
+    return
+
   const data: DeviceListInfo = nodes[0].data
 
   let algoName: string | null = null
@@ -90,8 +93,15 @@ const onDeviceChange = async () => {
 
   algorithmInfo.value = await getFile(algoJsonPath, false)
   algorithmBin.value = await getFile(algoBinPath, true)
-
 }
+
+const onDeviceChange = async () => {
+  await updateAlgo()
+}
+
+onMounted(async () => {
+  await updateAlgo()
+})
 
 const clockOptions = [
   {
