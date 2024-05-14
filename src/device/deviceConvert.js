@@ -43,21 +43,30 @@ import { XMLParser} from 'fast-xml-parser'
         pdsc.subFamily = []
         subFamily.forEach(sub => {
             ret = {
-                name: sub["@_DsubFamily"],
+                name: sub['@_DsubFamily'],
                 devices: []
             }
             sub.device.forEach(device => {
                 let tmp = {
-                    name: device["@_Dname"],
-                    algorithm: []
+                    name: device['@_Dname'],
+                    algorithm: [],
+                    ram: {}
                 }
                 device.algorithm.forEach(item => {
                     tmp.algorithm.push({
-                        default: item["@_default"],
-                        name: item["@_name"],
-                        start: item["@_start"],
-                        size: item["@_size"],
+                        default: item['@_default'],
+                        name: item['@_name'],
+                        start: item['@_start'],
+                        size: item['@_size'],
                     })
+                })
+                device.memory.forEach(item => {
+                    if (item['@_id'] === 'IRAM1') {
+                        tmp.ram = {
+                            start: item['@_start'],
+                            size: item['@_size'],
+                        }
+                    }
                 })
                 ret.devices.push(tmp)
             })
@@ -116,14 +125,16 @@ import { XMLParser} from 'fast-xml-parser'
                     item = {
                         value: device.name,
                         label: device.name,
-                        algorithm: device.algorithm
+                        algorithm: device.algorithm,
+                        ram: device.ram,
                     }
                     subFamily.children.push(item)
                 } else {
                     item = {
                         value: device.name,
                         label: device.name,
-                        algorithm: device.algorithm
+                        algorithm: device.algorithm,
+                        ram: device.ram,
                     }
                 }
             })

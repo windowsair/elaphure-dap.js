@@ -52,8 +52,14 @@ export type DeviceAlgorithm = {
   size: string
 }
 
+export type DeviceRam = {
+  start: string
+  size: string
+}
+
 export type DeviceListInfo = {
   value: string
   label: string
   algorithm: DeviceAlgorithm[]
+  ram: DeviceRam
 }
