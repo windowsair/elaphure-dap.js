@@ -88,14 +88,35 @@
 import FirmwareUpload from './FirmwareUpload.vue'
 import FlashConfig from './FlashConfig.vue'
 import DeviceConnect from './DeviceConnect.vue'
-import { ref, reactive, watch } from 'vue'
+import { ref, reactive, watch, toRaw } from 'vue'
 import { useStorage } from '@vueuse/core'
 import { firmwarePreprocess } from './dap/preprocess'
-import { firmwareFile } from './dap/config'
+import { firmwareFile, algorithmBin, algorithmInfo, dapContext, ramInfo } from './dap/config'
+import { flash } from './dap/download'
 import { dapLogText, log } from './dap/log'
 
-const startFlash = () => {
-  firmwarePreprocess(firmwareFile.value)
+const startFlash = async () => {
+  const algoBin = toRaw(algorithmBin).value
+  const algoInfo = toRaw(algorithmInfo).value
+  const ram = toRaw(ramInfo).value
+  if (!algoBin || !algoInfo|| !ram) {
+    log('Device not selected.')
+    return
+  }
+
+  const firmware = await firmwarePreprocess(firmwareFile.value)
+  if (!firmware) {
+    log('Firmware not selected.')
+    return
+  }
+
+  const dap = toRaw(dapContext).value
+  if (!dap) {
+    log('DAP not connected.')
+    return
+  }
+
+  await flash(algoInfo, algoBin, ram, firmware, dap)
 }
 
 log('Wait to flash...')

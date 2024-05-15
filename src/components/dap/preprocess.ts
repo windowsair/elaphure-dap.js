@@ -36,7 +36,7 @@ async function convertToBin(elf: Uint8Array): Promise<Uint8Array | null> {
   return ret
 }
 
-export async function firmwarePreprocess(file: File | undefined) {
+export async function firmwarePreprocess(file: File | undefined): Promise<Uint8Array | undefined> {
   if (typeof file === 'undefined')
     return
 

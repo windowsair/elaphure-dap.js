@@ -27,7 +27,7 @@
 
 <script setup lang="ts">
 import deviceIndexOption from '../device/deviceIndex.json'
-import { type DeviceListInfo, algorithmBin, algorithmInfo, downloadOption } from './dap/config'
+import { type DeviceListInfo, algorithmBin, algorithmInfo, downloadOption, ramInfo } from './dap/config'
 import { useStorage } from '@vueuse/core'
 import { ref, watch, onMounted } from 'vue'
 
@@ -93,6 +93,7 @@ const updateAlgo = async () => {
 
   algorithmInfo.value = await getFile(algoJsonPath, false)
   algorithmBin.value = await getFile(algoBinPath, true)
+  ramInfo.value = data.ram
 }
 
 const onDeviceChange = async () => {

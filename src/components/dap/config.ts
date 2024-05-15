@@ -11,6 +11,7 @@ export const downloadOption = useStorage('download-option', {
 export const firmwareFile = ref<File>()
 export const algorithmBin = ref<Uint8Array>()
 export const algorithmInfo = ref<AlgorithmJson>()
+export const ramInfo = ref<DeviceRam>()
 
 export const isDeviceConnect = ref<boolean>(false)
 export const dapContext = shallowRef<dapjs.CortexM>()
