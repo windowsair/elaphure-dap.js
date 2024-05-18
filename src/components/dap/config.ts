@@ -6,7 +6,7 @@ export const downloadOption = useStorage('download-option', {
   clock: 10000000,
   erase: 'none',
   program: true,
-  verify: true,
+  verify: true
 })
 export const firmwareFile = ref<File>()
 export const algorithmBin = ref<Uint8Array>()

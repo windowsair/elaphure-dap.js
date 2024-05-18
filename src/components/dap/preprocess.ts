@@ -1,9 +1,9 @@
-import { log } from "./log"
+import { log } from './log'
 import objcopy from 'llvm-objcopy-wasm'
 
 function readFile(file: File): Promise<Uint8Array | null> {
   return new Promise((resolve, reject) => {
-    let reader = new FileReader()
+    const reader = new FileReader()
     reader.onload = (e) => {
       if (!reader.result) {
         reject()
@@ -48,7 +48,7 @@ export async function firmwarePreprocess(file: File | undefined): Promise<Uint8A
 
   // check elf magic
   if (fileArray[0] == 0x7F && fileArray[1] == 0x45 &&
-    fileArray[2] == 0x4C && fileArray[3] == 0x46) {
+      fileArray[2] == 0x4C && fileArray[3] == 0x46) {
     log('ELF file format detected, convert it to a BIN file...')
 
     fileArray = await convertToBin(fileArray)

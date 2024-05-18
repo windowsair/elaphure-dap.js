@@ -5,7 +5,7 @@ import { useData } from './data'
 
 const currentLang = useStorage('language', {
   index: 'en-US',
-  label: 'English',
+  label: 'English'
 })
 
 export function useLangs({

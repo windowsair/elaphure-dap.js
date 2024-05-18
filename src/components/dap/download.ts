@@ -16,10 +16,11 @@ function toUint32Array(x: Uint8Array): Uint32Array {
   }
 }
 
-async function loadAlgorithm(addr: number, bin: Uint8Array, dap: dapjs.CortexM): Promise<void> {
+async function loadAlgorithm(addr: number, bin: Uint8Array,
+                             dap: dapjs.CortexM): Promise<void> {
   let algoBinLength
-  let algoBinLoad:Uint8Array
-  let algoBinLoadU32:Uint32Array
+  let algoBinLoad: Uint8Array
+  let algoBinLoadU32: Uint32Array
   const controlBin = new Uint8Array([0x2A, 0xBE, 0xE7, 0xFE]) // "BKPT" + "B ."
 
   algoBinLength = align(bin.length, 4) + 4
@@ -32,7 +33,7 @@ async function loadAlgorithm(addr: number, bin: Uint8Array, dap: dapjs.CortexM):
 }
 
 export async function flash(algo: AlgorithmJson, algoBin: Uint8Array,
-  ram:DeviceRam, firmware: Uint8Array, dap: dapjs.CortexM) {
+                            ram: DeviceRam, firmware: Uint8Array, dap: dapjs.CortexM) {
   const ramAddr = Number(ram.start)
   const ramSize = Number(ram.size)
   const algoBinLength = align(algoBin.length, 4) + 4
