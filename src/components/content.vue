@@ -1,23 +1,39 @@
 <template>
   <div class="VPContent is-home">
     <el-tabs type="border-card">
-      <el-tab-pane label="Device" class="h-full">
+      <el-tab-pane
+        label="Device"
+        class="h-full"
+      >
         <DeviceConnect />
       </el-tab-pane>
       <el-tab-pane label="Flash">
         <FlashConfig />
       </el-tab-pane>
       <el-tab-pane label="Firmware">
-        <el-container direction="vertical" class="h-full">
+        <el-container
+          direction="vertical"
+          class="h-full"
+        >
           <div class="flex-none">
             <FirmwareUpload />
           </div>
           <div class="mt-2 flex-auto h-full">
-            <el-input ref="logDiv" v-model="dapLogText" class="msg-output w-full h-full" type="textarea" resize="none"
-              :readonly="true" />
+            <el-input
+              ref="logDiv"
+              v-model="dapLogText"
+              class="msg-output w-full h-full"
+              type="textarea"
+              resize="none"
+              :readonly="true"
+            />
           </div>
           <div class="upload-start h-1/10">
-            <el-button class="mt-4" type="success" @click="startFlash">
+            <el-button
+              class="mt-4"
+              type="success"
+              @click="startFlash"
+            >
               Start to Flash
             </el-button>
           </div>
@@ -26,6 +42,49 @@
     </el-tabs>
   </div>
 </template>
+
+<script setup lang="ts">
+import FirmwareUpload from './FirmwareUpload.vue'
+import FlashConfig from './FlashConfig.vue'
+import DeviceConnect from './DeviceConnect.vue'
+import { ref, watch, toRaw } from 'vue'
+import { firmwarePreprocess } from './dap/preprocess'
+import { firmwareFile, algorithmBin, algorithmInfo, dapContext, ramInfo } from './dap/config'
+import { flash } from './dap/download'
+import { dapLogText, log } from './dap/log'
+
+const startFlash = async () => {
+  const algoBin = toRaw(algorithmBin).value
+  const algoInfo = toRaw(algorithmInfo).value
+  const ram = toRaw(ramInfo).value
+  if (!algoBin || !algoInfo || !ram) {
+    log('Device not selected.')
+    return
+  }
+
+  const firmware = await firmwarePreprocess(firmwareFile.value)
+  if (!firmware) {
+    log('Firmware not selected.')
+    return
+  }
+
+  const dap = toRaw(dapContext).value
+  if (!dap) {
+    log('DAP not connected.')
+    return
+  }
+
+  await flash(algoInfo, algoBin, ram, firmware, dap)
+}
+
+log('Wait to flash...')
+const logDiv = ref()
+watch(dapLogText, () => {
+  const textDiv = logDiv.value.textarea
+  textDiv.scrollTop = textDiv.scrollHeight
+})
+
+</script>
 
 <style>
 .VPContent {
@@ -83,47 +142,3 @@
   height: 100%;
 }
 </style>
-
-<script setup lang="ts">
-import FirmwareUpload from './FirmwareUpload.vue'
-import FlashConfig from './FlashConfig.vue'
-import DeviceConnect from './DeviceConnect.vue'
-import { ref, reactive, watch, toRaw } from 'vue'
-import { useStorage } from '@vueuse/core'
-import { firmwarePreprocess } from './dap/preprocess'
-import { firmwareFile, algorithmBin, algorithmInfo, dapContext, ramInfo } from './dap/config'
-import { flash } from './dap/download'
-import { dapLogText, log } from './dap/log'
-
-const startFlash = async () => {
-  const algoBin = toRaw(algorithmBin).value
-  const algoInfo = toRaw(algorithmInfo).value
-  const ram = toRaw(ramInfo).value
-  if (!algoBin || !algoInfo|| !ram) {
-    log('Device not selected.')
-    return
-  }
-
-  const firmware = await firmwarePreprocess(firmwareFile.value)
-  if (!firmware) {
-    log('Firmware not selected.')
-    return
-  }
-
-  const dap = toRaw(dapContext).value
-  if (!dap) {
-    log('DAP not connected.')
-    return
-  }
-
-  await flash(algoInfo, algoBin, ram, firmware, dap)
-}
-
-log('Wait to flash...')
-const logDiv = ref()
-watch(dapLogText, () => {
-  const textDiv = logDiv.value.textarea
-  textDiv.scrollTop = textDiv.scrollHeight
-})
-
-</script>
