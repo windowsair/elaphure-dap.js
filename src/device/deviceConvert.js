@@ -51,7 +51,8 @@ import { XMLParser } from 'fast-xml-parser'
         let tmp = {
           name: device['@_Dname'],
           algorithm: [],
-          ram: {}
+          ram: {},
+          rom: {}
         }
         device.algorithm.forEach((item) => {
           tmp.algorithm.push({
@@ -64,6 +65,11 @@ import { XMLParser } from 'fast-xml-parser'
         device.memory.forEach((item) => {
           if (item['@_id'] === 'IRAM1') {
             tmp.ram = {
+              start: item['@_start'],
+              size: item['@_size']
+            }
+          } else if (item['@_id'] == 'IROM1') {
+            tmp.rom = {
               start: item['@_start'],
               size: item['@_size']
             }
@@ -127,7 +133,8 @@ import { XMLParser } from 'fast-xml-parser'
             value: device.name,
             label: device.name,
             algorithm: device.algorithm,
-            ram: device.ram
+            ram: device.ram,
+            rom: device.rom
           }
           subFamily.children.push(item)
         } else {
@@ -135,7 +142,8 @@ import { XMLParser } from 'fast-xml-parser'
             value: device.name,
             label: device.name,
             algorithm: device.algorithm,
-            ram: device.ram
+            ram: device.ram,
+            rom: device.rom
           }
         }
       })

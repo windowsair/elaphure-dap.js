@@ -1,6 +1,6 @@
 import {
   type AlgorithmJson,
-  type DeviceRam
+  type DeviceMem
 } from './config'
 import * as dapjs from '@elaphurelink/dapjs'
 
@@ -112,7 +112,8 @@ async function execute(dap: dapjs.CortexM,
 }
 
 export async function flash(algo: AlgorithmJson, algoBin: Uint8Array,
-                            ram: DeviceRam, firmware: Uint8Array, dap: dapjs.CortexM) {
+                            ram: DeviceMem, firmware: Uint8Array,
+                            dap: dapjs.CortexM): Promise<number> {
   const ramAddr = alignUp(Number(ram.start), 4)
   const ramSize = Number(ram.size) - (Number(ram.start) - ramAddr)
   const algoBinLength = alignUp(algoBin.length, 4) + 4
