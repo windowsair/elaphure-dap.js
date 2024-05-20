@@ -49,15 +49,15 @@ import FlashConfig from './FlashConfig.vue'
 import DeviceConnect from './DeviceConnect.vue'
 import { ref, watch, toRaw } from 'vue'
 import { firmwarePreprocess } from './dap/preprocess'
-import { firmwareFile, algorithmBin, algorithmInfo, dapContext, ramInfo } from './dap/config'
+import { firmwareFile, algorithmBin, algorithmInfo, dapContext, memInfo } from './dap/config'
 import { flash } from './dap/download'
 import { dapLogText, log } from './dap/log'
 
 const startFlash = async () => {
   const algoBin = toRaw(algorithmBin).value
   const algoInfo = toRaw(algorithmInfo).value
-  const ram = toRaw(ramInfo).value
-  if (!algoBin || !algoInfo || !ram) {
+  const mem = toRaw(memInfo).value
+  if (!algoBin || !algoInfo || !mem) {
     log('Device not selected.')
     return
   }
@@ -74,7 +74,7 @@ const startFlash = async () => {
     return
   }
 
-  await flash(algoInfo, algoBin, ram, firmware, dap)
+  await flash(algoInfo, algoBin, mem, firmware, dap)
 }
 
 log('Wait to flash...')

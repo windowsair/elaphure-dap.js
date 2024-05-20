@@ -11,7 +11,7 @@ export const downloadOption = useStorage('download-option', {
 export const firmwareFile = ref<File>()
 export const algorithmBin = ref<Uint8Array>()
 export const algorithmInfo = ref<AlgorithmJson>()
-export const ramInfo = ref<DeviceMem>()
+export const memInfo = ref<DeviceMemInfo>()
 
 export const isDeviceConnect = ref<boolean>(false)
 export const dapContext = shallowRef<dapjs.CortexM>()
@@ -62,6 +62,11 @@ export type DeviceListInfo = {
   value: string
   label: string
   algorithm: DeviceAlgorithm[]
+  ram: DeviceMem
+  rom: DeviceMem
+}
+
+export type DeviceMemInfo = {
   ram: DeviceMem
   rom: DeviceMem
 }

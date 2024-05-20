@@ -26,8 +26,9 @@
 </template>
 
 <script setup lang="ts">
+import { RefSymbol } from '@vue/reactivity';
 import deviceIndexOption from '../device/deviceIndex.json'
-import { type DeviceListInfo, algorithmBin, algorithmInfo, downloadOption, ramInfo } from './dap/config'
+import { type DeviceListInfo, algorithmBin, algorithmInfo, downloadOption, memInfo } from './dap/config'
 import { useStorage } from '@vueuse/core'
 import { ref, watch, onMounted } from 'vue'
 
@@ -93,7 +94,11 @@ const updateAlgo = async () => {
 
   algorithmInfo.value = await getFile(algoJsonPath, false)
   algorithmBin.value = await getFile(algoBinPath, true)
-  ramInfo.value = data.ram
+
+  memInfo.value = {
+    ram: data.ram,
+    rom: data.rom
+  }
 }
 
 const onDeviceChange = async () => {
