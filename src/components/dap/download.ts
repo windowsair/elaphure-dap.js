@@ -65,6 +65,7 @@ async function resourceInit(dap: dapjs.CortexM, ramAddr: number, ramSize: number
   // thumb for ARMv6-m, ARMv7-m, ARMv8-m
   const linkRegister = ramAddr + 1
   const stackPointer = alignDown(ramAddr + ramSize, 4)
+  const programCounter = ramAddr
 
   // algoSize already algin to 4
   const startAddr = ramAddr + algoSize
@@ -72,10 +73,12 @@ async function resourceInit(dap: dapjs.CortexM, ramAddr: number, ramSize: number
   const endAddr = stackPointer - 1024
 
   const sequence = [
+    dap.writeCoreRegisterCommand(dapjs.CoreRegister.PC, programCounter),
     dap.writeCoreRegisterCommand(dapjs.CoreRegister.LR, linkRegister),
     dap.writeCoreRegisterCommand(dapjs.CoreRegister.SP, stackPointer)
   ]
 
+  await dap.halt()
   await dap.transferSequence(sequence)
 
   // [Start, end)
