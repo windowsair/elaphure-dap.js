@@ -1,8 +1,15 @@
 import {
   type AlgorithmJson,
-  type DeviceMemInfo
+  type DeviceMemInfo,
+  type Sector
 } from './config'
 import * as dapjs from '@elaphurelink/dapjs'
+
+enum EraseFunc {
+  ERASE = 1,
+  PROGRAM = 2,
+  VERIFY = 3
+}
 
 type MemorySector = {
   addr: number
@@ -87,10 +94,12 @@ async function resourceInit(dap: dapjs.CortexM, ramAddr: number, ramSize: number
     size: endAddr - startAddr
   }
 }
+
 async function execute(dap: dapjs.CortexM,
                        programCounter: number, ...registers: number[]): Promise<number> {
   const GENERAL_REGISTER_COUNT = 12
-  const EXECUTE_TIMEOUT = 2000 // ms
+  const EXECUTE_TIMEOUT = 5000 // ms
+  const EXECUTE_DELAY = 2
 
   // Create sequence of core register writes
   const sequence = [
@@ -109,9 +118,101 @@ async function execute(dap: dapjs.CortexM,
   await dap.transferSequence(sequence)
   await dap.resume(false) // Resume the target, without waiting
   // Wait for the target to halt on the breakpoint
-  await dap.waitDelay(() => dap.isHalted(), EXECUTE_TIMEOUT)
+  await dap.waitDelay(() => dap.isHalted(), EXECUTE_TIMEOUT, EXECUTE_DELAY)
   // Read return value of function
   return dap.readCoreRegister(dapjs.CoreRegister.R0)
+}
+
+async function eraseFullChip(dap: dapjs.CortexM, initAddr: number,
+                             uninitAddr: number, eraseProgAddr: number): Promise<number> {
+  // TODO: setting xtal clock
+  const xtalClock = 12 * 1000 * 1000 // 12MHz
+  let ret
+
+  // Init erase
+  ret = await execute(dap, initAddr, xtalClock, EraseFunc.ERASE)
+  if (ret) {
+    return ret
+  }
+
+  // Erase full chip
+  ret = await execute(dap, eraseProgAddr)
+  if (ret) {
+    return ret
+  }
+
+  // Uninit erase
+  ret = await execute(dap, uninitAddr, EraseFunc.ERASE)
+  if (ret) {
+    return ret
+  }
+
+  return 0
+}
+
+async function eraseChip(dap: dapjs.CortexM, offset: number, eraseSize: number, mem: DeviceMemInfo,
+                         algo: AlgorithmJson, fullChip: boolean): Promise<number> {
+  const initAddr = algo.initAddr + offset
+  const uninitAddr = algo.unInitAddr + offset
+  const progAddr = algo.eraseSectorAddr + offset
+  const baseAddr = algo.devDesc.DevAdr
+  const deviceTotalSize = Math.min(algo.devDesc.szDev, Number(mem.rom.size))
+  // TODO: setting xtal clock
+  const xtalClock = 12 * 1000 * 1000 // 12MHz
+  let ret
+
+  if (fullChip && algo.eraseChipAddr !== null) {
+    const eraseChipAddr = algo.eraseChipAddr + offset
+    return eraseFullChip(dap, initAddr, uninitAddr, eraseChipAddr)
+  }
+
+  // Init erase
+  ret = await execute(dap, initAddr, baseAddr, xtalClock, EraseFunc.ERASE)
+  if (ret) {
+    return ret
+  }
+
+  const sectors: Sector[] = algo.devDesc.sectors
+
+  let calcTotalSize = 0
+  let leftSize = eraseSize
+  let done = false
+  for (let i = 0; i < sectors.length; i++) {
+    if (done)
+      break
+
+    const perSectorSize = sectors[i].szSector
+    const sectorStartAddr = sectors[i].AddrSector
+    let sectorEndAddr
+    // Calc sector end address
+    if (i + 1 == sectors.length) {
+      // This sector is the last sector
+      sectorEndAddr = sectorStartAddr + (deviceTotalSize - calcTotalSize)
+    } else {
+      sectorEndAddr = sectors[i + 1].AddrSector - sectorStartAddr
+    }
+
+    // Start erase for these sectors
+    for (let addr = sectorStartAddr; addr < sectorEndAddr; addr += perSectorSize) {
+      ret = await execute(dap, progAddr, addr + baseAddr)
+      if (ret) {
+        return ret
+      }
+
+      leftSize -= perSectorSize
+      if (leftSize <= 0) {
+        done = true
+        break
+      }
+    }
+
+    calcTotalSize += sectorEndAddr - sectorStartAddr
+  }
+
+  // Uninit erase
+  ret = await execute(dap, uninitAddr, EraseFunc.ERASE)
+
+  return ret
 }
 
 export async function flash(algo: AlgorithmJson, algoBin: Uint8Array,
@@ -120,10 +221,20 @@ export async function flash(algo: AlgorithmJson, algoBin: Uint8Array,
   const ram = mem.ram
   const rom = mem.rom
 
+  const prefixLen = 4
   const ramAddr = alignUp(Number(ram.start), 4)
   const ramSize = Number(ram.size) - (Number(ram.start) - ramAddr)
-  const algoBinLength = alignUp(algoBin.length, 4) + 4
+  const mainAlgoStartOffset = ramAddr + prefixLen
+  const algoBinLength = alignUp(algoBin.length, 4) + prefixLen
+  let ret
 
   await loadAlgorithm(ramAddr, algoBin, dap)
   const dataRam: MemorySector = await resourceInit(dap, ramAddr, ramSize, algoBinLength)
+
+  ret = await eraseChip(dap, mainAlgoStartOffset, firmware.length, mem, algo, false)
+  if (ret) {
+    return ret
+  }
+
+  return ret
 }

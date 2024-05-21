@@ -38,7 +38,7 @@ export type DeviceDescription = {
 export type AlgorithmJson = {
   initAddr: number
   unInitAddr: number
-  eraseChipAddr: number
+  eraseChipAddr: number | null // optional
   eraseSectorAddr: number
   programPageAddr: number
   descAddr: number
