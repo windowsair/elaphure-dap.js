@@ -2,7 +2,17 @@
   <div class="FirmwareUpload">
     <el-upload class="FirmwareUpload" drag :on-change="updateFile" :auto-upload="false" :show-file-list="false">
       <div class="upload-input">
-        <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+        <div class="icon-transition">
+          <Transition :duration="500" mode="out-in" leave-active-class="animate__animated animate__flipOutX"
+            enter-active-class="animate__animated animate__flipInX">
+            <div v-if="!isStart" key=1>
+              <el-icon class="el-icon--upload"><upload-filled /></el-icon>
+            </div>
+            <div v-else key=2>
+              <el-progress :percentage="dapProgress" type="circle" :width="100" />
+            </div>
+          </Transition>
+        </div>
         <div class="el-upload__text">
           <div v-if="!uploadFileList">
             Drop file here or <em>click to upload</em>
@@ -20,7 +30,8 @@
 import type { UploadFile, UploadFiles } from 'element-plus'
 import { UploadFilled } from '@element-plus/icons-vue'
 import { ref } from 'vue'
-import { firmwareFile } from './dap/config'
+import { firmwareFile, isStart } from './dap/config'
+import { dapProgress } from './dap/log'
 
 const uploadFileList = ref<UploadFile>()
 
@@ -30,3 +41,34 @@ const updateFile = (file: UploadFile, fileList: UploadFiles) => {
 }
 
 </script>
+
+<style>
+.FirmwareUpload .el-upload-dragger {
+  padding: 30px var(--el-upload-dragger-padding-vertical);
+}
+
+.icon-transition {
+  display: flex;
+  height: 80px;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 1rem;
+}
+
+/* .fade-enter-active,
+.fade-leave-active {
+  transition: transform 0.5s, opacity 0.5s;
+}
+
+.fade-enter,
+.fade-leave-to {
+  transform: translateX(100%);
+  opacity: 0;
+}
+
+.fade-enter-to,
+.fade-leave {
+  transform: translateX(0);
+  opacity: 1;
+} */
+</style>

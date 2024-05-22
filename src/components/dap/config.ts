@@ -14,6 +14,7 @@ export const algorithmInfo = ref<AlgorithmJson>()
 export const memInfo = ref<DeviceMemInfo>()
 
 export const isDeviceConnect = ref<boolean>(false)
+export const isStart = ref<boolean>(false)
 export const dapContext = shallowRef<dapjs.CortexM>()
 
 export type Sector = {
