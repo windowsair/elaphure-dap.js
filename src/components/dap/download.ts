@@ -3,6 +3,7 @@ import {
   type DeviceMemInfo,
   type Sector
 } from './config'
+import { updateProgress } from './log'
 import * as dapjs from '@elaphurelink/dapjs'
 
 enum EraseFunc {
@@ -201,8 +202,11 @@ async function eraseChip(dap: dapjs.CortexM, offset: number, eraseSize: number, 
 
       leftSize -= perSectorSize
       if (leftSize <= 0) {
+        updateProgress(100)
         done = true
         break
+      } else {
+        updateProgress((eraseSize - leftSize) / eraseSize * 100)
       }
     }
 
@@ -233,6 +237,7 @@ export async function programSector(dap: dapjs.CortexM, progAddr: number,
     baseRamAddr += programSize
     baseRomAddr += programSize
     leftSize -= programSize
+    updateProgress((baseRomAddr - dataRom.addr) / dataRom.size * 100)
   }
 
   return 0

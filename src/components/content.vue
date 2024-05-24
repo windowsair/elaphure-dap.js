@@ -49,9 +49,11 @@ import FlashConfig from './FlashConfig.vue'
 import DeviceConnect from './DeviceConnect.vue'
 import { ref, watch, toRaw } from 'vue'
 import { firmwarePreprocess } from './dap/preprocess'
-import { firmwareFile, algorithmBin, algorithmInfo, dapContext, memInfo } from './dap/config'
+import {
+  firmwareFile, algorithmBin, algorithmInfo, dapContext, memInfo, isStart
+} from './dap/config'
 import { flash } from './dap/download'
-import { dapLogText, log } from './dap/log'
+import { dapLogText, log, updateProgress } from './dap/log'
 
 const startFlash = async () => {
   const algoBin = toRaw(algorithmBin).value
@@ -74,7 +76,12 @@ const startFlash = async () => {
     return
   }
 
+  updateProgress(0)
+  isStart.value = true
+
   await flash(algoInfo, algoBin, mem, firmware, dap)
+
+  isStart.value = false
 }
 
 log('Wait to flash...')

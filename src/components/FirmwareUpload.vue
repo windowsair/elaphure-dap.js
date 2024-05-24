@@ -3,7 +3,7 @@
     <el-upload class="FirmwareUpload" drag :on-change="updateFile" :auto-upload="false" :show-file-list="false">
       <div class="upload-input">
         <div class="icon-transition">
-          <Transition :duration="500" mode="out-in" leave-active-class="animate__animated animate__flipOutX"
+          <Transition :duration="400" mode="out-in" leave-active-class="animate__animated animate__flipOutX"
             enter-active-class="animate__animated animate__flipInX">
             <div v-if="!isStart" key=1>
               <el-icon class="el-icon--upload"><upload-filled /></el-icon>
