@@ -215,6 +215,103 @@ async function eraseChip(dap: dapjs.CortexM, offset: number, eraseSize: number, 
   return ret
 }
 
+export async function programSector(dap: dapjs.CortexM, progAddr: number,
+                                    baseRamAddr: number, baseRomAddr: number,
+                                    totalSize: number, pageSize: number,
+                                    dataRom: MemorySector): Promise<number> {
+  let leftSize = totalSize
+  let programSize
+  let ret
+
+  while (leftSize > 0) {
+    programSize = leftSize < pageSize ? leftSize : pageSize
+    ret = await execute(dap, progAddr, baseRomAddr, programSize, baseRamAddr)
+    if (ret) {
+      return ret
+    }
+
+    baseRamAddr += programSize
+    baseRomAddr += programSize
+    leftSize -= programSize
+  }
+
+  return 0
+}
+
+export async function programChip(dap: dapjs.CortexM, offset: number, dataRam: MemorySector,
+                                  algo: AlgorithmJson, firmware: Uint8Array): Promise<number> {
+  const initAddr = algo.initAddr + offset
+  const uninitAddr = algo.unInitAddr + offset
+  const progAddr = algo.programPageAddr + offset
+  const baseAddr = algo.devDesc.DevAdr
+  const xtalClock = 12 * 1000 * 1000 // 12MHz
+
+  const pageSize = algo.devDesc.szPage
+  const totalRamSize = dataRam.size
+  const alignRamSize = totalRamSize - (totalRamSize % pageSize)
+
+  let ret
+  // Init program
+  ret = await execute(dap, initAddr, baseAddr, xtalClock, EraseFunc.PROGRAM)
+  if (ret) {
+    return ret
+  }
+
+  const totalSize = firmware.length
+  const dataRom: MemorySector = {
+    addr: baseAddr,
+    size: totalSize
+  }
+  let chunkOffset = 0
+  let chunkSize = 0
+  while (chunkOffset < totalSize) {
+    // Get next chunk info
+    const leftSize = totalSize - chunkOffset
+    if (leftSize > totalRamSize) {
+      /**
+       * Not enough space left to save all the data,
+       * only the aligned memory size is used.
+       */
+      chunkSize = alignRamSize
+    } else {
+      chunkSize = leftSize
+    }
+
+    // Load data to RAM
+    const ramAddr = dataRam.addr
+    const chunkData = firmware.slice(chunkOffset, chunkOffset + chunkSize)
+    let chunkDataU32: Uint32Array
+    let alignChunkSize
+    if (chunkData.length % 4) {
+      alignChunkSize = alignUp(chunkData.length, 4)
+      const tmpChunkData = new Uint8Array(alignChunkSize)
+      tmpChunkData.set(chunkData, 0)
+      chunkDataU32 = toUint32Array(tmpChunkData)
+    } else {
+      alignChunkSize = chunkSize
+      chunkDataU32 = toUint32Array(chunkData)
+    }
+
+    await dap.writeBlock(ramAddr, chunkDataU32)
+
+    // Start to program this chunk in RAM
+    const romAddr = baseAddr + chunkOffset
+    ret = await programSector(dap, progAddr, ramAddr, romAddr, alignChunkSize, pageSize,
+                              dataRom)
+    if (ret) {
+      return ret
+    }
+
+    // This chunk is processed.
+    chunkOffset += chunkSize
+  }
+
+  // Uninit program
+  ret = await execute(dap, uninitAddr, EraseFunc.PROGRAM)
+
+  return ret
+}
+
 export async function flash(algo: AlgorithmJson, algoBin: Uint8Array,
                             mem: DeviceMemInfo, firmware: Uint8Array,
                             dap: dapjs.CortexM): Promise<number> {
@@ -236,5 +333,12 @@ export async function flash(algo: AlgorithmJson, algoBin: Uint8Array,
     return ret
   }
 
+  ret = await programChip(dap, mainAlgoStartOffset, dataRam, algo, firmware)
+  if (ret) {
+    return ret
+  }
+
+  await dap.halt()
+  // TOOD: softReset ?
   return ret
 }
