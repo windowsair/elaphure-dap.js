@@ -20,8 +20,9 @@
 <script setup lang="ts">
 import { useStorage } from '@vueuse/core'
 import { isDeviceConnect, dapContext, downloadOption } from './dap/config'
-import { log } from './dap/log'
+import { log, logSuccess, logWarn } from './dap/log'
 import * as dapjs from '@elaphurelink/dapjs'
+import { isHttps, isLocalNetwork, redirectToHttp, redirectToHttps } from './composables/site'
 
 const isRemoteDAP = useStorage('remote-dap', false)
 const dapURI = useStorage('dap-uri', '')
@@ -34,10 +35,26 @@ const onDAPConnect = async () => {
 
   try {
     if (!isRemoteDAP.value) {
+      // Webusb is only availablein https security contexts
+      if (!isLocalNetwork()) {
+        if (!isHttps()) {
+          logWarn('Redirect site to use webusb...')
+          redirectToHttps()
+        }
+      }
+
       device = await navigator.usb.requestDevice({
         filters: [{ vendorId: 0xD28 }]
       })
     } else {
+      // Remote feature does not support https
+      if (!isLocalNetwork()) {
+        if (isHttps()) {
+          logWarn('Redirect site to use remote...')
+          redirectToHttp()
+        }
+      }
+
       // TODO: remote device
     }
   } catch (err) {
@@ -60,7 +77,7 @@ const onDAPConnect = async () => {
     return
   }
 
-  log('Successfully connected to the device.')
+  logSuccess('Successfully connected to the device.')
   dapContext.value = processor
   isDeviceConnect.value = true
 }
