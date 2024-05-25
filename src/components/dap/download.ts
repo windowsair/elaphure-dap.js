@@ -1,6 +1,8 @@
 import {
   type AlgorithmJson,
+  type DapDownloadOption,
   type DeviceMemInfo,
+  type EraseType,
   type Sector
 } from './config'
 import { log, updateProgress } from './log'
@@ -319,7 +321,7 @@ export async function programChip(dap: dapjs.CortexM, offset: number, dataRam: M
 
 export async function flash(algo: AlgorithmJson, algoBin: Uint8Array,
                             mem: DeviceMemInfo, firmware: Uint8Array,
-                            dap: dapjs.CortexM): Promise<number> {
+                            option: DapDownloadOption, dap: dapjs.CortexM): Promise<number> {
   const ram = mem.ram
   const rom = mem.rom
 
@@ -328,21 +330,26 @@ export async function flash(algo: AlgorithmJson, algoBin: Uint8Array,
   const ramSize = Number(ram.size) - (Number(ram.start) - ramAddr)
   const mainAlgoStartOffset = ramAddr + prefixLen
   const algoBinLength = alignUp(algoBin.length, 4) + prefixLen
-  let ret
+  let ret = 0
 
   await loadAlgorithm(ramAddr, algoBin, dap)
   const dataRam: MemorySector = await resourceInit(dap, ramAddr, ramSize, algoBinLength)
 
-  log('Start to erase chip...')
-  ret = await eraseChip(dap, mainAlgoStartOffset, firmware.length, mem, algo, false)
-  if (ret) {
-    return ret
+  if (option.erase !== EraseType.None) {
+    log('Start to erase chip...')
+    ret = await eraseChip(dap, mainAlgoStartOffset, firmware.length, mem, algo,
+                          option.erase === EraseType.Full)
+    if (ret) {
+      return ret
+    }
   }
 
-  log('Start to program...')
-  ret = await programChip(dap, mainAlgoStartOffset, dataRam, algo, firmware)
-  if (ret) {
-    return ret
+  if (option.program) {
+    log('Start to program...')
+    ret = await programChip(dap, mainAlgoStartOffset, dataRam, algo, firmware)
+    if (ret) {
+      return ret
+    }
   }
 
   await dap.halt()

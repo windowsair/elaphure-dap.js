@@ -2,9 +2,22 @@ import { ref, shallowRef } from 'vue'
 import { useStorage } from '@vueuse/core'
 import * as dapjs from '@elaphurelink/dapjs'
 
-export const downloadOption = useStorage('download-option', {
+export enum EraseType {
+  None = 'none',
+  Part = 'part',
+  Full = 'full'
+}
+
+export type DapDownloadOption = {
+  clock: number
+  erase: EraseType
+  program: boolean
+  verify: boolean
+}
+
+export const downloadOption = useStorage<DapDownloadOption>('download-option', {
   clock: 10000000,
-  erase: 'none',
+  erase: EraseType.Full,
   program: true,
   verify: true
 })

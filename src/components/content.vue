@@ -55,7 +55,13 @@ import DeviceConnect from './DeviceConnect.vue'
 import { ref, watch, toRaw } from 'vue'
 import { firmwarePreprocess } from './dap/preprocess'
 import {
-  firmwareFile, algorithmBin, algorithmInfo, dapContext, memInfo, isStart
+  firmwareFile,
+  algorithmBin,
+  algorithmInfo,
+  dapContext,
+  memInfo,
+  isStart,
+  downloadOption
 } from './dap/config'
 import { flash } from './dap/download'
 import { dapLogText, log, logErr, logSuccess, updateProgress } from './dap/log'
@@ -87,7 +93,8 @@ const startFlash = async () => {
   let ret = 0
 
   try {
-    ret = await flash(algoInfo, algoBin, mem, firmware, dap)
+    const option = toRaw(downloadOption).value
+    ret = await flash(algoInfo, algoBin, mem, firmware, option, dap)
   } catch (error) {
     const err = error as Error
     const msg = err.message
