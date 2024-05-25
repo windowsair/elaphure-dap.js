@@ -4,10 +4,14 @@
       <el-tab-pane
         label="Device"
         class="h-full"
+        :disabled="isStart"
       >
         <DeviceConnect />
       </el-tab-pane>
-      <el-tab-pane label="Flash">
+      <el-tab-pane
+        label="Flash"
+        :disabled="isStart"
+      >
         <FlashConfig />
       </el-tab-pane>
       <el-tab-pane label="Firmware">
@@ -31,7 +35,8 @@
           <div class="upload-start h-1/10">
             <el-button
               class="mt-4"
-              type="success"
+              type="primary"
+              :disabled="isStart"
               @click="startFlash"
             >
               Start to Flash
