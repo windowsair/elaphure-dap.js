@@ -3,7 +3,7 @@ import {
   type DeviceMemInfo,
   type Sector
 } from './config'
-import { updateProgress } from './log'
+import { log, updateProgress } from './log'
 import * as dapjs from '@elaphurelink/dapjs'
 
 enum EraseFunc {
@@ -333,11 +333,13 @@ export async function flash(algo: AlgorithmJson, algoBin: Uint8Array,
   await loadAlgorithm(ramAddr, algoBin, dap)
   const dataRam: MemorySector = await resourceInit(dap, ramAddr, ramSize, algoBinLength)
 
+  log('Start to erase chip...')
   ret = await eraseChip(dap, mainAlgoStartOffset, firmware.length, mem, algo, false)
   if (ret) {
     return ret
   }
 
+  log('Start to program...')
   ret = await programChip(dap, mainAlgoStartOffset, dataRam, algo, firmware)
   if (ret) {
     return ret

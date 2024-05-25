@@ -58,7 +58,7 @@ import {
   firmwareFile, algorithmBin, algorithmInfo, dapContext, memInfo, isStart
 } from './dap/config'
 import { flash } from './dap/download'
-import { dapLogText, log, updateProgress } from './dap/log'
+import { dapLogText, log, logErr, logSuccess, updateProgress } from './dap/log'
 
 const startFlash = async () => {
   const algoBin = toRaw(algorithmBin).value
@@ -84,7 +84,22 @@ const startFlash = async () => {
   updateProgress(0)
   isStart.value = true
 
-  await flash(algoInfo, algoBin, mem, firmware, dap)
+  let ret = 0
+
+  try {
+    ret = await flash(algoInfo, algoBin, mem, firmware, dap)
+  } catch (error) {
+    const err = error as Error
+    const msg = err.message
+    logErr(msg)
+    log('Failed to download!');
+  }
+
+  if (ret) {
+    logErr('Failed to download!')
+  } else {
+    logSuccess('Successfully to download.')
+  }
 
   isStart.value = false
 }
