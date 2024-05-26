@@ -18,7 +18,7 @@
             Drop file here or <em>click to upload</em>
           </div>
           <div v-else>
-            {{ uploadFileList.name }}
+            {{ fileInfoShow }}
           </div>
         </div>
       </div>
@@ -29,11 +29,31 @@
 <script setup lang="ts">
 import type { UploadFile, UploadFiles } from 'element-plus'
 import { UploadFilled } from '@element-plus/icons-vue'
-import { ref } from 'vue'
+import { ref, computed } from 'vue'
 import { firmwareFile, isStart } from './dap/config'
 import { dapProgress } from './dap/log'
 
 const uploadFileList = ref<UploadFile>()
+const fileInfoShow = computed(()=> {
+  const name = uploadFileList.value?.name
+  if (name === undefined) {
+    return ''
+  }
+
+  const size = uploadFileList.value?.size
+  let sizeStr = ''
+
+  if (size !== undefined) {
+    if (size < 1024) {
+      sizeStr = `${size}byte`
+    } else {
+      sizeStr = `${Math.floor(size / 1024)} KB`
+    }
+  }
+
+  return name + ' | ' + sizeStr
+})
+
 
 const updateFile = (file: UploadFile, fileList: UploadFiles) => {
   uploadFileList.value = file
