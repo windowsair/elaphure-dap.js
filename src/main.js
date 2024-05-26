@@ -9,11 +9,13 @@ import 'animate.css'
 import * as ElementPlusIconsVue from '@element-plus/icons-vue'
 import { siteData } from './config'
 import { dataSymbol } from './components/composables/data'
-import { i18n } from './i18n'
+import { i18n, LoadCurrentLang } from './i18n'
 import App from './App.vue'
 
 const app = createApp(App)
 app.provide(dataSymbol, siteData)
+
+await LoadCurrentLang(i18n)
 
 app.use(ElementPlus)
 app.use(i18n)

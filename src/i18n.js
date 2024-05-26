@@ -1,5 +1,6 @@
 import { nextTick } from 'vue'
 import { createI18n } from 'vue-i18n'
+import { useStorage } from '@vueuse/core'
 
 const SUPPORT_LOCALES = [
   {
@@ -14,8 +15,15 @@ const SUPPORT_LOCALES = [
 
 export { SUPPORT_LOCALES }
 
-const i18n = createI18n({ locale: navigator.language })
-loadLocaleMessages(i18n, navigator.language)
+export const currentLang = useStorage('language', {
+  index: 'en-US',
+  label: 'English'
+})
+
+const i18n = createI18n({
+  legacy: false,
+  locale: currentLang.value.index
+})
 
 export { i18n }
 
@@ -39,6 +47,10 @@ export function setI18nLanguage(i18n, locale) {
    * axios.defaults.headers.common['Accept-Language'] = locale
    */
   document.querySelector('html').setAttribute('lang', locale)
+}
+
+export async function LoadCurrentLang(i18n) {
+  await loadLocaleMessages(i18n, currentLang.value.index)
 }
 
 export async function loadLocaleMessages(i18n, locale) {

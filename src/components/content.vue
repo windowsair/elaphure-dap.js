@@ -2,19 +2,19 @@
   <div class="VPContent is-home">
     <el-tabs type="border-card">
       <el-tab-pane
-        label="Device"
+        :label="$t('devPage.device')"
         class="h-full"
         :disabled="isStart"
       >
         <DeviceConnect />
       </el-tab-pane>
       <el-tab-pane
-        label="Flash"
+        :label="$t('flashPage.flash')"
         :disabled="isStart"
       >
         <FlashConfig />
       </el-tab-pane>
-      <el-tab-pane label="Firmware">
+      <el-tab-pane :label="$t('firmPage.firmware')">
         <el-container
           direction="vertical"
           class="h-full"
@@ -39,7 +39,7 @@
               :disabled="isStart"
               @click="startFlash"
             >
-              Start to Flash
+            {{ $t('firmPage.start_info') }}
             </el-button>
           </div>
         </el-container>
@@ -49,10 +49,10 @@
 </template>
 
 <script setup lang="ts">
+import { ref, watch, toRaw } from 'vue'
 import FirmwareUpload from './FirmwareUpload.vue'
 import FlashConfig from './FlashConfig.vue'
 import DeviceConnect from './DeviceConnect.vue'
-import { ref, watch, toRaw } from 'vue'
 import { firmwarePreprocess } from './dap/preprocess'
 import {
   firmwareFile,
@@ -65,25 +65,27 @@ import {
 } from './dap/config'
 import { flash } from './dap/download'
 import { dapLogText, log, logErr, logSuccess, updateProgress } from './dap/log'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const startFlash = async () => {
   const algoBin = toRaw(algorithmBin).value
   const algoInfo = toRaw(algorithmInfo).value
   const mem = toRaw(memInfo).value
   if (!algoBin || !algoInfo || !mem) {
-    log('Device not selected.')
+    log(t('dap.device_invalid_info'))
     return
   }
 
   const firmware = await firmwarePreprocess(firmwareFile.value)
   if (!firmware) {
-    log('Firmware not selected.')
+    log(t('dap.firmware_invalid_info'))
     return
   }
 
   const dap = toRaw(dapContext).value
   if (!dap) {
-    log('DAP not connected.')
+    log(t('dap.dap_invalid_info'))
     return
   }
 
@@ -99,19 +101,19 @@ const startFlash = async () => {
     const err = error as Error
     const msg = err.message
     logErr(msg)
-    log('Failed to download!');
+    log(t('dap.download_fail_info'))
   }
 
   if (ret) {
-    logErr('Failed to download!')
+    logErr(t('dap.download_fail_info'))
   } else {
-    logSuccess('Successfully to download.')
+    logSuccess(t('dap.download_success_info'))
   }
 
   isStart.value = false
 }
 
-log('Wait to flash...')
+log(t('dap.wait_info'))
 const logDiv = ref()
 watch(dapLogText, () => {
   const textDiv = logDiv.value.textarea

@@ -15,7 +15,7 @@
         </div>
         <div class="el-upload__text">
           <div v-if="!uploadFileList">
-            Drop file here or <em>click to upload</em>
+            {{ $t('firmPage.drop_info') }} <em>{{ $t('firmPage.click_info') }}</em>
           </div>
           <div v-else>
             {{ fileInfoShow }}

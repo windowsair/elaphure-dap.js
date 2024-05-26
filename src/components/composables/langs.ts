@@ -1,12 +1,12 @@
-import { computed, ref } from 'vue'
-import { useStorage } from '@vueuse/core'
-import { i18n, SUPPORT_LOCALES, loadLocaleMessages, setI18nLanguage } from '../../i18n'
+import { computed } from 'vue'
+import {
+  currentLang,
+  i18n,
+  loadLocaleMessages,
+  setI18nLanguage,
+  SUPPORT_LOCALES
+} from '../../i18n'
 import { useData } from './data'
-
-const currentLang = useStorage('language', {
-  index: 'en-US',
-  label: 'English'
-})
 
 export function useLangs({
   removeCurrent = true,

@@ -2,7 +2,7 @@
   <div class="DeviceConnect">
     <div class="mb-2 flex items-center text-sm">
       <el-radio-group v-model="isRemoteDAP" class="ml-4">
-        <el-radio :value="true" size="large">Remote</el-radio>
+        <el-radio :value="true" size="large">{{ $t('devPage.remote') }}</el-radio>
         <el-radio :value="false" size="large">USB</el-radio>
       </el-radio-group>
     </div>
@@ -11,7 +11,8 @@
     </div>
     <div class="mb-2 flex ml-4 mt-4">
       <el-button type="primary" :disabled="isDeviceConnect" @click="onDAPConnect">
-        {{ isDeviceConnect ? "Connected" : isRemoteDAP ? "Connect" : "Select Device" }}
+        {{ isDeviceConnect ? $t('devPage.connected') :
+                             isRemoteDAP ? $t('devPage.connect') : $t('devPage.select_device') }}
       </el-button>
     </div>
   </div>
@@ -23,6 +24,8 @@ import { isDeviceConnect, dapContext, downloadOption } from './dap/config'
 import { log, logSuccess, logWarn } from './dap/log'
 import * as dapjs from '@elaphurelink/dapjs'
 import { isHttps, isLocalNetwork, redirectToHttp, redirectToHttps } from './composables/site'
+import { useI18n } from 'vue-i18n'
+const { t } = useI18n()
 
 const isRemoteDAP = useStorage('remote-dap', false)
 const dapURI = useStorage('dap-uri', '')
@@ -38,7 +41,7 @@ const onDAPConnect = async () => {
       // Webusb is only availablein https security contexts
       if (!isLocalNetwork()) {
         if (!isHttps()) {
-          logWarn('Redirect site to use webusb...')
+          logWarn(t('devPage.redirect_to_https_info'))
           redirectToHttps()
         }
       }
@@ -50,7 +53,7 @@ const onDAPConnect = async () => {
       // Remote feature does not support https
       if (!isLocalNetwork()) {
         if (isHttps()) {
-          logWarn('Redirect site to use remote...')
+          logWarn(t('devPage.redirect_to_http_info'))
           redirectToHttp()
         }
       }
@@ -73,11 +76,11 @@ const onDAPConnect = async () => {
 
   const ret = await processor.isHalted()
   if (!ret) {
-    log('Halt device timeout.')
+    log(t('devPage.halt_timeout_info'))
     return
   }
 
-  logSuccess('Successfully connected to the device.')
+  logSuccess(t('devPage.success_connect_info'))
   dapContext.value = processor
   isDeviceConnect.value = true
 }

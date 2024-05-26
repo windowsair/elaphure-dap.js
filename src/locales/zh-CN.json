@@ -1,15 +1,38 @@
 {
-    "nav": {
-      "home": "家",
-      "about": "About"
-    },
-    "home": {
-      "header": "Welcome to the Vue 3 I18n tutorial!",
-      "created_by": "This tutorial was brought to you by {company}.",
-      "num_visits": "This page hasn't been visited 🙁 | This page has been visited {n} time | This page has been visited {n} times"
-    },
-    "about": {
-      "header": "About us",
-      "donations": "Donations raised: {donations}"
-    }
+  "devPage": {
+    "device": "设备",
+    "remote": "远程",
+    "select_device": "选择设备",
+    "connect": "连接",
+    "connected": "已连接",
+    "redirect_to_https_info": "正在重定向站点以使用 webusb ...",
+    "redirect_to_http_info": "正在重定向站点以使用远程...",
+    "success_connect_info": "成功连接到设备.",
+    "halt_timeout_info": "暂停设备超时."
+  },
+  "flashPage": {
+    "flash": "烧录",
+    "select_target": "选择目标设备",
+    "max_clock": "最大时钟速度",
+    "erase_full": "全片擦除",
+    "erase_part": "按需擦除",
+    "erase_none": "不擦除",
+    "program": "下载",
+    "verify": "校验",
+    "reset_download": "下载后复位"
+  },
+  "firmPage": {
+    "firmware": "固件",
+    "drop_info": "拖拽文件到此处或",
+    "click_info": "点击上传",
+    "start_info": "开始烧录"
+  },
+  "dap": {
+    "wait_info": "等待烧录中...",
+    "device_invalid_info": "目标设备还未选择.",
+    "firmware_invalid_info": "固件还未选择.",
+    "dap_invalid_info": "DAP 暂未连接.",
+    "download_fail_info": "烧录失败!",
+    "download_success_info": "成功烧录."
+  }
 }

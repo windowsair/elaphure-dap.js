@@ -1,28 +1,28 @@
 <template>
   <div class="FlashConfig">
     <div class="m-4">
-      <p class="md-4 ela-text">Select Target Device</p>
+      <p class="md-4 ela-text">{{ $t('flashPage.select_target') }}</p>
       <el-cascader class="mt-2" ref="cascaderRef" placeholder="Type to search:" :options="deviceIndexOption"
         @change="onDeviceChange" :show-all-levels="false" filterable v-model="targetDevice" />
     </div>
     <div class="m-4">
-      <p class="md-4 ela-text">Max Clock</p>
+      <p class="md-4 ela-text">{{ $t('flashPage.max_clock') }}</p>
       <el-cascader class="mt-2" :options="clockOptions" v-model="clock" />
     </div>
     <div class="mb-2 flex items-center text-sm">
       <el-radio-group v-model="downloadOption.erase" class="ml-4">
-        <el-radio value="full" size="large">Erase Full Chip</el-radio>
-        <el-radio value="part" size="large">Erase Sectors</el-radio>
-        <el-radio value="none" size="large">Do Not Erase</el-radio>
+        <el-radio value="full" size="large">{{ $t('flashPage.erase_full') }}</el-radio>
+        <el-radio value="part" size="large">{{ $t('flashPage.erase_part') }}</el-radio>
+        <el-radio value="none" size="large">{{ $t('flashPage.erase_none') }}</el-radio>
       </el-radio-group>
     </div>
 
     <div class="mb-2 flex items-center text-sm ml-4">
-      <el-checkbox v-model="downloadOption.program" label="Program" size="large" />
-      <el-checkbox v-model="downloadOption.verify" label="Verify" size="large" />
+      <el-checkbox v-model="downloadOption.program" :label="$t('flashPage.program')" size="large" />
+      <el-checkbox v-model="downloadOption.verify" :label="$t('flashPage.verify')" size="large" />
     </div>
     <div class="mb-2 flex items-center text-sm ml-4">
-      <el-checkbox v-model="downloadOption.resetAfterDownload" label="Reset after download" size="large" />
+      <el-checkbox v-model="downloadOption.resetAfterDownload" :label="$t('flashPage.reset_download')" size="large" />
     </div>
 
   </div>

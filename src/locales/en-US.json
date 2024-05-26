@@ -1,15 +1,38 @@
 {
-    "nav": {
-      "home": "Home",
-      "about": "About"
-    },
-    "home": {
-      "header": "Welcome to the Vue 3 I18n tutorial!",
-      "created_by": "This tutorial was brought to you by {company}.",
-      "num_visits": "This page hasn't been visited 🙁 | This page has been visited {n} time | This page has been visited {n} times"
-    },
-    "about": {
-      "header": "About us",
-      "donations": "Donations raised: {donations}"
-    }
+  "devPage": {
+    "device": "Device",
+    "remote": "Remote",
+    "select_device": "Select Device",
+    "connect": "Connect",
+    "connected": "Connected",
+    "redirect_to_https_info": "Redirect site to use webusb...",
+    "redirect_to_http_info": "Redirect site to use remote...",
+    "success_connect_info": "Successfully connected to the device.",
+    "halt_timeout_info": "Halt device timeout."
+  },
+  "flashPage": {
+    "flash": "Flash",
+    "select_target": "Select Target Device",
+    "max_clock": "Max Clock",
+    "erase_full": "Erase Full Chip",
+    "erase_part": "Erase Sectors",
+    "erase_none": "Do Not Erase",
+    "program": "Program",
+    "verify": "Verify",
+    "reset_download": "Reset after download"
+  },
+  "firmPage": {
+    "firmware": "Firmware",
+    "drop_info": "Drop file here or",
+    "click_info": "click to upload",
+    "start_info": "Start to flash"
+  },
+  "dap": {
+    "wait_info": "Wait to flash...",
+    "device_invalid_info": "Target device not selected.",
+    "firmware_invalid_info": "Firmware not selected.",
+    "dap_invalid_info": "DAP not connected.",
+    "download_fail_info": "Failed to download!",
+    "download_success_info": "Successfully to download."
+  }
 }
