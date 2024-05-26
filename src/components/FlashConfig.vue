@@ -21,12 +21,14 @@
       <el-checkbox v-model="downloadOption.program" label="Program" size="large" />
       <el-checkbox v-model="downloadOption.verify" label="Verify" size="large" />
     </div>
+    <div class="mb-2 flex items-center text-sm ml-4">
+      <el-checkbox v-model="downloadOption.resetAfterDownload" label="Reset after download" size="large" />
+    </div>
 
   </div>
 </template>
 
 <script setup lang="ts">
-import { RefSymbol } from '@vue/reactivity';
 import deviceIndexOption from '../device/deviceIndex.json'
 import { type DeviceListInfo, algorithmBin, algorithmInfo, downloadOption, memInfo } from './dap/config'
 import { useStorage } from '@vueuse/core'

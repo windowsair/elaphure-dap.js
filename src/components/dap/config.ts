@@ -13,13 +13,15 @@ export type DapDownloadOption = {
   erase: EraseType
   program: boolean
   verify: boolean
+  resetAfterDownload: boolean
 }
 
 export const downloadOption = useStorage<DapDownloadOption>('download-option', {
   clock: 10000000,
   erase: EraseType.Full,
   program: true,
-  verify: true
+  verify: true,
+  resetAfterDownload: true
 })
 export const firmwareFile = ref<File>()
 export const algorithmBin = ref<Uint8Array>()

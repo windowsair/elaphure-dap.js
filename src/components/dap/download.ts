@@ -2,8 +2,8 @@ import {
   type AlgorithmJson,
   type DapDownloadOption,
   type DeviceMemInfo,
-  type EraseType,
-  type Sector
+  type Sector,
+  EraseType
 } from './config'
 import { log, updateProgress } from './log'
 import * as dapjs from '@elaphurelink/dapjs'
@@ -353,6 +353,9 @@ export async function flash(algo: AlgorithmJson, algoBin: Uint8Array,
   }
 
   await dap.halt()
-  // TOOD: softReset ?
+  if (option.resetAfterDownload) {
+    await dap.softReset()
+  }
+
   return ret
 }
