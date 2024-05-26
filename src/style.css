@@ -36,6 +36,13 @@ body {
   margin: 0;
 }
 
+@supports (-webkit-touch-callout: none) {
+  body {
+    /* The hack for Safari */
+    height: -webkit-fill-available;
+  }
+}
+
 h1 {
   font-size: 3.2em;
   line-height: 1.1;
@@ -69,7 +76,8 @@ button:focus-visible {
 }
 
 #app {
-  /* height:100vh; */
+  height:100%;
+  min-height: 100%;
   /* max-width: 1280px;
   margin: 0 auto;
   padding: 2rem;

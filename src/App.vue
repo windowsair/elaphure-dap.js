@@ -25,6 +25,12 @@ import VPNav from './components/navbar/VPNav.vue'
 .layout {
   display: flex;
   flex-direction: column;
-  min-height: 100vh;
+  min-height: 100%;
+}
+
+@supports (-webkit-touch-callout: none) {
+  .layout {
+    height: -webkit-fill-available;
+  }
 }
 </style>

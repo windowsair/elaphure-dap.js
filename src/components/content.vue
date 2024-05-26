@@ -123,6 +123,15 @@ watch(dapLogText, () => {
 </script>
 
 <style>
+.VPContent .el-tabs {
+  display: flex;
+  flex-direction: column;
+}
+
+.VPContent .el-tabs__content {
+  flex-grow: 1;
+}
+
 .VPContent {
   flex-grow: 1;
   flex-shrink: 0;
@@ -133,6 +142,8 @@ watch(dapLogText, () => {
 .VPContent.is-home {
   width: 100%;
   max-width: 100%;
+  min-height: 100%;
+  display: flex;
 }
 
 .VPContent.has-sidebar {
@@ -159,10 +170,6 @@ watch(dapLogText, () => {
 
 .content .el-tabs__header {
   min-height: 40px;
-}
-
-.content .el-tabs__content {
-  height: calc(98vh - 100px);
 }
 
 .content .el-tab-pane {

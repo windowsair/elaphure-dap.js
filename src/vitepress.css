@@ -33,7 +33,6 @@ body {
   margin: 0;
   width: 100%;
   min-width: 320px;
-  min-height: 100vh;
   line-height: 24px;
   font-family: var(--vp-font-family-base);
   font-size: 16px;
