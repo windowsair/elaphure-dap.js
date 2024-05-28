@@ -1,0 +1,20 @@
+# This file assumes that path to the arm compiler toolchain is added
+# to the environment(PATH) variable, so that Meson can find
+# the armlink while building.
+
+[binaries]
+c = ['armclang', '--target=arm-arm-none-eabi']
+cpp = ['armclang', '--target=arm-arm-none-eabi']
+ar = 'armar'
+strip = 'armar'
+objcopy = 'llvm-objcopy'
+
+[built-in options]
+c_args      = ['-mcpu=cortex-m0plus']
+cpp_args    = ['-mcpu=cortex-m0plus']
+
+[host_machine]
+system = 'bare metal'
+cpu_family = 'arm'
+cpu = 'Cortex-M0+'
+endian = 'little'

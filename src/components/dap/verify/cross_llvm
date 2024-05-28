@@ -1,0 +1,18 @@
+[binaries]
+c = [ 'clang', '--target=thumbv6m-none-unknown-eabi' ]
+cpp = [ 'clang++', '--target=thumbv6m-none-unknown-eabi']
+ar = 'llvm-ar'
+strip = 'llvm-strip'
+ld = 'ld'
+lld = 'lld'
+objcopy = 'llvm-objcopy'
+
+[built-in options]
+c_args      = ['-mcpu=cortex-m0plus']
+cpp_args    = ['-mcpu=cortex-m0plus']
+
+[host_machine]
+system = 'bare metal'
+cpu_family = 'arm'
+cpu = 'Cortex-M0+'
+endian = 'little'
