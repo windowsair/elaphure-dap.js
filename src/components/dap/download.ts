@@ -19,6 +19,17 @@ type MemorySector = {
   size: number
 }
 
+type TypedArray =
+    | Int8Array
+    | Uint8Array
+    | Uint8ClampedArray
+    | Int16Array
+    | Uint16Array
+    | Int32Array
+    | Uint32Array
+    | Float32Array
+    | Float64Array
+
 function alignUp(x: number, a: number): number {
   return (x + a - 1) & (~(a - 1))
 }
@@ -33,6 +44,14 @@ function toUint32Array(x: Uint8Array): Uint32Array {
   } else {
     return new Uint32Array(x.buffer, 0, alignUp(x.length, 4))
   }
+}
+
+function typedArraysAreEqual(a: TypedArray, b: TypedArray) {
+  if (a.byteLength !== b.byteLength) {
+    return false
+  }
+
+  return a.every((val, i) => val === b[i])
 }
 
 async function loadAlgorithm(addr: number, bin: Uint8Array,
@@ -319,6 +338,54 @@ export async function programChip(dap: dapjs.CortexM, offset: number, dataRam: M
   return ret
 }
 
+export async function verifyMemory(dap: dapjs.CortexM, romAddr: number,
+                                   firmware: Uint8Array): Promise<number> {
+  const wordCount = Math.floor(firmware.length / 4)
+  const alignFirmware = firmware.slice(0, 4 * wordCount)
+
+  const u32Firmware = toUint32Array(alignFirmware)
+  const u32Res = await dap.readBlock(romAddr, wordCount)
+
+  if (!typedArraysAreEqual(u32Firmware, u32Res)) {
+    return -1
+  }
+
+  const bytes = firmware.length % 4
+  for (let i = 0; i < bytes; i++) {
+    const offset = 4 * wordCount + i
+    const data = firmware[offset]
+
+    const res = await dap.readMem8(romAddr + offset)
+    if (res != data) {
+      return -1
+    }
+  }
+
+  return 0
+}
+
+export async function verifyChip(dap: dapjs.CortexM, offset: number, algo: AlgorithmJson,
+                                 firmware: Uint8Array): Promise<number> {
+  const initAddr = algo.initAddr + offset
+  const uninitAddr = algo.unInitAddr + offset
+  const romAddr = algo.devDesc.DevAdr
+  const xtalClock = 12 * 1000 * 1000 // 12MHz
+  let ret, tmp
+
+  ret = await execute(dap, initAddr, romAddr, xtalClock, EraseFunc.VERIFY)
+  if (ret)
+    return ret
+
+  tmp = verifyMemory(dap, romAddr, firmware)
+
+  ret = await execute(dap, uninitAddr, EraseFunc.VERIFY)
+  if (ret) {
+    return ret
+  }
+
+  return tmp
+}
+
 export async function flash(algo: AlgorithmJson, algoBin: Uint8Array,
                             mem: DeviceMemInfo, firmware: Uint8Array,
                             option: DapDownloadOption, dap: dapjs.CortexM): Promise<number> {
@@ -348,6 +415,15 @@ export async function flash(algo: AlgorithmJson, algoBin: Uint8Array,
     log('Start to program...')
     ret = await programChip(dap, mainAlgoStartOffset, dataRam, algo, firmware)
     if (ret) {
+      return ret
+    }
+  }
+
+  if (option.verify) {
+    log('Start to verify...')
+    ret = await verifyChip(dap, mainAlgoStartOffset, algo, firmware)
+    if (ret) {
+      log('Verify failed!')
       return ret
     }
   }
