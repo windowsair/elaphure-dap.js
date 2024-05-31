@@ -1,4 +1,7 @@
 {
+  "navbar": {
+    "appearance": "Appearance"
+  },
   "devPage": {
     "device": "Device",
     "remote": "Remote",
@@ -13,6 +16,7 @@
   "flashPage": {
     "flash": "Flash",
     "select_target": "Select Target Device",
+    "search_prompt": "Type to search:",
     "max_clock": "Max Clock",
     "erase_full": "Erase Full Chip",
     "erase_part": "Erase Sectors",

@@ -2,8 +2,9 @@
   <div class="FlashConfig">
     <div class="m-4">
       <p class="md-4 ela-text">{{ $t('flashPage.select_target') }}</p>
-      <el-cascader class="mt-2" ref="cascaderRef" placeholder="Type to search:" :options="deviceIndexOption"
-        @change="onDeviceChange" :show-all-levels="false" filterable v-model="targetDevice" />
+      <el-cascader class="mt-2" ref="cascaderRef" :placeholder="$t('flashPage.search_prompt')"
+        :options="deviceIndexOption" @change="onDeviceChange" :show-all-levels="false" filterable
+        v-model="targetDevice" />
     </div>
     <div class="m-4">
       <p class="md-4 ela-text">{{ $t('flashPage.max_clock') }}</p>

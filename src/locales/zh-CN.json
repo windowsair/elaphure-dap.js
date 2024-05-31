@@ -1,4 +1,7 @@
 {
+  "navbar": {
+    "appearance": "外观"
+  },
   "devPage": {
     "device": "设备",
     "remote": "远程",
@@ -13,6 +16,7 @@
   "flashPage": {
     "flash": "烧录",
     "select_target": "选择目标设备",
+    "search_prompt": "输入以搜索：",
     "max_clock": "最大时钟速度",
     "erase_full": "全片擦除",
     "erase_part": "按需擦除",
