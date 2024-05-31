@@ -4,7 +4,7 @@
   "version": "0.0.1",
   "type": "module",
   "scripts": {
-    "dev": "vite",
+    "dev": "vite --host 0.0.0.0",
     "build": "vite build",
     "preview": "vite preview"
   },
@@ -12,6 +12,7 @@
     "@elaphurelink/dapjs": "^2.3.5",
     "@icon-park/vue-next": "^1.4.2",
     "@vueuse/core": "^10.9.0",
+    "crc-32": "^1.2.2",
     "element-plus": "^2.6.1",
     "llvm-objcopy-wasm": "^0.0.3",
     "restructure": "^3.0.1",
@@ -36,6 +37,7 @@
     "unplugin-vue-components": "^0.26.0",
     "vite": "^5.1.6",
     "vite-multiple-assets": "^1.2.10",
+    "vite-plugin-arraybuffer": "^0.0.7",
     "vite-plugin-top-level-await": "^1.4.1",
     "vite-plugin-wasm": "^3.3.0",
     "vite-svg-loader": "^5.1.0"

@@ -6,6 +6,8 @@ import {
   EraseType
 } from './config'
 import { log, updateProgress } from './log'
+import crc32Algo from './verify/crc.bin?uint8array'
+import crc32 from 'crc-32'
 import * as dapjs from '@elaphurelink/dapjs'
 
 enum EraseFunc {
@@ -346,6 +348,8 @@ export async function verifyMemory(dap: dapjs.CortexM, romAddr: number,
   const u32Firmware = toUint32Array(alignFirmware)
   const u32Res = await dap.readBlock(romAddr, wordCount)
 
+  updateProgress(50)
+
   if (!typedArraysAreEqual(u32Firmware, u32Res)) {
     return -1
   }
@@ -364,26 +368,51 @@ export async function verifyMemory(dap: dapjs.CortexM, romAddr: number,
   return 0
 }
 
-export async function verifyChip(dap: dapjs.CortexM, offset: number, algo: AlgorithmJson,
-                                 firmware: Uint8Array): Promise<number> {
+export async function verifyFastCrc(dap: dapjs.CortexM, romAddr: number, dataRam: MemorySector,
+                                    firmware: Uint8Array): Promise<number> {
+  const length = firmware.length
+  const addr = dataRam.addr
+  let res, expect
+
+  const crc32AlgoLen = alignUp(crc32Algo.length, 4)
+  const alignAlgo = new Uint8Array(crc32AlgoLen)
+  alignAlgo.set(crc32Algo, 0)
+  const alignAlgoU32 = toUint32Array(alignAlgo)
+
+  await dap.writeBlock(addr, alignAlgoU32)
+  updateProgress(50)
+
+  res = await execute(dap, addr, romAddr, length, 0)
+  res = res >>> 0
+  expect = crc32.buf(firmware)
+  expect = expect >>> 0
+
+  if (res != expect) {
+    return -1
+  }
+
+  return 0
+}
+
+export async function verifyChip(dap: dapjs.CortexM, offset: number, dataRam: MemorySector,
+                                 algo: AlgorithmJson, firmware: Uint8Array): Promise<number> {
   const initAddr = algo.initAddr + offset
   const uninitAddr = algo.unInitAddr + offset
   const romAddr = algo.devDesc.DevAdr
   const xtalClock = 12 * 1000 * 1000 // 12MHz
-  let ret, tmp
+  let ret
 
-  ret = await execute(dap, initAddr, romAddr, xtalClock, EraseFunc.VERIFY)
-  if (ret)
-    return ret
+  updateProgress(0)
 
-  tmp = verifyMemory(dap, romAddr, firmware)
-
-  ret = await execute(dap, uninitAddr, EraseFunc.VERIFY)
-  if (ret) {
-    return ret
+  if (firmware.length < 512) {
+    ret = verifyMemory(dap, romAddr, firmware)
+  } else {
+    ret = verifyFastCrc(dap, romAddr, dataRam, firmware)
   }
 
-  return tmp
+  updateProgress(100)
+
+  return ret
 }
 
 export async function flash(algo: AlgorithmJson, algoBin: Uint8Array,
@@ -421,7 +450,7 @@ export async function flash(algo: AlgorithmJson, algoBin: Uint8Array,
 
   if (option.verify) {
     log('Start to verify...')
-    ret = await verifyChip(dap, mainAlgoStartOffset, algo, firmware)
+    ret = await verifyChip(dap, mainAlgoStartOffset, dataRam, algo, firmware)
     if (ret) {
       log('Verify failed!')
       return ret

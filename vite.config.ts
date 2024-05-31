@@ -8,32 +8,34 @@ import svgLoader from 'vite-svg-loader'
 import wasm from 'vite-plugin-wasm'
 import topLevelAwait from 'vite-plugin-top-level-await'
 import DynamicPublicDirectory from 'vite-multiple-assets'
-const dirAssets = ['src/device/deviceList']
+import arraybuffer from 'vite-plugin-arraybuffer'
 
+const dirAssets = ['src/device/deviceList']
 
 export default defineConfig({
   resolve: {
     alias: [
-      { find: '@assets', replacement: fileURLToPath(new URL('./src/assets', import.meta.url)) },
+      { find: '@assets', replacement: fileURLToPath(new URL('./src/assets', import.meta.url)) }
     ]
   },
   assetsInclude: ['src/device/deviceList/**'],
   plugins: [
     vue(),
     AutoImport({
-      resolvers: [ElementPlusResolver()],
+      resolvers: [ElementPlusResolver()]
     }),
     Components({
-      resolvers: [ElementPlusResolver()],
+      resolvers: [ElementPlusResolver()]
     }),
     svgLoader(),
     wasm(),
     topLevelAwait(),
-    DynamicPublicDirectory(dirAssets)
+    DynamicPublicDirectory(dirAssets),
+    arraybuffer()
   ],
   optimizeDeps: {
     exclude: [
-      "llvm-objcopy-wasm"
+      'llvm-objcopy-wasm'
     ]
-  },
+  }
 })
