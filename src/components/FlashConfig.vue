@@ -30,7 +30,7 @@
 </template>
 
 <script setup lang="ts">
-import deviceIndexOption from '../device/deviceIndex.json'
+import deviceIndexOption from '@device/deviceIndex.json'
 import { type DeviceListInfo, algorithmBin, algorithmInfo, downloadOption, memInfo } from './dap/config'
 import { useStorage } from '@vueuse/core'
 import { ref, watch, onMounted } from 'vue'

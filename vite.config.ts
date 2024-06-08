@@ -10,15 +10,16 @@ import topLevelAwait from 'vite-plugin-top-level-await'
 import DynamicPublicDirectory from 'vite-multiple-assets'
 import arraybuffer from 'vite-plugin-arraybuffer'
 
-const dirAssets = ['src/device/deviceList']
+const dirAssets = ['device/deviceList']
 
 export default defineConfig({
   resolve: {
     alias: [
-      { find: '@assets', replacement: fileURLToPath(new URL('./src/assets', import.meta.url)) }
+      { find: '@assets', replacement: fileURLToPath(new URL('./src/assets', import.meta.url)) },
+      { find: '@device', replacement: fileURLToPath(new URL('./device', import.meta.url)) }
     ]
   },
-  assetsInclude: ['src/device/deviceList/**'],
+  assetsInclude: ['device/deviceList/**'],
   plugins: [
     vue(),
     AutoImport({
