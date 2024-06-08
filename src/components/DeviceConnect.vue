@@ -28,13 +28,13 @@ import { useI18n } from 'vue-i18n'
 const { t } = useI18n()
 
 const isRemoteDAP = useStorage('remote-dap', false)
-const dapURI = useStorage('dap-uri', '')
+const dapURI = useStorage('dap-uri', 'dap.local')
 
 const onDAPConnect = async () => {
   isDeviceConnect.value = false
   dapContext.value = undefined
 
-  let device: USBDevice | undefined
+  let transport: dapjs.WebUSB | dapjs.WebSocketTransport | null = null
 
   try {
     if (!isRemoteDAP.value) {
@@ -46,9 +46,11 @@ const onDAPConnect = async () => {
         }
       }
 
-      device = await navigator.usb.requestDevice({
+      const device = await navigator.usb.requestDevice({
         filters: [{ vendorId: 0xD28 }]
       })
+
+      transport = new dapjs.WebUSB(device)
     } else {
       // Remote feature does not support https
       if (!isLocalNetwork()) {
@@ -58,18 +60,18 @@ const onDAPConnect = async () => {
         }
       }
 
-      // TODO: remote device
+      const addr = `ws://${dapURI.value}:3240/`
+      transport = new dapjs.WebSocketTransport(addr)
     }
   } catch (err) {
     log(String(err))
   }
 
-  if (!device) {
+  if (!transport) {
     return
   }
 
   const clock = downloadOption.value.clock
-  const transport = new dapjs.WebUSB(device)
   const processor: dapjs.CortexM = new dapjs.CortexM(transport, 0, clock)
   await processor.connect()
   await processor.halt(true, 1000)
