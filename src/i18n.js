@@ -22,7 +22,8 @@ export const currentLang = useStorage('language', {
 
 const i18n = createI18n({
   legacy: false,
-  locale: currentLang.value.index
+  locale: currentLang.value.index,
+  globalInjection: true
 })
 
 export { i18n }

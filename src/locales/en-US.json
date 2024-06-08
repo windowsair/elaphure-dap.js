@@ -37,6 +37,12 @@
     "firmware_invalid_info": "Firmware not selected.",
     "dap_invalid_info": "DAP not connected.",
     "download_fail_info": "Failed to download!",
-    "download_success_info": "Successfully to download."
+    "download_success_info": "Successfully to download.",
+    "start_erase_info": "Start to erase chip...",
+    "fail_erase_info": "Erase failed!",
+    "start_program_info": "Start to program...",
+    "fail_program_info": "Program failed!",
+    "start_verify_info": "Start to verify...",
+    "fail_verify_info": "Verify failed!"
   }
 }

@@ -5,7 +5,7 @@ import {
   type Sector,
   EraseType
 } from './config'
-import { log, updateProgress } from './log'
+import { dapLog, updateProgress } from './log'
 import crc32Algo from './verify/crc.bin?uint8array'
 import crc32 from 'crc-32'
 import * as dapjs from '@elaphurelink/dapjs'
@@ -432,27 +432,29 @@ export async function flash(algo: AlgorithmJson, algoBin: Uint8Array,
   const dataRam: MemorySector = await resourceInit(dap, ramAddr, ramSize, algoBinLength)
 
   if (option.erase !== EraseType.None) {
-    log('Start to erase chip...')
+    dapLog.startErase()
     ret = await eraseChip(dap, mainAlgoStartOffset, firmware.length, mem, algo,
                           option.erase === EraseType.Full)
     if (ret) {
+      dapLog.failErase()
       return ret
     }
   }
 
   if (option.program) {
-    log('Start to program...')
+    dapLog.startProgram()
     ret = await programChip(dap, mainAlgoStartOffset, dataRam, algo, firmware)
     if (ret) {
+      dapLog.failProgram()
       return ret
     }
   }
 
   if (option.verify) {
-    log('Start to verify...')
+    dapLog.startVerify()
     ret = await verifyChip(dap, mainAlgoStartOffset, dataRam, algo, firmware)
     if (ret) {
-      log('Verify failed!')
+      dapLog.failVerify()
       return ret
     }
   }

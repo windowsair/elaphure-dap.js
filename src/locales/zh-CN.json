@@ -37,6 +37,12 @@
     "firmware_invalid_info": "固件还未选择.",
     "dap_invalid_info": "DAP 暂未连接.",
     "download_fail_info": "烧录失败!",
-    "download_success_info": "成功烧录."
+    "download_success_info": "成功烧录.",
+    "start_erase_info": "开始擦除...",
+    "fail_erase_info": "擦除失败!",
+    "start_program_info": "开始下载...",
+    "fail_program_info": "下载!",
+    "start_verify_info": "开始校验固件...",
+    "fail_verify_info": "校验失败!"
   }
 }
