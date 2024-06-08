@@ -21,7 +21,7 @@
 <script setup lang="ts">
 import { useStorage } from '@vueuse/core'
 import { isDeviceConnect, dapContext, downloadOption } from './dap/config'
-import { log, logSuccess, logWarn } from './dap/log'
+import { log, logErr, logSuccess, logWarn } from './dap/log'
 import * as dapjs from '@elaphurelink/dapjs'
 import { isHttps, isLocalNetwork, redirectToHttp, redirectToHttps } from './composables/site'
 import { useI18n } from 'vue-i18n'
@@ -43,7 +43,13 @@ const onDAPConnect = async () => {
         if (!isHttps()) {
           logWarn(t('devPage.redirect_to_https_info'))
           redirectToHttps()
+          return
         }
+      }
+
+      if (!navigator.usb) {
+        logErr(t('devPage.webusb_not_support'))
+        return
       }
 
       const device = await navigator.usb.requestDevice({
@@ -57,6 +63,7 @@ const onDAPConnect = async () => {
         if (isHttps()) {
           logWarn(t('devPage.redirect_to_http_info'))
           redirectToHttp()
+          return
         }
       }
 
