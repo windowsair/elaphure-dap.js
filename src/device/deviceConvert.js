@@ -42,6 +42,9 @@ import { XMLParser } from 'fast-xml-parser'
     let pdscObj = parser.parse(content)
     let subFamily = pdscObj.package.devices.family.subFamily
     pdsc.subFamily = []
+    if (!Array.isArray(subFamily)) {
+      subFamily = [subFamily]
+    }
     subFamily.forEach((sub) => {
       ret = {
         name: sub['@_DsubFamily'],
@@ -53,6 +56,9 @@ import { XMLParser } from 'fast-xml-parser'
           algorithm: [],
           ram: {},
           rom: {}
+        }
+        if (!Array.isArray(device.algorithm)) {
+          device.algorithm = [device.algorithm]
         }
         device.algorithm.forEach((item) => {
           tmp.algorithm.push({
