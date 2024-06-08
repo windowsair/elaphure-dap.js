@@ -83,6 +83,12 @@ const startFlash = async () => {
     return
   }
 
+  const rom = mem.rom
+  if (firmware.length > Number(rom.size)) {
+    log(t('dap.firmware_too_large'))
+    return
+  }
+
   const dap = toRaw(dapContext).value
   if (!dap) {
     log(t('dap.dap_invalid_info'))

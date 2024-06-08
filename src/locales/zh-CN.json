@@ -11,7 +11,8 @@
     "redirect_to_https_info": "正在重定向站点以使用 webusb ...",
     "redirect_to_http_info": "正在重定向站点以使用远程...",
     "success_connect_info": "成功连接到设备.",
-    "halt_timeout_info": "暂停设备超时."
+    "halt_timeout_info": "暂停设备超时.",
+    "webusb_not_support": "您的浏览器不支持 WebUSB 特性!"
   },
   "flashPage": {
     "flash": "烧录",
@@ -48,6 +49,7 @@
     "elf_detect_info": "检测到 ELF 格式，正在转换为 BIN 格式...",
     "fail_convert_info": "转换 ELF 格式失败!",
     "success_convert_info": "成功转换为 BIN 格式.",
-    "file_size_info": "转换后的文件大小："
+    "file_size_info": "转换后的文件大小：",
+    "firmware_too_large": "固件大小太大！"
   }
 }

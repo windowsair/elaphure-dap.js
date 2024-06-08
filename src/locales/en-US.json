@@ -11,7 +11,8 @@
     "redirect_to_https_info": "Redirect site to use webusb...",
     "redirect_to_http_info": "Redirect site to use remote...",
     "success_connect_info": "Successfully connected to the device.",
-    "halt_timeout_info": "Halt device timeout."
+    "halt_timeout_info": "Halt device timeout.",
+    "webusb_not_support": "Your browser does not support the WebUSB feature!"
   },
   "flashPage": {
     "flash": "Flash",
@@ -48,6 +49,7 @@
     "elf_detect_info": "ELF file format detected, convert it to a BIN file...",
     "fail_convert_info": "Failed to convert elf!",
     "success_convert_info": "Success to convert to BIN.",
-    "file_size_info": "Converted file size:"
+    "file_size_info": "Converted file size:",
+    "firmware_too_large": "Firmware size too large!"
   }
 }
