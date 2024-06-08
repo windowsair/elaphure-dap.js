@@ -1,4 +1,4 @@
-import { log } from './log'
+import { dapLog } from './log'
 import objcopy from 'llvm-objcopy-wasm'
 
 function readFile(file: File): Promise<Uint8Array | null> {
@@ -42,22 +42,23 @@ export async function firmwarePreprocess(file: File | undefined): Promise<Uint8A
 
   let fileArray = await readFile(file)
   if (!fileArray || !fileArray.length) {
-    log('Failed to load file')
+    dapLog.failLoadFile()
     return
   }
 
   // check elf magic
   if (fileArray[0] == 0x7F && fileArray[1] == 0x45 &&
       fileArray[2] == 0x4C && fileArray[3] == 0x46) {
-    log('ELF file format detected, convert it to a BIN file...')
+    dapLog.elfDetected()
 
     fileArray = await convertToBin(fileArray)
     if (!fileArray || !fileArray.length) {
-      log('Failed to convert elf\n')
+      dapLog.failConvert()
       return
     }
 
-    log('Success to convert to BIN.')
+    dapLog.successConvert()
+    dapLog.convertFileSizeInfo(fileArray.length)
   }
 
   return fileArray

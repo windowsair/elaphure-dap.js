@@ -43,6 +43,11 @@
     "start_program_info": "开始下载...",
     "fail_program_info": "下载!",
     "start_verify_info": "开始校验固件...",
-    "fail_verify_info": "校验失败!"
+    "fail_verify_info": "校验失败!",
+    "fail_load_file": "加载文件失败!",
+    "elf_detect_info": "检测到 ELF 格式，正在转换为 BIN 格式...",
+    "fail_convert_info": "转换 ELF 格式失败!",
+    "success_convert_info": "成功转换为 BIN 格式.",
+    "file_size_info": "转换后的文件大小："
   }
 }

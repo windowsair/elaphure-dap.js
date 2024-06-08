@@ -74,4 +74,32 @@ export class dapLog {
   public static failVerify() {
     log(this.t('dap.fail_verify_info'))
   }
+
+  public static failLoadFile() {
+    log(this.t('dap.fail_load_file'))
+  }
+
+  public static elfDetected() {
+    log(this.t('dap.elf_detect_info'))
+  }
+
+  public static failConvert() {
+    log(this.t('dap.fail_convert_info'))
+  }
+
+  public static successConvert() {
+    log(this.t('dap.success_convert_info'))
+  }
+
+  public static convertFileSizeInfo(size: number) {
+    let sizeStr = ''
+    if (size < 1024) {
+      sizeStr = `${size} byte`
+    } else {
+      sizeStr = `${Math.floor(size / 1024)} KB`
+    }
+
+    const text = this.t('dap.file_size_info') + ` ${sizeStr}`
+    log(text)
+  }
 }

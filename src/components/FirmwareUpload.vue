@@ -45,7 +45,7 @@ const fileInfoShow = computed(()=> {
 
   if (size !== undefined) {
     if (size < 1024) {
-      sizeStr = `${size}byte`
+      sizeStr = `${size} byte`
     } else {
       sizeStr = `${Math.floor(size / 1024)} KB`
     }
