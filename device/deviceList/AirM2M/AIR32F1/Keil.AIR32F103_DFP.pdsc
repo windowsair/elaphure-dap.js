@@ -1,0 +1,548 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<package schemaVersion="1.2"
+  xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="PACK.xsd">
+  <vendor>Keil</vendor>
+  <url>https://luatos.com/t/air32f103/</url>
+  <name>AIR32F103_DFP</name>
+  <description>AirM2M AIR32F1 Series Device Support, Drivers</description>
+
+  <releases>
+    <release version="1.0.0" date="2022-06-01">
+      First Release version of AIR32F1 Device Family Pack.
+    </release>
+    <release version="1.0.1" date="2022-06-03">
+      Add StdPeriph for AIR32F1.
+    </release>
+    <release version="1.0.2" date="2022-06-03">
+      Add MPU for AIR32F1.
+    </release>
+    <release version="1.0.3" date="2022-06-03">
+      Fix IRAM1 for AIR32F103CB.
+    </release>
+    <release version="1.0.4" date="2022-06-12">
+      add AIR32F103CC.
+    </release>
+    <release version="1.0.5" date="2022-06-22">
+      fix DcoreVersion.
+    </release>
+    <release version="1.0.6" date="2022-07-28">
+      add Delay.
+      add AIR32F103RC AIR32F103VE.
+      fix Air32F103CCT6 RAM.
+    </release>
+    <release version="1.0.7" date="2022-10-27">
+      Add air32f10x_rcc_ex
+    </release>
+    <release version="1.1.0" date="2022-12-01">
+      Add RTE Driver
+    </release>
+  </releases>
+
+  <keywords>
+    <!-- keywords for indexing -->
+    <keyword>AirM2M</keyword>
+    <keyword>Device Support</keyword>
+    <keyword>Device Family Package AIRM2M</keyword>
+    <keyword>AIR32F1</keyword>
+  </keywords>
+
+  <devices>
+    <!-- generated, do not modify this section! -->
+
+    <family Dfamily="AIR32F1 Series" Dvendor="Generic:5">
+      <processor Dcore="Cortex-M3" DcoreVersion="r2p0"/>
+      <book name="Documents/dui0552a_cortex_m3_dgug.pdf" title="Cortex-M3 Generic User Guide"/>
+      <description>
+        AIR32 F1 series       
+        - ARM Cortex-M3 running up to 216MHz
+        - From 128 to 512-Kbyte Flash
+        - 32 to 96-Kbyte SRAM
+      </description>
+
+      <feature type="WDT" n="2" name="Watchdog"/>
+      <feature type="RTC" n="32768" name="RTC"/>
+      <feature type="VCC" n="2.00" m="3.60"/>
+      <feature type="Temp" n="-40" m="85"/>
+      <feature type="Temp" n="-40" m="105"/>
+
+      <!-- ************************  Subfamily 'AIR32F103'  **************************** -->
+      <subFamily DsubFamily="AIR32F103">
+        <feature type="USBD" n="1" name="USB Device"/>
+        <feature type="CAN" n="1" name="CAN"/>
+        <!-- *************************  Device 'AIR32F103CB'  ***************************** -->
+        <device Dname="AIR32F103CB">
+          <processor Dfpu="0" Dmpu="1" Dendian="Little-endian" Dclock="216000000"/>
+          <compile header="Device/Include/air32f10x.h" define="AIR32F10X_MD"/>
+          <debug svd="SVD/AIR32F103xx.svd"/>
+          <memory id="IROM1" start="0x08000000" size="0x20000" startup="1" default="1"/>
+          <memory id="IRAM1" start="0x20000000" size="0x8000"     init   ="0" default="1"/>
+          <algorithm name="Flash/Air32F103CBT6.FLM" start="0x08000000" size="0x20000" default="1"/>
+          <feature type="Timer" n="4" m="16"/>
+          <feature type="ADC" n="10" m="12"/>
+          <feature type="DAC" n="2" name="DAC"/>
+          <feature type="IOs" n="36" name="Inputs/Outputs"/>
+          <feature type="SPI" n="2" m="54000000" name="SPI"/>
+          <feature type="I2C" n="2" name="I2C"/>
+          <feature type="USART" n="3" m="4500000" name="USART"/>
+          <feature type="QFP" n="48" name="QFP"/>
+        </device>
+        <!-- *************************  Device 'AIR32F103CC'  ***************************** -->
+        <device Dname="AIR32F103CC">
+          <processor Dfpu="0" Dmpu="1" Dendian="Little-endian" Dclock="216000000"/>
+          <compile header="Device/Include/air32f10x.h" define="AIR32F10X_MD"/>
+          <debug svd="SVD/AIR32F103xx.svd"/>
+          <memory id="IROM1" start="0x08000000" size="0x40000" startup="1" default="1"/>
+          <memory id="IRAM1" start="0x20000000" size="0x10000"     init   ="0" default="1"/>
+          <algorithm name="Flash/Air32F103CCT6.FLM" start="0x08000000" size="0x40000" default="1"/>
+          <feature type="Timer" n="4" m="16"/>
+          <feature type="ADC" n="10" m="12"/>
+          <feature type="DAC" n="2" m="12"/>
+          <feature type="IOs" n="36" name="Inputs/Outputs"/>
+          <feature type="SPI" n="2" m="54000000" name="SPI"/>
+          <feature type="I2C" n="2" name="I2C"/>
+          <feature type="USART" n="3" m="4500000" name="USART"/>
+          <feature type="QFP" n="48" name="QFP"/>
+        </device>
+        <!-- *************************  Device 'AIR32F103RC'  ***************************** -->
+        <device Dname="AIR32F103RC">
+          <processor Dfpu="0" Dmpu="1" Dendian="Little-endian" Dclock="72000000"/>
+          <compile header="Device/Include/air32f10x.h" define="AIR32F10X_MD"/>
+          <debug svd="SVD/AIR32F103xx.svd"/>
+          <memory id="IROM1" start="0x08000000" size="0x40000" startup="1" default="1"/>
+          <memory id="IRAM1" start="0x20000000" size="0x18000"     init   ="0" default="1"/>
+          <algorithm name="Flash/Air32F103CCT6.FLM" start="0x08000000" size="0x40000" default="1"/>
+          <feature type="Timer" n="8" m="16"/>
+          <feature type="ADC" n="16" m="12"/>
+          <feature type="DAC" n="2" m="12"/>
+          <feature type="IOs" n="51" name="Inputs/Outputs"/>
+          <feature type="SPI" n="3" m="54000000" name="SPI"/>
+          <feature type="I2S" n="2"/>
+          <feature type="SDIO" n="1"/>
+          <feature type="I2C" n="2" name="I2C"/>
+          <feature type="USART" n="3" m="4500000" name="USART"/>
+          <feature type="UART" n="2" m="4500000"/>
+          <feature type="QFP" n="64" name="QFP"/>
+        </device>
+        <!-- *************************  Device 'AIR32F103VE'  ***************************** -->
+        <device Dname="AIR32F103VE">
+          <processor Dfpu="0" Dmpu="1" Dendian="Little-endian" Dclock="72000000"/>
+          <compile header="Device/Include/air32f10x.h" define="AIR32F10X_MD"/>
+          <debug svd="SVD/AIR32F103xx.svd"/>
+          <memory id="IROM1" start="0x08000000" size="0x80000" startup="1" default="1"/>
+          <memory id="IRAM1" start="0x20000000" size="0x18000"     init   ="0" default="1"/>
+          <algorithm name="Flash/Air32F103VET6.FLM" start="0x08000000" size="0x80000" default="1"/>
+          <feature type="Timer" n="4" m="16"/>
+          <feature type="ADC" n="10" m="12"/>
+          <feature type="DAC" n="2" m="12"/>
+          <feature type="IOs" n="36" name="Inputs/Outputs"/>
+          <feature type="SPI" n="2" m="54000000" name="SPI"/>
+          <feature type="I2S" n="2"/>
+          <feature type="SDIO" n="1"/>
+          <feature type="I2C" n="2" name="I2C"/>
+          <feature type="USART" n="3" m="4500000" name="USART"/>
+          <feature type="UART" n="2" m="4500000"/>
+          <feature type="QFP" n="100" name="QFP"/>
+        </device>
+      </subFamily>
+    </family>
+  </devices>
+  <conditions>    <!-- conditions are dependecy rules that can apply to a component or an individual file -->
+    <condition id="AIR32F1xx CMSIS Device">      <!-- conditions selecting Devices -->
+      <description>AirM2M AIR32F1xx device series</description>
+      <require Cclass="CMSIS" Cgroup="CORE"/>
+      <require Dvendor="Generic:5" Dname="AIR32*"/>
+    </condition>
+
+    <condition id="AIR32F1xx STDPERIPH">
+      <description>AirM2M AIR32F1xx Standard Peripherals Drivers</description>
+      <require condition="AIR32F1xx CMSIS Device"/>
+      <require Cclass="Device" Cgroup="StdPeriph Drivers" Csub="Framework"/>
+    </condition>
+    <condition id="AIR32F1xx CMSIS GPIO">
+      <description>AirM2M AIR32F1xx Device with CMSIS and GPIO</description>
+      <require condition="AIR32F1xx CMSIS Device"/>
+      <require Cclass="CMSIS" Cgroup="CORE"/>
+      <require Cclass="Device" Cgroup="GPIO" />
+    </condition>
+    <condition id="AIR32F1xx CMSIS GPIO DMA">
+      <description>AirM2M AIR32F1xx Device with CMSIS, GPIO and DMA</description>
+      <require condition="AIR32F1xx CMSIS Device"/>
+      <require Cclass="CMSIS" Cgroup="CORE"/>
+      <require Cclass="Device" Cgroup="GPIO" />
+      <require Cclass="Device" Cgroup="DMA" />
+    </condition>
+    <condition id="AIR32F1xx CMSIS RTOS I2C">
+      <description>AirM2M AIR32F1xx Device with CMSIS, RTOS and I2C Driver</description>
+      <require condition="AIR32F1xx CMSIS Device"/>
+      <require Cclass="CMSIS" Cgroup="CORE"/>
+      <require Cclass="CMSIS" Cgroup="RTOS"/>
+      <require Cclass="CMSIS Driver" Cgroup="I2C" />
+    </condition>
+    <condition id="AIR32F1xx CMSIS GPIO SPI">
+      <description>AirM2M AIR32F1xx Device with CMSIS, GPIO and SPI Driver</description>
+      <require condition="AIR32F1xx CMSIS Device"/>
+      <require Cclass="CMSIS" Cgroup="CORE"/>
+      <require Cclass="CMSIS Driver" Cgroup="SPI" />
+    </condition>
+    <condition id="AIR32F1xx CMSIS RTOS GPIO">
+      <description>AirM2M AIR32F1xx Device with CMSIS, RTOS and GPIO</description>
+      <require condition="AIR32F1xx CMSIS Device"/>
+      <accept Cclass="CMSIS" Cgroup="RTOS"/>
+      <accept Cclass="CMSIS" Cgroup="RTOS2"/>
+      <require Cclass="Device" Cgroup="GPIO" />
+    </condition>
+
+    <condition id="AIR32F1xx STDPERIPH RCC">
+      <description>AirM2M AIR32F1xx Standard Peripherals Drivers with RCC</description>
+      <require condition="AIR32F1xx STDPERIPH"/>
+      <require Cclass="Device" Cgroup="StdPeriph Drivers" Csub="RCC"/>
+    </condition>
+    <condition id="AIR32F1xx MD">
+      <description>AirM2M AIR32F1xx Mid Density Device</description>
+      <accept Dname="AIR32F103CB"/>
+      <accept Dname="AIR32F103CC"/>
+      <require Tcompiler="ARMCC"/>
+    </condition>
+  </conditions>
+
+  <components>
+    <component Cclass="Device" Cgroup="Startup" Cversion="1.0.0" condition="AIR32F1xx CMSIS Device">      <!-- Cversion is necessary -->
+      <description>System Startup for AirM2M AIR32F1xx device series</description>
+      <files>
+        <!--  include folder -->
+        <file category="include" name="Device/Include/"/>
+
+        <!-- startup files -->
+        <file category="source" name="Device/Source/ARM/startup_air32f10x.s" attr="config" version="1.0.0" condition="AIR32F1xx MD"/>
+
+        <!-- system file -->
+        <file category="source" name="Device/Source/system_air32f10x.c" attr="config" version="1.0.0"/>
+        <!-- device configuration required by drivers at the moment -->
+        <file category="header" name="RTE_Driver/Config/RTE_Device.h" attr="config" version="1.0.0"/>
+      </files>
+    </component>
+
+    <!-- START: AIR Standard Peripherals Drivers -->
+
+    <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="Framework" Cversion="1.0.1" condition="AIR32F1xx STDPERIPH">
+      <description>Standard Peripherals Drivers Framework</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPH_FRAMEWORK
+      </RTE_Components_h>
+      <files>
+        <file category="include" name="Device/StdPeriph_Driver/inc/"/>
+        <file category="source" name="Device/StdPeriph_Driver/src/misc.c"/>
+        <file category="header" name="Device/StdPeriph_Driver/inc/misc.h"/>
+        <file category="source" name="Device/StdPeriph_Driver/templates/air32f10x_conf.h" attr="config" version="1.0.0"/>
+        <file category="header" name="Device/StdPeriph_Driver/templates/air32f10x_it.h" attr="template" select="Interrupt Service Routines"/>
+        <file category="source" name="Device/StdPeriph_Driver/templates/air32f10x_it.c" attr="template" select="Interrupt Service Routines"/>
+        <file category="source" name="Device/StdPeriph_Driver/templates/main.c" attr="template" select="main template"/>
+      </files>
+    </component>
+
+    <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="ADC" Cversion="1.0.0" condition="AIR32F1xx STDPERIPH RCC">
+      <description>Analog-to-digital converter (ADC) driver for AIR32F10x</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPH_ADC
+      </RTE_Components_h>
+      <files>
+        <file category="header" name="Device/StdPeriph_Driver/inc/air32f10x_adc.h"/>
+        <file category="source" name="Device/StdPeriph_Driver/src/air32f10x_adc.c"/>
+      </files>
+    </component>
+
+    <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="DAC" Cversion="1.0.0" condition="AIR32F1xx STDPERIPH RCC">
+      <description>Analog-to-digital converter (DAC) driver for AIR32F10x</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPH_DAC
+      </RTE_Components_h>
+      <files>
+        <file category="header" name="Device/StdPeriph_Driver/inc/air32f10x_dac.h"/>
+        <file category="source" name="Device/StdPeriph_Driver/src/air32f10x_dac.c"/>
+      </files>
+    </component>
+
+    <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="BKP" Cversion="1.0.0" condition="AIR32F1xx STDPERIPH">
+      <description>Backup registers (BKP) driver for AIR32F10x</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPH_BKP
+      </RTE_Components_h>
+      <files>
+        <file category="header" name="Device/StdPeriph_Driver/inc/air32f10x_bkp.h"/>
+        <file category="source" name="Device/StdPeriph_Driver/src/air32f10x_bkp.c"/>
+      </files>
+    </component>
+
+    <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="CAN" Cversion="1.0.0" condition="AIR32F1xx STDPERIPH RCC">
+      <description>Controller area network (CAN) driver for AIR32F1xx</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPH_CAN
+      </RTE_Components_h>
+      <files>
+        <file category="header" name="Device/StdPeriph_Driver/inc/air32f10x_can.h"/>
+        <file category="source" name="Device/StdPeriph_Driver/src/air32f10x_can.c"/>
+      </files>
+    </component>
+
+    <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="CRC" Cversion="1.0.0" condition="AIR32F1xx STDPERIPH ">
+      <description>CRC calculation unit (CRC) driver for AIR32F1xx</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPH_CRC
+      </RTE_Components_h>
+      <files>
+        <file category="header" name="Device/StdPeriph_Driver/inc/air32f10x_crc.h"/>
+        <file category="source" name="Device/StdPeriph_Driver/src/air32f10x_crc.c"/>
+      </files>
+    </component>
+
+    <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="DBGMCU" Cversion="1.0.0" condition="AIR32F1xx STDPERIPH">
+      <description>MCU debug component (DBGMCU) driver for AIR32F1xx</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPH_DBGMCU
+      </RTE_Components_h>
+      <files>
+        <file category="header" name="Device/StdPeriph_Driver/inc/air32f10x_dbgmcu.h"/>
+        <file category="source" name="Device/StdPeriph_Driver/src/air32f10x_dbgmcu.c"/>
+      </files>
+    </component>
+
+    <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="DMA" Cversion="1.0.0" condition="AIR32F1xx STDPERIPH RCC">
+      <description>DMA controller (DMA) driver for AIR32F1xx</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPH_DMA
+      </RTE_Components_h>
+      <files>
+        <file category="header" name="Device/StdPeriph_Driver/inc/air32f10x_dma.h"/>
+        <file category="source" name="Device/StdPeriph_Driver/src/air32f10x_dma.c"/>
+      </files>
+    </component>
+
+    <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="EXTI" Cversion="1.0.0" condition="AIR32F1xx STDPERIPH">
+      <description>External interrupt/event controller (EXTI) driver for AIR32F1xx</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPH_EXTI
+      </RTE_Components_h>
+      <files>
+        <file category="header" name="Device/StdPeriph_Driver/inc/air32f10x_exti.h"/>
+        <file category="source" name="Device/StdPeriph_Driver/src/air32f10x_exti.c"/>
+      </files>
+    </component>
+
+    <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="Flash" Cversion="1.0.0" condition="AIR32F1xx STDPERIPH">
+      <description>Embedded Flash memory driver for AIR32F1xx</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPH_FLASH
+      </RTE_Components_h>
+      <files>
+        <file category="header" name="Device/StdPeriph_Driver/inc/air32f10x_flash.h"/>
+        <file category="source" name="Device/StdPeriph_Driver/src/air32f10x_flash.c"/>
+      </files>
+    </component>
+
+    <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="GPIO" Cversion="1.0.0" condition="AIR32F1xx STDPERIPH RCC">
+      <description>General-purpose I/O (GPIO) driver for AIR32F1xx</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPH_GPIO
+      </RTE_Components_h>
+      <files>
+        <file category="header" name="Device/StdPeriph_Driver/inc/air32f10x_gpio.h"/>
+        <file category="source" name="Device/StdPeriph_Driver/src/air32f10x_gpio.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="Delay" Cversion="1.0.0" condition="AIR32F1xx STDPERIPH RCC">
+      <description>General-purpose I/O (Delay) driver for AIR32F1xx</description>
+      <RTE_Components_h>
+        #define Delay
+      </RTE_Components_h>
+      <files>
+        <file category="header" name="Device/StdPeriph_Driver/inc/delay.h"/>
+        <file category="source" name="Device/StdPeriph_Driver/src/delay.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="I2C" Cversion="1.0.0" condition="AIR32F1xx STDPERIPH RCC">
+      <description>Inter-integrated circuit (I2C) interface driver for AIR32F1xx</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPH_I2C
+      </RTE_Components_h>
+      <files>
+        <file category="header" name="Device/StdPeriph_Driver/inc/air32f10x_i2c.h"/>
+        <file category="source" name="Device/StdPeriph_Driver/src/air32f10x_i2c.c"/>
+      </files>
+    </component>
+
+    <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="IWDG" Cversion="1.0.0" condition="AIR32F1xx STDPERIPH ">
+      <description>Independent watchdog (IWDG) driver for AIR32F1xx</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPH_IWDG
+      </RTE_Components_h>
+      <files>
+        <file category="header" name="Device/StdPeriph_Driver/inc/air32f10x_iwdg.h"/>
+        <file category="source" name="Device/StdPeriph_Driver/src/air32f10x_iwdg.c"/>
+      </files>
+    </component>
+
+    <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="PWR" Cversion="1.0.0" condition="AIR32F1xx STDPERIPH RCC">
+      <description>Power controller (PWR) driver for AIR32F1xx</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPH_PWR
+      </RTE_Components_h>
+      <files>
+        <file category="header" name="Device/StdPeriph_Driver/inc/air32f10x_pwr.h"/>
+        <file category="source" name="Device/StdPeriph_Driver/src/air32f10x_pwr.c"/>
+      </files>
+    </component>
+
+    <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="RCC" Cversion="1.0.0" condition="AIR32F1xx STDPERIPH">
+      <description>Reset and clock control (RCC) driver for AIR32F1xx</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPH_RCC
+      </RTE_Components_h>
+      <files>
+        <file category="header" name="Device/StdPeriph_Driver/inc/air32f10x_rcc.h"/>
+        <file category="source" name="Device/StdPeriph_Driver/src/air32f10x_rcc.c"/>
+        <file category="header" name="Device/StdPeriph_Driver/inc/air32f10x_rcc_ex.h"/>
+        <file category="source" name="Device/StdPeriph_Driver/src/air32f10x_rcc_ex.c"/>
+      </files>
+    </component>
+
+    <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="RTC" Cversion="1.0.0" condition="AIR32F1xx STDPERIPH">
+      <description>Real-time clock (RTC) driver for AIR32F1xx</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPH_RTC
+      </RTE_Components_h>
+      <files>
+        <file category="header" name="Device/StdPeriph_Driver/inc/air32f10x_rtc.h"/>
+        <file category="source" name="Device/StdPeriph_Driver/src/air32f10x_rtc.c"/>
+      </files>
+    </component>
+
+    <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="SDIO" Cversion="1.0.0" condition="AIR32F1xx STDPERIPH RCC">
+      <description>Secure digital (SDIO) interface driver for AIR32F1xx</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPH_SDIO
+      </RTE_Components_h>
+      <files>
+        <file category="header" name="Device/StdPeriph_Driver/inc/air32f10x_sdio.h"/>
+        <file category="source" name="Device/StdPeriph_Driver/src/air32f10x_sdio.c"/>
+      </files>
+    </component>
+
+    <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="SPI" Cversion="1.0.0" condition="AIR32F1xx STDPERIPH RCC">
+      <description>Serial peripheral interface (SPI) driver for AIR32F1xx</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPH_SPI
+      </RTE_Components_h>
+      <files>
+        <file category="header" name="Device/StdPeriph_Driver/inc/air32f10x_spi.h"/>
+        <file category="source" name="Device/StdPeriph_Driver/src/air32f10x_spi.c"/>
+      </files>
+    </component>
+
+    <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="TIM" Cversion="1.0.0" condition="AIR32F1xx STDPERIPH RCC">
+      <description>Timers (TIM) driver for AIR32F1xx</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPH_TIM
+      </RTE_Components_h>
+      <files>
+        <file category="header" name="Device/StdPeriph_Driver/inc/air32f10x_tim.h"/>
+        <file category="source" name="Device/StdPeriph_Driver/src/air32f10x_tim.c"/>
+      </files>
+    </component>
+
+    <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="USART" Cversion="1.0.0" condition="AIR32F1xx STDPERIPH RCC">
+      <description>Universal synchronous asynchronous receiver transmitter (USART) driver for AIR32F1xx</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPH_USART
+      </RTE_Components_h>
+      <files>
+        <file category="header" name="Device/StdPeriph_Driver/inc/air32f10x_usart.h"/>
+        <file category="source" name="Device/StdPeriph_Driver/src/air32f10x_usart.c"/>
+      </files>
+    </component>
+
+    <component Cclass="Device" Cgroup="StdPeriph Drivers" Csub="WWDG" Cversion="1.0.0" condition="AIR32F1xx STDPERIPH RCC">
+      <description>Window watchdog (WWDG) driver for AIR32F1xx</description>
+      <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPH_WWDG
+      </RTE_Components_h>
+      <files>
+        <file category="header" name="Device/StdPeriph_Driver/inc/air32f10x_wwdg.h"/>
+        <file category="source" name="Device/StdPeriph_Driver/src/air32f10x_wwdg.c"/>
+      </files>
+    </component>
+    <!-- END: AIR Standard Peripherals Drivers -->
+    <component Cclass="Device" Cgroup="GPIO" Cversion="1.0" condition="AIR32F1xx CMSIS Device">
+      <description>GPIO driver used by RTE Drivers for AIR32F1 Series</description>
+      <files>
+        <file category="header" name="RTE_Driver/GPIO_AIR32F10x.h"/>
+        <file category="source" name="RTE_Driver/GPIO_AIR32F10x.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="DMA" Cversion="1.0" condition="AIR32F1xx CMSIS Device">
+      <description>DMA driver used by RTE Drivers for AIR32F1 Series</description>
+      <files>
+        <file category="header" name="RTE_Driver/DMA_AIR32F10x.h"/>
+        <file category="source" name="RTE_Driver/DMA_AIR32F10x.c"/>
+      </files>
+    </component>
+
+    <component Cclass="CMSIS Driver" Cgroup="CAN" Capiversion="1.0" Cversion="1.0" condition="AIR32F1xx CMSIS GPIO">
+      <description>CAN Driver for AIR32F1 Series</description>
+      <RTE_Components_h>        <!-- the following content goes into file 'RTE_Components.h' -->
+        #define RTE_Drivers_CAN1                /* Driver CAN1 */
+        #define RTE_Drivers_CAN2                /* Driver CAN2 */
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="RTE_Driver/CAN_AIR32F10x.c"/>
+      </files>
+    </component>
+    <component Cclass="CMSIS Driver" Cgroup="SPI" Capiversion="1.0" Cversion="1.0" condition="AIR32F1xx CMSIS GPIO DMA">
+      <description>SPI Driver for AIR32F1 Series</description>
+      <RTE_Components_h>        <!-- the following content goes into file 'RTE_Components.h' -->
+        #define RTE_Drivers_SPI1                /* Driver SPI1 */
+        #define RTE_Drivers_SPI2                /* Driver SPI2 */
+        #define RTE_Drivers_SPI3                /* Driver SPI3 */
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="RTE_Driver/SPI_AIR32F10x.c"/>
+      </files>
+    </component>
+    <component Cclass="CMSIS Driver" Cgroup="USART" Capiversion="1.0" Cversion="1.0" condition="AIR32F1xx CMSIS GPIO DMA">
+      <description>UART Driver for AIR32F1 Series</description>
+      <RTE_Components_h>        <!-- the following content goes into file 'RTE_Components.h' -->
+        #define RTE_Drivers_USART1              /* Driver USART1 */
+        #define RTE_Drivers_USART2              /* Driver USART2 */
+        #define RTE_Drivers_USART3              /* Driver USART3 */
+        #define RTE_Drivers_USART4              /* Driver UART4  */
+        #define RTE_Drivers_USART5              /* Driver UART5  */
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="RTE_Driver/USART_AIR32F10x.c"/>
+      </files>
+    </component>
+    <component Cclass="CMSIS Driver" Cgroup="I2C" Capiversion="1.0" Cversion="1.0" condition="AIR32F1xx CMSIS GPIO DMA">
+      <description>I2C Driver for AIR32F1 Series</description>
+      <RTE_Components_h>        <!-- the following content goes into file 'RTE_Components.h' -->
+        #define RTE_Drivers_I2C1                /* Driver I2C1 */
+        #define RTE_Drivers_I2C2                /* Driver I2C2 */
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="RTE_Driver/I2C_AIR32F10x.c"/>
+      </files>
+    </component>
+    <component Cclass="CMSIS Driver" Cgroup="USB Device" Capiversion="1.0" Cversion="1.0" condition="AIR32F1xx CMSIS RTOS GPIO">
+      <description>USB Device Driver for AIR32F1 Series</description>
+      <RTE_Components_h>        <!-- the following content goes into file 'RTE_Components.h' -->
+        #define RTE_Drivers_USBD0               /* Driver USBD0 */
+      </RTE_Components_h>
+      <files>
+        <file category="source" name="RTE_Driver/USBD_AIR32F10x.c"/>
+      </files>
+    </component>
+  </components>
+
+
+
+
+</package>
