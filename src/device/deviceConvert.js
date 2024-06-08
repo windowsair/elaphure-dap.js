@@ -2,6 +2,22 @@ import * as fs from 'fs'
 import path from 'path'
 import { XMLParser } from 'fast-xml-parser'
 
+// sort output by label
+function ouputSort(root) {
+  let stack = [...root]
+
+  while (stack.length > 0) {
+    const node = stack.pop()
+
+    if (node.children && node.children.length > 0) {
+      node.children.sort((a, b) => a.label.localeCompare(b.label))
+      stack.push(...node.children)
+    }
+  }
+
+  root.sort((a, b) => a.label.localeCompare(b.label))
+}
+
 // Vendor -> Series -> Device
 (async () => {
   const rootPath = './deviceList'
@@ -155,6 +171,8 @@ import { XMLParser } from 'fast-xml-parser'
       })
     })
   })
+
+  ouputSort(data)
 
   ret = JSON.stringify(data)
   fs.writeFileSync(outputPath, ret)
