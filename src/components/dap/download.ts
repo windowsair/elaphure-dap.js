@@ -428,6 +428,10 @@ export async function flash(algo: AlgorithmJson, algoBin: Uint8Array,
   const algoBinLength = alignUp(algoBin.length, 4) + prefixLen
   let ret = 0
 
+  await dap.halt()
+  await dap.setTargetResetState(false, false)
+  await dap.halt()
+
   await loadAlgorithm(ramAddr, algoBin, dap)
   const dataRam: MemorySector = await resourceInit(dap, ramAddr, ramSize, algoBinLength)
 
