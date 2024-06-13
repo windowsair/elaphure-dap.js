@@ -66,6 +66,9 @@ function ouputSort(root) {
         name: sub['@_DsubFamily'],
         devices: []
       }
+      if (!Array.isArray(sub.device)) {
+        sub.device = [sub.device]
+      }
       sub.device.forEach((device) => {
         let tmp = {
           name: device['@_Dname'],
