@@ -1,0 +1,1 @@
+{"initAddr":9,"unInitAddr":219,"eraseChipAddr":223,"eraseSectorAddr":275,"programPageAddr":331,"descAddr":480,"descSize":4256,"devDesc":{"Vers":257,"DevName":"FlashHC32L130 Flash","DevType":1,"DevAdr":0,"szDev":65536,"szPage":512,"Res":0,"valEmpty":255,"toProg":100,"toErase":3000,"sectors":[{"szSector":512,"AddrSector":0}]}}
