@@ -2,6 +2,28 @@ import * as fs from 'fs'
 import path from 'path'
 import { XMLParser } from 'fast-xml-parser'
 
+const romNameList = [
+  'IROM1',
+  'PROGRAM_FLASH'
+]
+
+const ramNameList = [
+  'IRAM1',
+  'SRAM0'
+]
+
+function isInRomList(name) {
+  const target = name.toLowerCase()
+
+  return romNameList.some(subStr => target.includes(subStr.toLowerCase()))
+}
+
+function isInRamList(name) {
+  const target = name.toLowerCase()
+
+  return ramNameList.some(subStr => target.includes(subStr.toLowerCase()))
+}
+
 // sort output by label
 function ouputSort(root) {
   let stack = [...root]
@@ -57,13 +79,17 @@ function ouputSort(root) {
     })
     let pdscObj = parser.parse(content)
     let subFamily = pdscObj.package.devices.family.subFamily
+    if (!subFamily) {
+      subFamily = pdscObj.package.devices.family
+    }
+
     pdsc.subFamily = []
     if (!Array.isArray(subFamily)) {
       subFamily = [subFamily]
     }
     subFamily.forEach((sub) => {
       ret = {
-        name: sub['@_DsubFamily'],
+        name: sub['@_DsubFamily'] || sub['@_Dfamily'],
         devices: []
       }
       if (!Array.isArray(sub.device)) {
@@ -88,12 +114,13 @@ function ouputSort(root) {
           })
         })
         device.memory.forEach((item) => {
-          if (item['@_id'] === 'IRAM1') {
+          const name = item['@_id'] || item['@_name']
+          if (isInRamList(name)) {
             tmp.ram = {
               start: item['@_start'],
               size: item['@_size']
             }
-          } else if (item['@_id'] == 'IROM1') {
+          } else if (isInRomList(name)) {
             tmp.rom = {
               start: item['@_start'],
               size: item['@_size']
