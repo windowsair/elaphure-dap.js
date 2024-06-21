@@ -56,6 +56,38 @@ function typedArraysAreEqual(a: TypedArray, b: TypedArray) {
   return a.every((val, i) => val === b[i])
 }
 
+class DownloadContext {
+  public linkRegister: number
+  public stackPointer: number
+
+  public xtalClock: number
+  public initAddr: number
+  public uninitAddr: number
+  public programPageAddr: number
+  public eraseFullAddr: number | null
+  public eraseSectorAddr: number
+
+  public baseAddr: number
+  public pageSize: number
+
+  constructor(algo: AlgorithmJson, offset: number) {
+    this.linkRegister = 0
+    this.stackPointer = 0
+    this.xtalClock = 12 * 1000 * 1000 // 12MHz
+    this.initAddr = algo.initAddr + offset
+    this.uninitAddr = algo.unInitAddr + offset
+    this.programPageAddr = algo.programPageAddr + offset
+    if (algo.eraseChipAddr !== null) {
+      this.eraseFullAddr = algo.eraseChipAddr + offset
+    } else {
+      this.eraseFullAddr = null
+    }
+    this.eraseSectorAddr = algo.eraseSectorAddr + offset
+    this.baseAddr = algo.devDesc.DevAdr
+    this.pageSize = algo.devDesc.szPage
+  }
+}
+
 async function loadAlgorithm(addr: number, bin: Uint8Array,
                              dap: dapjs.CortexM): Promise<void> {
   let algoBinLength
@@ -76,12 +108,14 @@ async function loadAlgorithm(addr: number, bin: Uint8Array,
  * Flash algorithm resouce init
  *
  * @param dap DAP context
+ * @param ctx DownloadContext
  * @param ramAddr Start address of device RAM
  * @param ramSize Total size of device RAM
  * @param algoSize Size of algorithm
  * @returns Promise of memory sector to store firmware data
  */
-async function resourceInit(dap: dapjs.CortexM, ramAddr: number, ramSize: number,
+async function resourceInit(dap: dapjs.CortexM, ctx: DownloadContext,
+                            ramAddr: number, ramSize: number,
                             algoSize: number): Promise<MemorySector> {
   /**
    * Resource layout
@@ -97,6 +131,9 @@ async function resourceInit(dap: dapjs.CortexM, ramAddr: number, ramSize: number
   const linkRegister = ramAddr + 1
   const stackPointer = alignDown(ramAddr + ramSize, 4)
   const programCounter = ramAddr
+
+  ctx.linkRegister = linkRegister
+  ctx.stackPointer = stackPointer
 
   // algoSize already algin to 4
   const startAddr = ramAddr + algoSize
@@ -147,26 +184,23 @@ async function execute(dap: dapjs.CortexM,
   return dap.readCoreRegister(dapjs.CoreRegister.R0)
 }
 
-async function eraseFullChip(dap: dapjs.CortexM, initAddr: number,
-                             uninitAddr: number, eraseProgAddr: number): Promise<number> {
-  // TODO: setting xtal clock
-  const xtalClock = 12 * 1000 * 1000 // 12MHz
+async function eraseFullChip(dap: dapjs.CortexM, ctx: DownloadContext): Promise<number> {
   let ret
 
   // Init erase
-  ret = await execute(dap, initAddr, xtalClock, EraseFunc.ERASE)
+  ret = await execute(dap, ctx.initAddr, ctx.baseAddr, ctx.xtalClock, EraseFunc.ERASE)
   if (ret) {
     return ret
   }
 
   // Erase full chip
-  ret = await execute(dap, eraseProgAddr)
+  ret = await execute(dap, ctx.eraseFullAddr as number)
   if (ret) {
     return ret
   }
 
   // Uninit erase
-  ret = await execute(dap, uninitAddr, EraseFunc.ERASE)
+  ret = await execute(dap, ctx.uninitAddr, EraseFunc.ERASE)
   if (ret) {
     return ret
   }
@@ -174,20 +208,19 @@ async function eraseFullChip(dap: dapjs.CortexM, initAddr: number,
   return 0
 }
 
-async function eraseChip(dap: dapjs.CortexM, offset: number, eraseSize: number, mem: DeviceMemInfo,
+async function eraseChip(dap: dapjs.CortexM, ctx: DownloadContext,
+                         eraseSize: number, mem: DeviceMemInfo,
                          algo: AlgorithmJson, fullChip: boolean): Promise<number> {
-  const initAddr = algo.initAddr + offset
-  const uninitAddr = algo.unInitAddr + offset
-  const progAddr = algo.eraseSectorAddr + offset
-  const baseAddr = algo.devDesc.DevAdr
+  const initAddr = ctx.initAddr
+  const uninitAddr = ctx.uninitAddr
+  const progAddr = ctx.eraseSectorAddr
+  const baseAddr = ctx.baseAddr
   const deviceTotalSize = Math.min(algo.devDesc.szDev, Number(mem.rom.size))
-  // TODO: setting xtal clock
-  const xtalClock = 12 * 1000 * 1000 // 12MHz
+  const xtalClock = ctx.xtalClock
   let ret
 
   if (fullChip && algo.eraseChipAddr !== null) {
-    const eraseChipAddr = algo.eraseChipAddr + offset
-    return eraseFullChip(dap, initAddr, uninitAddr, eraseChipAddr)
+    return eraseFullChip(dap, ctx)
   }
 
   // Init erase
@@ -266,13 +299,13 @@ export async function programSector(dap: dapjs.CortexM, progAddr: number,
   return 0
 }
 
-export async function programChip(dap: dapjs.CortexM, offset: number, dataRam: MemorySector,
+export async function programChip(dap: dapjs.CortexM, ctx: DownloadContext, dataRam: MemorySector,
                                   algo: AlgorithmJson, firmware: Uint8Array): Promise<number> {
-  const initAddr = algo.initAddr + offset
-  const uninitAddr = algo.unInitAddr + offset
-  const progAddr = algo.programPageAddr + offset
-  const baseAddr = algo.devDesc.DevAdr
-  const xtalClock = 12 * 1000 * 1000 // 12MHz
+  const initAddr = ctx.initAddr
+  const uninitAddr = ctx.uninitAddr
+  const progAddr = ctx.programPageAddr
+  const baseAddr = ctx.baseAddr
+  const xtalClock = ctx.xtalClock
 
   const pageSize = algo.devDesc.szPage
   const totalRamSize = dataRam.size
@@ -428,16 +461,18 @@ export async function flash(algo: AlgorithmJson, algoBin: Uint8Array,
   const algoBinLength = alignUp(algoBin.length, 4) + prefixLen
   let ret = 0
 
+  const ctx: DownloadContext = new DownloadContext(algo, mainAlgoStartOffset)
+
   await dap.halt()
   await dap.setTargetResetState(false, false)
   await dap.halt()
 
   await loadAlgorithm(ramAddr, algoBin, dap)
-  const dataRam: MemorySector = await resourceInit(dap, ramAddr, ramSize, algoBinLength)
+  const dataRam: MemorySector = await resourceInit(dap, ctx, ramAddr, ramSize, algoBinLength)
 
   if (option.erase !== EraseType.None) {
     dapLog.startErase()
-    ret = await eraseChip(dap, mainAlgoStartOffset, firmware.length, mem, algo,
+    ret = await eraseChip(dap, ctx, firmware.length, mem, algo,
                           option.erase === EraseType.Full)
     if (ret) {
       dapLog.failErase()
@@ -447,7 +482,7 @@ export async function flash(algo: AlgorithmJson, algoBin: Uint8Array,
 
   if (option.program) {
     dapLog.startProgram()
-    ret = await programChip(dap, mainAlgoStartOffset, dataRam, algo, firmware)
+    ret = await programChip(dap, ctx, dataRam, algo, firmware)
     if (ret) {
       dapLog.failProgram()
       return ret
@@ -456,7 +491,7 @@ export async function flash(algo: AlgorithmJson, algoBin: Uint8Array,
 
   if (option.verify) {
     dapLog.startVerify()
-    ret = await verifyChip(dap, mainAlgoStartOffset, dataRam, algo, firmware)
+    ret = await verifyChip(dap, dataRam, algo, firmware)
     if (ret) {
       dapLog.failVerify()
       return ret
