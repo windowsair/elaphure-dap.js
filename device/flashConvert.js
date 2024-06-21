@@ -140,6 +140,14 @@ async function getLLVMVersion() {
     let [programPageAddr] = get_symbol_info(elfInfo, 'Function', 'ProgramPage')
     let [descAddr, descSize] = get_symbol_info(elfInfo, 'Object', 'FlashDevice')
 
+    let [dataSectionAddr] = get_symbol_info(elfInfo, 'Section', '.data')
+    let [bssSectionAddr] = get_symbol_info(elfInfo, 'Section', '.bss')
+
+    const staticBaseAddr = dataSectionAddr || bssSectionAddr
+    if (staticBaseAddr === null) {
+      throw new Error(`Failed to get static base:${flmPath}`)
+    }
+
     await toBin(flmPath, binPath)
 
     const fd = await fs.open(binPath, 'r')
@@ -199,6 +207,7 @@ async function getLLVMVersion() {
       'eraseChipAddr': eraseChipAddr,
       'eraseSectorAddr': eraseSectorAddr,
       'programPageAddr': programPageAddr,
+      'staticBase': staticBaseAddr,
       'descAddr': descAddr,
       'descSize': descSize,
       'devDesc': devDesc
