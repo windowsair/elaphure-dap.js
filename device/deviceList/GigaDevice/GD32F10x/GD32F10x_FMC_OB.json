@@ -1,0 +1,1 @@
+{"initAddr":1,"unInitAddr":47,"eraseChipAddr":69,"eraseSectorAddr":171,"programPageAddr":221,"staticBase":328,"descAddr":332,"descSize":4256,"devDesc":{"Vers":257,"DevName":"GD32F10x FMC OB","DevType":1,"DevAdr":536868864,"szDev":16,"szPage":16,"Res":0,"valEmpty":255,"toProg":3000,"toErase":3000,"sectors":[{"szSector":16,"AddrSector":0}]}}

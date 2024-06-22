@@ -1,0 +1,1571 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package schemaVersion="1.2" xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="PACK.xsd">
+  <vendor>GigaDevice</vendor>
+  <url>https://gd32mcu.com/data/documents/pack/</url>
+  <name>GD32F10x_DFP</name>
+  <description>GigaDevice GD32F10x Series Device Support and Examples</description>
+  <releases>
+     <release version="2.0.3" date="2022-07-27">
+      update url address.
+    </release>
+     <release version="2.0.2" date="2021-12-06">
+      update firmware for GD32F10x, update svd file DMA1 base address.
+    </release>
+     <release version="2.0.1" date="2018-08-02">
+      update firmware for GD32F10x.
+    </release>
+     <release version="2.0.0" date="2015-06-26">
+      Added GD32F10x device support.
+    </release>
+    <release version="1.1.0" date="2015-04-27">
+      Added GD32F10x device support.
+    </release>
+    <release version="1.0.1">
+      Updated device support files.
+      Added SVD file.
+      Added datasheets, manual.
+      Renamed device names.
+    </release>
+    <release version="1.0.0">
+      First Release version of GD32F1 Device Family Pack.
+    </release>
+  </releases>
+  <keywords>
+  <!-- keywords for indexing -->
+  <keyword>GigaDevice</keyword>
+  <keyword>Device Support</keyword>
+  <keyword>GD32F10x</keyword>
+  </keywords>
+  <devices>
+    <family Dfamily="GD32F10x Series" Dvendor="GigaDevice:123">
+      <processor Dcore="Cortex-M3" DcoreVersion="r1p1" Dfpu="0" Dmpu="0" Dendian="Little-endian"/>
+      <description>
+GD32 is a new 32-bit high performance, low power consumption universal microcontroller family powered by the ARM Cortex-M3 RISC core,which targeted at various MCU application areas.
+GD32 family integrates features to simplify system design and provide customers wide range of comprehensive and superior cost effective MCU portfolios with proven technology and great innovation.
+GD32 family includes entry line, performance line and connectivity line currently.
+      </description>
+       <feature type="XTAL"               n="4000000"  m="16000000"  name="Crystal Oscillator"/>
+      <feature type="CoreOther"       n="1"                                        name="CRC Calculation Unit"/>
+      <feature type="DMA"               n="12"                                       name="General Purpose DMA with Centralized FIFO and Burst Support"/>
+      <feature type="IntRC"              n="8000000"                             name="Internal 8M RC oscillator"/>
+      <feature type="IntRC"              n="40000"                                name="Internal 40K RC oscillator"/>      
+      <feature type="RTC"                n="32768"                                 name="RTC with 32.768 kHz calibrated Oscillator and Battery Backup"/>
+      <feature type="PLL"                 n="3"                                         name="Internal PLL"/>
+      <feature type="PowerMode"    n="4"                                          name="Run, Sleep, Deep-Sleep, Standby"/>
+      <feature type="PowerOther"    n="4"                                          name="POR, PDR, LVD, and BPOR"/>
+      <feature type="ExtInt"             n="20"                                        name="External interrupt"/>            
+      <feature type="Temp"             n="-40"          m="85"                name="Extended Operating Temperature Range"/>
+      <feature type="ADC"               n="3"              m="12"                name="High-Performance ADC"/>
+      <feature type="TempSens"      n="1"                                          name="Temperature sensor"/>
+      <feature type="DAC"               n="2"              m="12"                name="Digital-to-analog converter"/>
+      <feature type="Timer"             n="10"            m="16"                name="16-bit General Purpose Timer"/>
+      <feature type="Timer"             n="2"              m="16"                name="Advanced Timer"/>
+      <feature type="Timer"             n="2"              m="16"                name="Basic Timer"/>
+      <feature type="Timer"             n="1"              m="24"                name="SysTick Timer"/>
+      <feature type="WDT"               n="2"                                          name="Watchdog timer"/>
+      <feature type="MPSerial"         n="4"                                          name="Multi-Purpose Serial Interface Module: I2C, I2S, SPI, USART"/> 
+      <feature type="USART"            n="3"              m="6750000"     name="High-Speed USART Interface"/>
+      <feature type="UART"              n="2"              m="6750000"     name="High-Speed UART Interface"/>
+      <feature type="CAN"               n="2"                                          name="CAN 2.0b Controller"/>
+      <feature type="USBOTG"          n="2"                                          name="High-Speed/Full-Speed USB OTG with PHY"/>
+      <feature type="SDIO"               n="1"              m="8"                  name="SDIO Interface"/>
+      <feature type="IOs"                 n="112"                                       name="IO pins"/>
+      <feature type="I2C"                 n="2"                                           name="Low-Power I2C"/>
+      <feature type="SPI"                  n="3"                                          name="SPI Interface"/>
+      <feature type="ETH"                n="1"               m="100000000"  name="Integrated Ethernet MAC with PHY"/>
+      <feature type="I2S"                  n="2"                                          name="I2S Interface"  />
+      <feature type="VCC"                n="2.6"                m="3.6"          name="Voltage"/>
+      <feature type="NVIC"               n="68"                                        name="NVIC"/>
+      <feature type="Other"              n="1"                                         name="My other Interface"/>
+
+      <!-- ************************  Subfamily 'GD32F101'  **************************** -->
+      <subFamily DsubFamily="GD32F101">
+        <processor Dclock="56000000"/>
+        <description>
+GD32F101xx - ARM Cortex-M3 Core
+  Frequency up to 56 MHz
+  Single-cycle multiplier and hardware divider
+  NVIC support 16 internal and 43 external interrupts, each interrupt has 16 priority levels
+
+Flash memory
+  Flash up to 3072 KB
+  SRAM up to 80 KB
+  2KB ISP loader ROM
+        </description>
+
+        <!-- *************************  Device 'GD32F101T4'  ***************************** -->
+        <device Dname="GD32F101T4">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD  USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00001000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00004000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00004000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101T6'  ***************************** -->
+        <device Dname="GD32F101T6">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00001800" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00008000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00008000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101T8'  ***************************** -->
+        <device Dname="GD32F101T8">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00002800" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00010000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00010000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101TB'  ***************************** -->
+        <device Dname="GD32F101TB">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00004000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00020000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00020000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101C4'  ***************************** -->
+        <device Dname="GD32F101C4">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00001000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00004000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00004000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101C6'  ***************************** -->
+        <device Dname="GD32F101C6">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00001800" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00008000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00008000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101C8'  ***************************** -->
+        <device Dname="GD32F101C8">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00002800" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00010000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00010000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101CB'  ***************************** -->
+        <device Dname="GD32F101CB">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00004000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00020000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00020000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101R4'  ***************************** -->
+        <device Dname="GD32F101R4">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00001000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00004000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00004000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101R6'  ***************************** -->
+        <device Dname="GD32F101R6">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00001800" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00008000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00008000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101R8'  ***************************** -->
+        <device Dname="GD32F101R8">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00002800" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00010000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00010000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101RB'  ***************************** -->
+        <device Dname="GD32F101RB">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00004000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00020000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00020000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101V8'  ***************************** -->
+        <device Dname="GD32F101V8">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00002800" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00010000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00010000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101VB'  ***************************** -->
+        <device Dname="GD32F101VB">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00004000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00020000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00020000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101RC'  ***************************** -->
+        <device Dname="GD32F101RC">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_HD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_HD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00008000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00040000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_HD.FLM" start="0x08000000" size="0x00040000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101VC'  ***************************** -->
+        <device Dname="GD32F101VC">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_HD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_HD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00008000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00040000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_HD.FLM" start="0x08000000" size="0x00040000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101ZC'  ***************************** -->
+        <device Dname="GD32F101ZC">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_HD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_HD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00008000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00040000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_HD.FLM" start="0x08000000" size="0x00040000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101RD'  ***************************** -->
+        <device Dname="GD32F101RD">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_HD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_HD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x0000C000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00060000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_HD.FLM" start="0x08000000" size="0x00060000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101VD'  ***************************** -->
+        <device Dname="GD32F101VD">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_HD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_HD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x0000C000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00060000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_HD.FLM" start="0x08000000" size="0x00060000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101ZD'  ***************************** -->
+        <device Dname="GD32F101ZD">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_HD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_HD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x0000C000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00060000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_HD.FLM" start="0x08000000" size="0x00060000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101RE'  ***************************** -->
+        <device Dname="GD32F101RE">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_HD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_HD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x0000C000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00080000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_HD.FLM" start="0x08000000" size="0x00080000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101VE'  ***************************** -->
+        <device Dname="GD32F101VE">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_HD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_HD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x0000C000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00080000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_HD.FLM" start="0x08000000" size="0x00080000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101ZE'  ***************************** -->
+        <device Dname="GD32F101ZE">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_HD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_HD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x0000C000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00080000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_HD.FLM" start="0x08000000" size="0x00080000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101RF'  ***************************** -->
+        <device Dname="GD32F101RF">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_XD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_XD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00014000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x000C0000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_XD.FLM" start="0x08000000" size="0x000C0000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101VF'  ***************************** -->
+        <device Dname="GD32F101VF">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_XD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_XD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00014000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x000C0000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_XD.FLM" start="0x08000000" size="0x000C0000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101ZF'  ***************************** -->
+        <device Dname="GD32F101ZF">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_XD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_XD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00014000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x000C0000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_XD.FLM" start="0x08000000" size="0x000C0000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101RG'  ***************************** -->
+        <device Dname="GD32F101RG">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_XD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_XD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00014000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00100000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_XD.FLM" start="0x08000000" size="0x00100000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101VG'  ***************************** -->
+        <device Dname="GD32F101VG">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_XD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_XD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00014000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00100000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_XD.FLM" start="0x08000000" size="0x00100000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101ZG'  ***************************** -->
+        <device Dname="GD32F101ZG">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_XD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_XD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00014000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00100000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_XD.FLM" start="0x08000000" size="0x00100000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101RI'  ***************************** -->
+        <device Dname="GD32F101RI">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_XD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_XD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00014000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00200000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_XD.FLM" start="0x08000000" size="0x00200000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101VI'  ***************************** -->
+        <device Dname="GD32F101VI">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_XD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_XD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00014000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00200000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_XD.FLM" start="0x08000000" size="0x00200000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101ZI'  ***************************** -->
+        <device Dname="GD32F101ZI">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_XD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_XD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00014000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00200000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_XD.FLM" start="0x08000000" size="0x00200000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101RK'  ***************************** -->
+        <device Dname="GD32F101RK">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_XD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_XD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00014000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00300000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_XD.FLM" start="0x08000000" size="0x00300000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101VK'  ***************************** -->
+        <device Dname="GD32F101VK">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_XD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_XD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00014000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00300000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_XD.FLM" start="0x08000000" size="0x00300000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F101ZK'  ***************************** -->
+        <device Dname="GD32F101ZK">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_XD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_XD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00014000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00300000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_XD.FLM" start="0x08000000" size="0x00300000" default="1"/>
+        </device>
+      </subFamily>
+
+      <!-- ************************  Subfamily 'GD32F103'  **************************** -->
+      <subFamily DsubFamily="GD32F103">
+        <processor Dclock="108000000"/>
+        <description>
+GD32F103 - ARM Cortex-M3 Core
+  Frequency up to108 MHz
+  Single-cycle multiplier and hardware divider
+  NVIC support 16 interrupts, each interrupt has 16 priority levels
+  Flash memory
+
+Flash up to 3072 KB
+  SRAM up to 96 KB
+  2KB ISP loader ROM
+        </description>
+
+        <!-- *************************  Device 'GD32F103T4'  ***************************** -->
+        <device Dname="GD32F103T4">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00001800" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00004000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00004000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103C4'  ***************************** -->
+        <device Dname="GD32F103C4">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00001800" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00004000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00004000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103R4'  ***************************** -->
+        <device Dname="GD32F103R4">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00001800" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00004000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00004000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103T6'  ***************************** -->
+        <device Dname="GD32F103T6">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00002800" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00008000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00008000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103C6'  ***************************** -->
+        <device Dname="GD32F103C6">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00002800" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00008000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00008000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103R6'  ***************************** -->
+        <device Dname="GD32F103R6">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00002800" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00008000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00008000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103T8'  ***************************** -->
+        <device Dname="GD32F103T8">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00005000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00010000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00010000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103C8'  ***************************** -->
+        <device Dname="GD32F103C8">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00005000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00010000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00010000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103R8'  ***************************** -->
+        <device Dname="GD32F103R8">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00005000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00010000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00010000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103TB'  ***************************** -->
+        <device Dname="GD32F103TB">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00005000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00020000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00020000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103CB'  ***************************** -->
+        <device Dname="GD32F103CB">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00005000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00020000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00020000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103V8'  ***************************** -->
+        <device Dname="GD32F103V8">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00005000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00010000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00010000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103VB'  ***************************** -->
+        <device Dname="GD32F103VB">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00005000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00020000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00020000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103RB'  ***************************** -->
+        <device Dname="GD32F103RB">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_MD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_MD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00005000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00020000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_MD.FLM" start="0x08000000" size="0x00020000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103RC'  ***************************** -->
+        <device Dname="GD32F103RC">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_HD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_HD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x0000C000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00040000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_HD.FLM" start="0x08000000" size="0x00040000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103VC'  ***************************** -->
+        <device Dname="GD32F103VC">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_HD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_HD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x0000C000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00040000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_HD.FLM" start="0x08000000" size="0x00040000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103ZC'  ***************************** -->
+        <device Dname="GD32F103ZC">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_HD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_HD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x0000C000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00040000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_HD.FLM" start="0x08000000" size="0x00040000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103RD'  ***************************** -->
+        <device Dname="GD32F103RD">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_HD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_HD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00010000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00060000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_HD.FLM" start="0x08000000" size="0x00060000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103VD'  ***************************** -->
+        <device Dname="GD32F103VD">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_HD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_HD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00010000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00060000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_HD.FLM" start="0x08000000" size="0x00060000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103ZD'  ***************************** -->
+        <device Dname="GD32F103ZD">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_HD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_HD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00010000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00060000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_HD.FLM" start="0x08000000" size="0x00060000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103RE'  ***************************** -->
+        <device Dname="GD32F103RE">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_HD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_HD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00010000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00080000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_HD.FLM" start="0x08000000" size="0x00080000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103VE'  ***************************** -->
+        <device Dname="GD32F103VE">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_HD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_HD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00010000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00080000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_HD.FLM" start="0x08000000" size="0x00080000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103ZE'  ***************************** -->
+        <device Dname="GD32F103ZE">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_HD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_HD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00010000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00080000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_HD.FLM" start="0x08000000" size="0x00080000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103RF'  ***************************** -->
+        <device Dname="GD32F103RF">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_XD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_XD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x000C0000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_XD.FLM" start="0x08000000" size="0x000C0000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103VF'  ***************************** -->
+        <device Dname="GD32F103VF">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_XD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_XD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x000C0000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_XD.FLM" start="0x08000000" size="0x000C0000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103ZF'  ***************************** -->
+        <device Dname="GD32F103ZF">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_XD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_XD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x000C0000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_XD.FLM" start="0x08000000" size="0x000C0000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103RG'  ***************************** -->
+        <device Dname="GD32F103RG">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_XD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_XD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00100000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_XD.FLM" start="0x08000000" size="0x00100000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103VG'  ***************************** -->
+        <device Dname="GD32F103VG">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_XD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_XD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00100000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_XD.FLM" start="0x08000000" size="0x00100000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103ZG'  ***************************** -->
+        <device Dname="GD32F103ZG">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_XD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_XD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00100000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_XD.FLM" start="0x08000000" size="0x00100000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103RI'  ***************************** -->
+        <device Dname="GD32F103RI">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_XD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_XD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00200000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_XD.FLM" start="0x08000000" size="0x00200000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103VI'  ***************************** -->
+        <device Dname="GD32F103VI">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_XD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_XD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00200000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_XD.FLM" start="0x08000000" size="0x00200000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103ZI'  ***************************** -->
+        <device Dname="GD32F103ZI">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_XD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_XD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00200000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_XD.FLM" start="0x08000000" size="0x00200000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103RK'  ***************************** -->
+        <device Dname="GD32F103RK">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_XD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_XD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00300000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_XD.FLM" start="0x08000000" size="0x00300000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103VK'  ***************************** -->
+        <device Dname="GD32F103VK">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_XD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_XD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00300000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_XD.FLM" start="0x08000000" size="0x00300000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F103ZK'  ***************************** -->
+        <device Dname="GD32F103ZK">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_XD USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_XD.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00300000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_XD.FLM" start="0x08000000" size="0x00300000" default="1"/>
+        </device>
+      </subFamily>
+
+      <!-- ************************  Subfamily 'GD32F105'  **************************** -->
+      <subFamily DsubFamily="GD32F105">
+        <processor Dclock="108000000"/>
+        <description>
+GD32F105 - ARM Cortex-M3 Core
+  Frequency up to 108 MHz
+  Single-cycle multiplier and hardware divider
+  NVIC support 16 internal and 43 external interrupts, each interrupt has 16 priority levels
+
+Flash memory
+  Flash up to 1024 KB
+  SRAM up to 96 KB
+  2KB ISP loader ROM
+        </description>
+
+        <!-- *************************  Device 'GD32F105R8'  ***************************** -->
+        <device Dname="GD32F105R8">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00010000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00010000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00010000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F105V8'  ***************************** -->
+        <device Dname="GD32F105V8">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00010000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00010000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00010000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F105RB'  ***************************** -->
+        <device Dname="GD32F105RB">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00010000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00020000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00020000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F105VB'  ***************************** -->
+        <device Dname="GD32F105VB">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00010000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00020000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00020000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F105RC'  ***************************** -->
+        <device Dname="GD32F105RC">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00040000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00040000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F105VC'  ***************************** -->
+        <device Dname="GD32F105VC">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00040000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00040000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F105ZC'  ***************************** -->
+        <device Dname="GD32F105ZC">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00040000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00040000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F105RD'  ***************************** -->
+        <device Dname="GD32F105RD">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00060000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00060000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F105VD'  ***************************** -->
+        <device Dname="GD32F105VD">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00060000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00060000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F105ZD'  ***************************** -->
+        <device Dname="GD32F105ZD">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00060000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00060000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F105RE'  ***************************** -->
+        <device Dname="GD32F105RE">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00080000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00080000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F105VE'  ***************************** -->
+        <device Dname="GD32F105VE">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00080000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00080000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F105ZE'  ***************************** -->
+        <device Dname="GD32F105ZE">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00080000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00080000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F105RF'  ***************************** -->
+        <device Dname="GD32F105RF">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x000C0000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x000C0000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F105VF'  ***************************** -->
+        <device Dname="GD32F105VF">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x000C0000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x000C0000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F105ZF'  ***************************** -->
+        <device Dname="GD32F105ZF">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x000C0000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x000C0000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F105RG'  ***************************** -->
+        <device Dname="GD32F105RG">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00100000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00100000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F105VG'  ***************************** -->
+        <device Dname="GD32F105VG">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00100000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00100000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F105ZG'  ***************************** -->
+        <device Dname="GD32F105ZG">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00100000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00100000" default="1"/>
+        </device>
+      </subFamily>
+
+      <!-- ************************  Subfamily 'GD32F107'  **************************** -->
+      <subFamily DsubFamily="GD32F107">
+        <processor Dclock="108000000"/>
+        <description>
+GD32F107 - ARM Cortex-M3 Core
+  Frequency up to 108 MHz
+  Single-cycle multiplier and hardware divider
+  NVIC support 16 internal and 43 external interrupts, each interrupt has 16 priority levels
+
+Flash memory
+  Flash up to 1024 KB
+  SRAM up to 96 KB
+  2KB ISP loader ROM
+        </description>
+
+        <!-- *************************  Device 'GD32F107RB'  ***************************** -->
+        <device Dname="GD32F107RB">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00020000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00020000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F107VB'  ***************************** -->
+        <device Dname="GD32F107VB">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00020000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00020000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F107RC'  ***************************** -->
+        <device Dname="GD32F107RC">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00040000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00040000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F107VC'  ***************************** -->
+        <device Dname="GD32F107VC">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00040000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00040000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F107ZC'  ***************************** -->
+        <device Dname="GD32F107ZC">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00040000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00040000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F107RD'  ***************************** -->
+        <device Dname="GD32F107RD">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00060000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00060000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F107VD'  ***************************** -->
+        <device Dname="GD32F107VD">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00060000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00060000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F107ZD'  ***************************** -->
+        <device Dname="GD32F107ZD">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00060000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00060000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F107RE'  ***************************** -->
+        <device Dname="GD32F107RE">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00080000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00080000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F107VE'  ***************************** -->
+        <device Dname="GD32F107VE">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00080000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00080000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F107ZE'  ***************************** -->
+        <device Dname="GD32F107ZE">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00080000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00080000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F107RF'  ***************************** -->
+        <device Dname="GD32F107RF">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x000C0000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x000C0000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F107VF'  ***************************** -->
+        <device Dname="GD32F107VF">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x000C0000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x000C0000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F107ZF'  ***************************** -->
+        <device Dname="GD32F107ZF">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x000C0000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x000C0000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F107RG'  ***************************** -->
+        <device Dname="GD32F107RG">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00100000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00100000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F107VG'  ***************************** -->
+        <device Dname="GD32F107VG">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00100000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00100000" default="1"/>
+        </device>
+
+        <!-- *************************  Device 'GD32F107ZG'  ***************************** -->
+        <device Dname="GD32F107ZG">
+          <compile header="Device\Include\gd32f10x.h" define="GD32F10X_CL USE_STDPERIPH_DRIVER"/>
+          <debug svd="SVD\GD32F10x\GD32F10x_CL.svd"/>
+          <memory id="IRAM1"                      start="0x20000000" size="0x00018000" default="1" init   ="0"/>
+          <memory id="IROM1"                      start="0x08000000" size="0x00100000" default="1" startup="1"/>
+          <algorithm name="Flash\GD32F10x_CL.FLM" start="0x08000000" size="0x00100000" default="1"/>
+        </device>
+      </subFamily>
+    </family>
+  </devices>
+
+  <conditions>
+    <!-- Compiler Conditions -->
+    <condition id="Compiler ARMCC">
+      <require Tcompiler="ARMCC"/>
+    </condition>
+
+    <!-- Device Conditions -->
+    <condition id="GD32F10xMD">
+      <description>GigaDevice GD32F10x Devices</description>
+      <require Dvendor="GigaDevice:123" Dname="GD32F10[13]*[468B]*"/>
+      <require Cclass="Device" Cgroup="Startup" />
+    </condition>
+
+   <!-- Device Conditions -->
+    <condition id="GD32F10xHD">
+      <description>GigaDevice GD32F10x Devices</description>
+      <require Dvendor="GigaDevice:123" Dname="GD32F10[13]*[CDE]*"/>
+      <require Cclass="Device" Cgroup="Startup" />
+    </condition>
+
+    <!-- Device Conditions -->
+    <condition id="GD32F10xXD">
+      <description>GigaDevice GD32F10x Devices</description>
+      <require Dvendor="GigaDevice:123" Dname="GD32F10[13]*[FGIK]*"/>
+      <require Cclass="Device" Cgroup="Startup" />
+    </condition>
+
+    <!-- Device Conditions -->
+    <condition id="GD32F10xCL">
+      <description>GigaDevice GD32F10x Devices</description>
+      <require Dvendor="GigaDevice:123" Dname="GD32F10[57]*"/>
+      <require Cclass="Device" Cgroup="Startup" />
+    </condition>
+
+   <!-- Device + CMSIS Conditions -->
+    <condition id="GD32F10x CMSIS">
+      <description>GigaDevice GD32F10x Devices and CMSIS-CORE</description>
+      <accept condition="GD32F10xMD"/>
+      <accept condition="GD32F10xHD"/>
+      <accept condition="GD32F10xXD"/>
+      <accept condition="GD32F10xCL"/>
+      <require Cclass="CMSIS" Cgroup="CORE"/>
+      <require Cclass="Device" Cgroup="GD32F10x_libopt"/>    
+      <require Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="RCU"/>           
+      <require Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="PMU"/>    
+    </condition>
+    <!-- GD32F10x STDPERIPHERALS RCU Conditions -->
+    <condition id="GD32F10x STDPERIPHERALS RCU">
+      <description>GigaDevice  GD32F10x Standard Peripherals Drivers with RCU</description>
+      <require condition="GD32F10x CMSIS"/>
+      <require Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="RCU"/>
+    </condition>
+
+     <!-- GD32F10x STDPERIPHERALS MISC Conditions -->
+    <condition id="GD32F10x STDPERIPHERALS MISC">
+      <description>GigaDevice  GD32F10x Standard Peripherals Drivers with MISC</description>
+      <require condition="GD32F10x CMSIS"/>
+      <require Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="MISC"/>
+    </condition>
+
+     <!-- GD32F10x STDPERIPHERALS EVAL Conditions -->
+    <condition id="GD32F10x STDPERIPHERALS EVAL">
+      <description>GigaDevice  GD32F10x Standard Peripherals Drivers with EVAL</description>
+      <require condition="GD32F10x CMSIS"/>
+      <require Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="GPIO"/>
+      <require Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="EXTI"/>
+      <require Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="USART"/>
+    </condition>
+  </conditions>
+
+  <components>
+    <!-- GD32F10x_StdPeripherals -->
+    <component Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="ADC" Cversion="2.0.2" condition="GD32F10x STDPERIPHERALS RCU">
+      <description>Analog-to-digital converter (ADC) driver for GD32F10x Devices</description>
+        <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPHERALS_ADC
+        </RTE_Components_h>
+        <files>
+          <!-- ADC flie -->
+          <file category="header" name="Device/Firmware/Peripherals/inc/gd32f10x_adc.h"/>
+          <file category="source" name="Device/Firmware/Peripherals/src/gd32f10x_adc.c" attr="config" version="2.0.2" />
+        </files>
+    </component>
+
+   <component Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="BKP" Cversion="2.0.2" condition="GD32F10x STDPERIPHERALS RCU">
+      <description>Backup register(BKP) driver for GD32F10x Devices</description>
+        <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPHERALS_BKP
+        </RTE_Components_h>
+        <files>
+          <!-- BKP flie -->
+          <file category="header" name="Device/Firmware/Peripherals/inc/gd32f10x_bkp.h" />
+          <file category="source" name="Device/Firmware/Peripherals/src/gd32f10x_bkp.c" attr="config" version="2.0.2" />
+        </files>
+    </component>
+
+    <component Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="CAN" Cversion="2.0.2" condition="GD32F10x STDPERIPHERALS RCU">
+      <description>Controller Area Network (CAN) driver for GD32F10x Devices</description>
+        <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPHERALS_CAN
+        </RTE_Components_h>
+        <files>
+          <!-- CAN flie -->
+          <file category="header" name="Device/Firmware/Peripherals/inc/gd32f10x_can.h" />
+          <file category="source" name="Device/Firmware/Peripherals/src/gd32f10x_can.c" attr="config" version="2.0.2" />
+        </files>
+    </component>
+
+  <component Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="CRC" Cversion="2.0.2" condition="GD32F10x STDPERIPHERALS RCU">
+      <description>Cyclic Redundancy Check (CRC) driver for GD32F10x Devices</description>
+        <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPHERALS_CRC
+        </RTE_Components_h>
+        <files>
+          <!-- CRC flie -->
+          <file category="header" name="Device/Firmware/Peripherals/inc/gd32f10x_crc.h" />
+          <file category="source" name="Device/Firmware/Peripherals/src/gd32f10x_crc.c" attr="config" version="2.0.2" />
+        </files>
+    </component>
+
+  <component Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="DAC" Cversion="2.0.2" condition="GD32F10x STDPERIPHERALS RCU">
+      <description>Digital-to-analog converter (DAC) driver for GD32F10x Devices</description>
+        <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPHERALS_DAC
+        </RTE_Components_h>
+        <files>
+          <!-- DAC flie -->
+          <file category="header" name="Device/Firmware/Peripherals/inc/gd32f10x_dac.h" />
+          <file category="source" name="Device/Firmware/Peripherals/src/gd32f10x_dac.c" attr="config" version="2.0.2" />
+        </files>
+    </component>
+
+  <component Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="DBG" Cversion="2.0.2" condition="GD32F10x STDPERIPHERALS RCU">
+      <description>Debug (DBG) driver for GD32F10x Devices</description>
+        <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPHERALS_DBG
+        </RTE_Components_h>
+        <files>
+          <!-- DBG flie -->
+          <file category="header" name="Device/Firmware/Peripherals/inc/gd32f10x_dbg.h" />
+          <file category="source" name="Device/Firmware/Peripherals/src/gd32f10x_dbg.c" attr="config" version="2.0.2" />
+        </files>
+    </component>
+
+  <component Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="DMA" Cversion="2.0.2" condition="GD32F10x STDPERIPHERALS RCU">
+      <description>Direct Memory Access (DMA) driver for GD32F10x Devices</description>
+        <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPHERALS_DMA
+        </RTE_Components_h>
+        <files>
+          <!-- DMA flie -->
+          <file category="header" name="Device/Firmware/Peripherals/inc/gd32f10x_dma.h" />
+          <file category="source" name="Device/Firmware/Peripherals/src/gd32f10x_dma.c" attr="config" version="2.0.2" />
+        </files>
+    </component>
+
+  <component Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="ENET" Cversion="2.0.2"  condition="GD32F10x STDPERIPHERALS RCU">
+      <description>Ethernet(ENET) driver for GD32F10x Devices</description>
+        <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPHERALS_ENET
+        </RTE_Components_h>
+        <files>
+          <!-- ENET flie -->
+          <file category="header" name="Device/Firmware/Peripherals/inc/gd32f10x_enet.h" />
+          <file category="source" name="Device/Firmware/Peripherals/src/gd32f10x_enet.c" attr="config" version="2.0.2" />
+        </files>
+    </component>
+
+  <component Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="EXMC" Cversion="2.0.2"  condition="GD32F10x STDPERIPHERALS RCU">
+      <description>External memory controller(EXMC) driver for GD32F10x Devices</description>
+        <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPHERALS_EXMC
+        </RTE_Components_h>
+        <files>
+          <!-- EXMC flie -->
+          <file category="header" name="Device/Firmware/Peripherals/inc/gd32f10x_exmc.h" />
+          <file category="source" name="Device/Firmware/Peripherals/src/gd32f10x_exmc.c" attr="config" version="2.0.2" />
+        </files>
+    </component>
+
+  <component Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="EXTI" Cversion="2.0.2"  condition="GD32F10x STDPERIPHERALS RCU">
+      <description>External Interrupt/Event (EXTI) driver for GD32F10x Devices</description>
+        <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPHERALS_EXTI
+        </RTE_Components_h>
+        <files>
+          <!-- EXTI flie -->
+          <file category="header" name="Device/Firmware/Peripherals/inc/gd32f10x_exti.h" />
+          <file category="source" name="Device/Firmware/Peripherals/src/gd32f10x_exti.c" attr="config" version="2.0.2" />
+        </files>
+    </component>
+
+  <component Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="FMC" Cversion="2.0.2"  condition="GD32F10x STDPERIPHERALS RCU">
+      <description>Flash Memory Controller (FMC) driver for GD32F10x Devices</description>
+        <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPHERALS_FMC
+        </RTE_Components_h>
+        <files>
+          <!-- FMC flie -->
+          <file category="header" name="Device/Firmware/Peripherals/inc/gd32f10x_fmc.h" />
+          <file category="source" name="Device/Firmware/Peripherals/src/gd32f10x_fmc.c" attr="config" version="2.0.2" />
+        </files>
+    </component>
+
+  <component Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="FWDGT" Cversion="2.0.2"  condition="GD32F10x STDPERIPHERALS RCU">
+      <description>Free watchdog timer(FWDGT) driver for GD32F10x Devices</description>
+        <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPHERALS_FWDGT
+        </RTE_Components_h>
+        <files>
+          <!-- FWDGT flie -->
+          <file category="header" name="Device/Firmware/Peripherals/inc/gd32f10x_fwdgt.h" />
+          <file category="source" name="Device/Firmware/Peripherals/src/gd32f10x_fwdgt.c" attr="config" version="2.0.2" />
+        </files>
+    </component>
+
+  <component Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="GPIO" Cversion="2.0.2"  condition="GD32F10x STDPERIPHERALS RCU">
+      <description>General-purpose and Alternate-function I/Os (GPIO) driver for GD32F10x Devices</description>
+        <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPHERALS_GPIO
+        </RTE_Components_h>
+        <files>
+          <!-- GPIO flie -->
+          <file category="header" name="Device/Firmware/Peripherals/inc/gd32f10x_gpio.h" />
+          <file category="source" name="Device/Firmware/Peripherals/src/gd32f10x_gpio.c" attr="config" version="2.0.2" />
+        </files>
+    </component>
+
+  <component Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="I2C" Cversion="2.0.2" condition="GD32F10x STDPERIPHERALS RCU">
+      <description>Inter-integrated Circuit (I2C) driver for GD32F10x Devices</description>
+        <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPHERALS_I2C
+        </RTE_Components_h>
+        <files>
+          <!-- I2C flie -->
+          <file category="header" name="Device/Firmware/Peripherals/inc/gd32f10x_i2c.h" />
+          <file category="source" name="Device/Firmware/Peripherals/src/gd32f10x_i2c.c" attr="config" version="2.0.2" />
+        </files>
+    </component>
+
+  <component Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="MISC" Cversion="2.0.2"  condition="GD32F10x CMSIS">
+      <description>MISC driver for GD32F10x Devices</description>
+        <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPHERALS_MISC
+        </RTE_Components_h>
+        <files>
+          <!-- MISC flie -->
+          <file category="header" name="Device/Firmware/Peripherals/inc/gd32f10x_misc.h" />
+          <file category="source" name="Device/Firmware/Peripherals/src/gd32f10x_misc.c" attr="config" version="2.0.2" />
+        </files>
+    </component>
+
+  <component Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="PMU" Cversion="2.0.2"  condition="GD32F10x STDPERIPHERALS RCU">
+      <description>Power Managment Unit(PMU) driver for GD32F10x Devices</description>
+        <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPHERALS_PMU
+        </RTE_Components_h>
+        <files>
+          <!-- PMU flie -->
+          <file category="header" name="Device/Firmware/Peripherals/inc/gd32f10x_pmu.h" />
+          <file category="source" name="Device/Firmware/Peripherals/src/gd32f10x_pmu.c" attr="config" version="2.0.2" />
+        </files>
+    </component>
+
+  <component Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="RCU" Cversion="2.0.2"  condition="GD32F10x STDPERIPHERALS MISC">
+      <description>Reset and Clock Control (RCU) driver for GD32F10x Devices</description>
+        <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPHERALS_RCU
+        </RTE_Components_h>
+        <files>
+          <!-- RCU flie -->
+          <file category="header" name="Device/Firmware/Peripherals/inc/gd32f10x_rcu.h" />
+          <file category="source" name="Device/Firmware/Peripherals/src/gd32f10x_rcu.c" attr="config" version="2.0.2" />
+        </files>
+    </component>
+
+  <component Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="RTC" Cversion="2.0.2"  condition="GD32F10x STDPERIPHERALS RCU">
+      <description>Real-time Clock (RTC) driver for GD32F10x Devices</description>
+        <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPHERALS_RTC
+        </RTE_Components_h>
+        <files>
+          <!-- RTC flie -->
+          <file category="header" name="Device/Firmware/Peripherals/inc/gd32f10x_rtc.h" />
+          <file category="source" name="Device/Firmware/Peripherals/src/gd32f10x_rtc.c" attr="config" version="2.0.2" />
+        </files>
+    </component>
+
+  <component Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="SDIO" Cversion="2.0.2"  condition="GD32F10x STDPERIPHERALS RCU">
+      <description>Secure digital input/output interface(SDIO) driver for GD32F10x Devices</description>
+        <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPHERALS_SDIO
+        </RTE_Components_h>
+        <files>
+          <!-- SDIO flie -->
+          <file category="header" name="Device/Firmware/Peripherals/inc/gd32f10x_sdio.h" />
+          <file category="source" name="Device/Firmware/Peripherals/src/gd32f10x_sdio.c" attr="config" version="2.0.2" />
+        </files>
+    </component>
+
+  <component Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="SPI_I2S" Cversion="2.0.2"  condition="GD32F10x STDPERIPHERALS RCU">
+      <description>Serial Peripheral Interface / Inter-IC Sound (SPI_I2S) driver for GD32F10x Devices</description>
+        <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPHERALS_SPI
+        </RTE_Components_h>
+        <files>
+          <!-- SPI flie -->
+          <file category="header" name="Device/Firmware/Peripherals/inc/gd32f10x_spi.h" />
+          <file category="source" name="Device/Firmware/Peripherals/src/gd32f10x_spi.c" attr="config" version="2.0.2" />
+        </files>
+    </component>
+
+  <component Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="TIMER" Cversion="2.0.2"  condition="GD32F10x STDPERIPHERALS RCU">
+      <description>TIMER driver for GD32F10x Devices</description>
+        <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPHERALS_TIMER
+        </RTE_Components_h>
+        <files>
+          <!-- TIMER flie -->
+          <file category="header" name="Device/Firmware/Peripherals/inc/gd32f10x_timer.h" />
+          <file category="source" name="Device/Firmware/Peripherals/src/gd32f10x_timer.c" attr="config" version="2.0.2" />
+        </files>
+    </component>
+
+  <component Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="USART" Cversion="2.0.2"  condition="GD32F10x STDPERIPHERALS RCU">
+      <description>Universal Synchronous Asynchronous Receiver Transmitter (USART) driver for GD32F10x Devices</description>
+        <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPHERALS_USART
+        </RTE_Components_h>
+        <files>
+          <!-- USART flie -->
+          <file category="header" name="Device/Firmware/Peripherals/inc/gd32f10x_usart.h" />
+          <file category="source" name="Device/Firmware/Peripherals/src/gd32f10x_usart.c" attr="config" version="2.0.2" />
+        </files>
+    </component>
+
+  <component Cclass="Device" Cgroup="GD32F10x_StdPeripherals" Csub="WWDGT" Cversion="2.0.2"  condition="GD32F10x STDPERIPHERALS RCU">
+      <description>Window Watchdog Timer (WWDGT) driver for GD32F10x Devices</description>
+        <RTE_Components_h>
+        #define RTE_DEVICE_STDPERIPHERALS_WWDGT
+        </RTE_Components_h>
+        <files>
+          <!-- WWDGT flie -->
+          <file category="header" name="Device/Firmware/Peripherals/inc/gd32f10x_wwdgt.h" />
+          <file category="source" name="Device/Firmware/Peripherals/src/gd32f10x_wwdgt.c" attr="config" version="2.0.2" />
+        </files>
+    </component>
+
+    <!-- Utilities GD32F103B -->
+    <component Cclass="Device" Cgroup="EVAL" Csub="GD32F103B" Cversion="2.0.2"  condition="GD32F10x STDPERIPHERALS EVAL">
+      <description>Firmware functions to manage Leds, Keys, COM ports for GD32F103B board</description>
+      <files>
+        <!-- include folder -->
+        <file category="header" name="Device/Utilities/gd32f103b_eval.h" />
+        <!-- eval file -->
+        <file category="source" name="Device/Utilities/gd32f103b_eval.c" attr="config" version="2.0.2"/>
+      </files>
+    </component>
+
+    <!-- Utilities GD32F103C -->
+    <component Cclass="Device" Cgroup="EVAL" Csub="GD32F103C" Cversion="2.0.2"  condition="GD32F10x STDPERIPHERALS EVAL">
+      <description>Firmware functions to manage Leds, Keys, COM ports for GD32F103C board</description>
+      <files>
+        <!-- include folder -->
+        <file category="header" name="Device/Utilities/gd32f103c_eval.h" />
+        <!-- eval file -->
+        <file category="source" name="Device/Utilities/gd32f103c_eval.c" attr="config" version="2.0.2"/>
+      </files>
+    </component>
+
+    <!-- Utilities GD32F103E -->
+    <component Cclass="Device" Cgroup="EVAL" Csub="GD32F103E" Cversion="2.0.2"  condition="GD32F10x STDPERIPHERALS EVAL">
+      <description>Firmware functions to manage Leds, Keys, COM ports for GD32F103E board</description>
+      <files>
+        <!-- include folder -->
+        <file category="header" name="Device/Utilities/gd32f103e_eval.h" />
+        <!-- eval file -->
+        <file category="source" name="Device/Utilities/gd32f103e_eval.c" attr="config" version="2.0.2"/>
+      </files>
+    </component>
+
+    <!-- Utilities GD32F105C -->
+    <component Cclass="Device" Cgroup="EVAL" Csub="GD32F105C" Cversion="2.0.2" condition="GD32F10x STDPERIPHERALS EVAL">
+      <description>Firmware functions to manage Leds, Keys, COM ports for GD32F105C board</description>
+      <files>
+        <!-- include folder -->
+        <file category="header" name="Device/Utilities/gd32f105c_eval.h" />
+        <!-- eval file -->
+        <file category="source" name="Device/Utilities/gd32f105c_eval.c" attr="config" version="2.0.2"/>
+      </files>
+    </component>
+
+    <!-- Utilities GD32F107C -->
+    <component Cclass="Device" Cgroup="EVAL" Csub="GD32F107C" Cversion="2.0.2"  condition="GD32F10x STDPERIPHERALS EVAL">
+      <description>Firmware functions to manage Leds, Keys, COM ports for GD32F107C board</description>
+      <files>
+        <!-- include folder -->
+        <file category="header" name="Device/Utilities/gd32f107c_eval.h" />
+        <!-- eval file -->
+        <file category="source" name="Device/Utilities/gd32f107c_eval.c" attr="config" version="2.0.2"/>
+      </files>
+    </component>
+
+    <!-- Config GD32F10x -->
+    <component Cclass="Device" Cgroup="GD32F10x_libopt" Cversion="2.0.2"  condition="GD32F10x CMSIS">
+      <description>Configuration file</description>
+      <files>
+        <!-- include folder -->
+        <file category="header" name="Device/Include/gd32f10x_libopt.h"/>
+      </files>
+    </component>
+
+   <!-- Startup GD32F10x MD -->
+    <component Cclass="Device" Cgroup="Startup"  Cversion="2.0.2" condition="GD32F10xMD">
+      <description>System Startup for GigaDevice GD32F101 and GD32F103 Middle Density Devices</description>
+      <files>
+        <!-- include folder -->
+        <file category="include" name="Device/Include/"/>
+        <file category="header" name="Device/Include/gd32f10x.h"/>
+        <!-- startup file -->
+        <file category="source" name="Device/Source/ARM/startup_gd32f10x_md.s" attr="config" version="2.0.2" condition="Compiler ARMCC"/>
+        <!-- system file -->
+        <file category="source" name="Device/Source/system_gd32f10x.c"      attr="config" version="2.0.2"/>
+      </files>
+    </component>
+
+   <!-- Startup GD32F10x HD -->
+    <component Cclass="Device" Cgroup="Startup"  Cversion="2.0.2" condition="GD32F10xHD">
+      <description>System Startup for GigaDevice GD32F101 and GD32F103 High Density Devices</description>
+      <files>
+        <!-- include folder -->
+        <file category="include" name="Device/Include/"/>
+        <file category="header" name="Device/Include/gd32f10x.h"/>
+        <!-- startup file -->
+        <file category="source" name="Device/Source/ARM/startup_gd32f10x_hd.s" attr="config" version="2.0.2" condition="Compiler ARMCC"/>
+        <!-- system file -->
+        <file category="source" name="Device/Source/system_gd32f10x.c"      attr="config" version="2.0.2"/>
+      </files>
+    </component>
+
+   <!-- Startup GD32F10x XD -->
+    <component Cclass="Device" Cgroup="Startup"   Cversion="2.0.2"  condition="GD32F10xXD">
+      <description>System Startup for GigaDevice GD32F101 and GD32F103 Extra Density Devices</description>
+      <files>
+        <!-- include folder -->
+        <file category="include" name="Device/Include/"/>
+        <file category="header" name="Device/Include/gd32f10x.h"/>
+        <!-- startup file -->
+        <file category="source" name="Device/Source/ARM/startup_gd32f10x_xd.s" attr="config" version="2.0.2" condition="Compiler ARMCC"/>
+        <!-- system file -->
+        <file category="source" name="Device/Source/system_gd32f10x.c"      attr="config" version="2.0.2"/>
+
+      </files>
+    </component>
+
+   <!-- Startup GD32F10x CL -->
+    <component Cclass="Device" Cgroup="Startup"   Cversion="2.0.2"  condition="GD32F10xCL">
+      <description>System Startup for GigaDevice GD32F105 and GD32F107 Devices</description>
+      <files>
+        <!-- include folder -->
+        <file category="include" name="Device/Include/"/>
+        <file category="header" name="Device/Include/gd32f10x.h"/>
+        <!-- startup file -->
+        <file category="source" name="Device/Source/ARM/startup_gd32f10x_cl.s" attr="config" version="2.0.2" condition="Compiler ARMCC"/>
+        <!-- system file -->
+        <file category="source" name="Device/Source/system_gd32f10x.c"      attr="config" version="2.0.2"/>
+      </files>
+    </component>
+  </components>
+
+</package>
