@@ -57,6 +57,7 @@ export type AlgorithmJson = {
   eraseChipAddr: number | null // optional
   eraseSectorAddr: number
   programPageAddr: number
+  staticBase: number
   descAddr: number
   descSize: number
   devDesc: DeviceDescription

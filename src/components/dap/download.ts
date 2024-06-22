@@ -59,6 +59,7 @@ function typedArraysAreEqual(a: TypedArray, b: TypedArray) {
 class DownloadContext {
   public linkRegister: number
   public stackPointer: number
+  public staticBase: number
 
   public xtalClock: number
   public initAddr: number
@@ -73,6 +74,7 @@ class DownloadContext {
   constructor(algo: AlgorithmJson, offset: number) {
     this.linkRegister = 0
     this.stackPointer = 0
+    this.staticBase = algo.staticBase + offset
     this.xtalClock = 12 * 1000 * 1000 // 12MHz
     this.initAddr = algo.initAddr + offset
     this.uninitAddr = algo.unInitAddr + offset
@@ -130,7 +132,6 @@ async function resourceInit(dap: dapjs.CortexM, ctx: DownloadContext,
   // thumb for ARMv6-m, ARMv7-m, ARMv8-m
   const linkRegister = ramAddr + 1
   const stackPointer = alignDown(ramAddr + ramSize, 4)
-  const programCounter = ramAddr
 
   ctx.linkRegister = linkRegister
   ctx.stackPointer = stackPointer
@@ -140,14 +141,7 @@ async function resourceInit(dap: dapjs.CortexM, ctx: DownloadContext,
   // 1KB stack
   const endAddr = stackPointer - 1024
 
-  const sequence = [
-    dap.writeCoreRegisterCommand(dapjs.CoreRegister.PC, programCounter),
-    dap.writeCoreRegisterCommand(dapjs.CoreRegister.LR, linkRegister),
-    dap.writeCoreRegisterCommand(dapjs.CoreRegister.SP, stackPointer)
-  ]
-
   await dap.halt()
-  await dap.transferSequence(sequence)
 
   // [Start, end)
   return {
@@ -156,7 +150,7 @@ async function resourceInit(dap: dapjs.CortexM, ctx: DownloadContext,
   }
 }
 
-async function execute(dap: dapjs.CortexM,
+async function execute(dap: dapjs.CortexM, ctx: DownloadContext,
                        programCounter: number, ...registers: number[]): Promise<number> {
   const GENERAL_REGISTER_COUNT = 12
   const EXECUTE_TIMEOUT = 5000 // ms
@@ -164,7 +158,10 @@ async function execute(dap: dapjs.CortexM,
 
   // Create sequence of core register writes
   const sequence = [
-    dap.writeCoreRegisterCommand(dapjs.CoreRegister.PC, programCounter)
+    dap.writeCoreRegisterCommand(dapjs.CoreRegister.PC, programCounter),
+    dap.writeCoreRegisterCommand(dapjs.CoreRegister.LR, ctx.linkRegister),
+    dap.writeCoreRegisterCommand(dapjs.CoreRegister.SP, ctx.stackPointer),
+    dap.writeCoreRegisterCommand(dapjs.CoreRegister.R9, ctx.staticBase)
   ]
 
   // Add in register values R0, R1, R2, etc.
@@ -188,19 +185,19 @@ async function eraseFullChip(dap: dapjs.CortexM, ctx: DownloadContext): Promise<
   let ret
 
   // Init erase
-  ret = await execute(dap, ctx.initAddr, ctx.baseAddr, ctx.xtalClock, EraseFunc.ERASE)
+  ret = await execute(dap, ctx, ctx.initAddr, ctx.baseAddr, ctx.xtalClock, EraseFunc.ERASE)
   if (ret) {
     return ret
   }
 
   // Erase full chip
-  ret = await execute(dap, ctx.eraseFullAddr as number)
+  ret = await execute(dap, ctx, ctx.eraseFullAddr as number)
   if (ret) {
     return ret
   }
 
   // Uninit erase
-  ret = await execute(dap, ctx.uninitAddr, EraseFunc.ERASE)
+  ret = await execute(dap, ctx, ctx.uninitAddr, EraseFunc.ERASE)
   if (ret) {
     return ret
   }
@@ -224,7 +221,7 @@ async function eraseChip(dap: dapjs.CortexM, ctx: DownloadContext,
   }
 
   // Init erase
-  ret = await execute(dap, initAddr, baseAddr, xtalClock, EraseFunc.ERASE)
+  ret = await execute(dap, ctx, initAddr, baseAddr, xtalClock, EraseFunc.ERASE)
   if (ret) {
     return ret
   }
@@ -251,7 +248,7 @@ async function eraseChip(dap: dapjs.CortexM, ctx: DownloadContext,
 
     // Start erase for these sectors
     for (let addr = sectorStartAddr; addr < sectorEndAddr; addr += perSectorSize) {
-      ret = await execute(dap, progAddr, addr + baseAddr)
+      ret = await execute(dap, ctx, progAddr, addr + baseAddr)
       if (ret) {
         return ret
       }
@@ -270,12 +267,12 @@ async function eraseChip(dap: dapjs.CortexM, ctx: DownloadContext,
   }
 
   // Uninit erase
-  ret = await execute(dap, uninitAddr, EraseFunc.ERASE)
+  ret = await execute(dap, ctx, uninitAddr, EraseFunc.ERASE)
 
   return ret
 }
 
-export async function programSector(dap: dapjs.CortexM, progAddr: number,
+export async function programSector(dap: dapjs.CortexM, ctx: DownloadContext, progAddr: number,
                                     baseRamAddr: number, baseRomAddr: number,
                                     totalSize: number, pageSize: number,
                                     dataRom: MemorySector): Promise<number> {
@@ -285,7 +282,7 @@ export async function programSector(dap: dapjs.CortexM, progAddr: number,
 
   while (leftSize > 0) {
     programSize = leftSize < pageSize ? leftSize : pageSize
-    ret = await execute(dap, progAddr, baseRomAddr, programSize, baseRamAddr)
+    ret = await execute(dap, ctx, progAddr, baseRomAddr, programSize, baseRamAddr)
     if (ret) {
       return ret
     }
@@ -313,7 +310,7 @@ export async function programChip(dap: dapjs.CortexM, ctx: DownloadContext, data
 
   let ret
   // Init program
-  ret = await execute(dap, initAddr, baseAddr, xtalClock, EraseFunc.PROGRAM)
+  ret = await execute(dap, ctx, initAddr, baseAddr, xtalClock, EraseFunc.PROGRAM)
   if (ret) {
     return ret
   }
@@ -357,7 +354,7 @@ export async function programChip(dap: dapjs.CortexM, ctx: DownloadContext, data
 
     // Start to program this chunk in RAM
     const romAddr = baseAddr + chunkOffset
-    ret = await programSector(dap, progAddr, ramAddr, romAddr, alignChunkSize, pageSize,
+    ret = await programSector(dap, ctx, progAddr, ramAddr, romAddr, alignChunkSize, pageSize,
                               dataRom)
     if (ret) {
       return ret
@@ -368,7 +365,7 @@ export async function programChip(dap: dapjs.CortexM, ctx: DownloadContext, data
   }
 
   // Uninit program
-  ret = await execute(dap, uninitAddr, EraseFunc.PROGRAM)
+  ret = await execute(dap, ctx, uninitAddr, EraseFunc.PROGRAM)
 
   return ret
 }
@@ -401,7 +398,8 @@ export async function verifyMemory(dap: dapjs.CortexM, romAddr: number,
   return 0
 }
 
-export async function verifyFastCrc(dap: dapjs.CortexM, romAddr: number, dataRam: MemorySector,
+export async function verifyFastCrc(dap: dapjs.CortexM, ctx: DownloadContext,
+                                    romAddr: number, dataRam: MemorySector,
                                     firmware: Uint8Array): Promise<number> {
   const length = firmware.length
   const addr = dataRam.addr
@@ -415,7 +413,7 @@ export async function verifyFastCrc(dap: dapjs.CortexM, romAddr: number, dataRam
   await dap.writeBlock(addr, alignAlgoU32)
   updateProgress(50)
 
-  res = await execute(dap, addr, romAddr, length, 0)
+  res = await execute(dap, ctx, addr, romAddr, length, 0)
   res = res >>> 0
   expect = crc32.buf(firmware)
   expect = expect >>> 0
@@ -440,10 +438,12 @@ export async function verifyChip(dap: dapjs.CortexM, offset: number, dataRam: Me
   if (firmware.length < 512) {
     ret = verifyMemory(dap, romAddr, firmware)
   } else {
-    ret = verifyFastCrc(dap, romAddr, dataRam, firmware)
+    ret = verifyFastCrc(dap, ctx, romAddr, dataRam, firmware)
   }
 
-  updateProgress(100)
+  if (ret == 0) {
+    updateProgress(100)
+  }
 
   return ret
 }
@@ -491,7 +491,7 @@ export async function flash(algo: AlgorithmJson, algoBin: Uint8Array,
 
   if (option.verify) {
     dapLog.startVerify()
-    ret = await verifyChip(dap, dataRam, algo, firmware)
+    ret = await verifyChip(dap, ctx, dataRam, algo, firmware)
     if (ret) {
       dapLog.failVerify()
       return ret
