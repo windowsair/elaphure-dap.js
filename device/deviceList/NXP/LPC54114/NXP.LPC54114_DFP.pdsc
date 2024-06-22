@@ -1,0 +1,1457 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<package xmlns:xs="http://www.w3.org/2001/XMLSchema-instance" xs:noNamespaceSchemaLocation="PACK.xsd" schemaVersion="1.4">
+  <name>LPC54114_DFP</name>
+  <vendor>NXP</vendor>
+  <description>Device Family Pack for LPC54114</description>
+  <url>https://mcuxpresso.nxp.com/cmsis_pack/repo/</url>
+  <license>Licenses.txt</license>
+  <releases>
+    <release version="13.0.0" date="2021-02-05">NXP CMSIS Packs based on MCUXpresso SDK 2.9.0 with restructured startup component files</release>
+    <release version="12.3.0" date="2021-01-14">NXP CMSIS Packs based on MCUXpresso SDK 2.9.0</release>
+    <release version="12.2.0" date="2020-07-20">NXP CMSIS Packs based on MCUXpresso SDK 2.8.0</release>
+    <release version="12.1.0" date="2019-12-19">NXP CMSIS Packs based on MCUXpresso SDK 2.7.0</release>
+    <release version="12.0.0" date="2019-06-10">NXP CMSIS packs based on MCUXpresso SDK 2.6.0</release>
+    <release version="11.0.1" date="2019-04-26">Removed invalid entries from Software Content Register</release>
+    <release version="11.0.0" date="2018-12-19">NXP CMSIS packs based on MCUXpresso SDK 2.5.0</release>
+    <release version="10.0.3" date="2018-07-16">A problem with missing components from some example the projects were dependent on was fixed (KEX-4241); Incorrect path to linked libraries were fixed: a pack version was a static part of the path and hadn’t worked for pack versions other than v10.0.0 (KEX-4373); A problem with incorrectly defined XIP_BOOT_HEADER_ENABLE, XIP_BOOT_HEADER_DCD_ENABLE and XIP_EXTERNAL_FLASH preprocessor symbols was fixed (KEX-4553); Missing flash algorithms for MK27, MK28, LPC802 and LPC804 device family packs were added (KEX-4659).</release>
+    <release version="10.0.2" date="2018-05-25">NXP CMSIS packs based on MCUXpresso SDK 2.4.0</release>
+    <release version="10.0.1" date="2018-04-04">NXP CMSIS packs based on MCUXpresso SDK 2.3.1</release>
+    <release version="10.0.0" date="2018-01-19">NXP CMSIS packs with updated Clear BSD license, based on MCUXpresso SDK 2.3.0. NXP CMSIS pack will maintain independent versioning starting with 10.0.0</release>
+    <release version="2.3.0" date="2017-11-17">NXP MCUXpresso SDK 2.3.0 CMSIS packs with updated Clear BSD license</release>
+  </releases>
+  <keywords>
+    <keyword>Device Family Pack</keyword>
+  </keywords>
+  <taxonomy>
+    <description Cclass="Board Support" Cgroup="SDK Project Template">NXP MCUXpresso SDK Project Template</description>
+    <description Cclass="Device" Cgroup="SDK Project Template">NXP MCUXpresso SDK RTE Device Project Template</description>
+    <description Cclass="Device" Cgroup="SDK Drivers">NXP MCUXpresso SDK Peripheral Drivers</description>
+    <description Cclass="Device" Cgroup="SDK Utilities">NXP MCUXpresso SDK Utilities</description>
+    <description Cclass="Device" Cgroup="Startup">NXP MCUXpresso SDK Start up</description>
+    <description Cclass="CMSIS Driver">NXP MCUXpresso SDK Peripheral CMSIS Drivers</description>
+  </taxonomy>
+  <requirements>
+    <packages>
+      <package name="CMSIS" vendor="ARM" version="5.6.0"/>
+    </packages>
+    <languages>
+      <language name="C" version="99"/>
+    </languages>
+  </requirements>
+  <devices>
+    <family Dfamily="LPC54114" Dvendor="NXP:11">
+      <debugconfig default="swd" clock="5000000" swj="true"/>
+      <sequences>
+        <sequence name="ResetCatchClear">
+          <block>
+      // System Control Space (SCS) offset as defined
+      // in ARMv6-M/ARMv7-M. Reimplement this sequence
+      // if the SCS is located at a different offset.
+      __var SCS_Addr   = 0xE000E000;
+      __var DEMCR_Addr = SCS_Addr + 0xDFC;
+      __var value      = 0;
+
+      // Disable Reset Vector Catch in DEMCR
+      value = Read32(DEMCR_Addr);
+      Write32(DEMCR_Addr, (value &amp; (~0x00000001)));
+
+      //Clear BP0 and FPB
+      Write32(0xE0002008, 0);                         // Clear BP0
+      Write32(0xE0002000, 0x00000002);                // Disable FPB
+    </block>
+        </sequence>
+        <sequence name="DebugCodeMemRemap">
+          <block>
+      Write32 (0x40000000, 2);                        // Setup remap: Interrupt vectors reside in flash
+    </block>
+        </sequence>
+        <sequence name="TraceStart_CM4">
+          <block>
+      __var traceSWO = (__traceout &amp; 0x1) != 0;   // SWO Trace Selected?
+    </block>
+          <control if="traceSWO">
+            <block>
+        Sequence("EnableTraceSWO_CM4");               // Call SWO Trace Setup
+      </block>
+          </control>
+        </sequence>
+        <sequence name="EnableTraceSWO_CM4">
+          <block>
+      Write32 (0x40000220, 0x00002000);               // Enable IOCON peripheral clock
+      Write32 (0x40000304, 0x00000000);               // Enable Trace clock divider
+    </block>
+          <control if="LPC541xx_SWO_Pin == 0">
+            <block>
+        Write32 (0x4000103C, 2);                      // Configure PIO0_15 IOCON for function 2
+      </block>
+          </control>
+          <control if="LPC541xx_SWO_Pin == 1">
+            <block>
+        Write32 (0x40001084, 2);                      // Configure PIO1_1 IOCON for function 2
+      </block>
+          </control>
+          <control if="LPC541xx_SWO_Pin == 2">
+            <block>
+        Write32 (0x40001028, 6);                      // Configure PIO0_10 IOCON for function 6
+      </block>
+          </control>
+          <control if="LPC541xx_SWO_Pin == 3">
+            <block>
+        Write32 (0x40001020, 4);                      // Configure PIO0_8 IOCON for function 4
+      </block>
+          </control>
+        </sequence>
+        <sequence name="ResetCatchSet_LPC5411x_M4">
+          <block>
+      __var SCS_Addr   = 0xE000E000;
+      __var DHCSR_Addr = SCS_Addr + 0xDF0;
+      __var DEMCR_Addr = SCS_Addr + 0xDFC;
+      __var value      = 0;
+      __var FPB_BKPT_H = 0x80000000;
+      __var FPB_BKPT_L = 0x40000000;
+      __var FPB_COMP_M = 0x1FFFFFFC;
+      __var FPB_KEY    = 0x00000002;
+      __var FPB_ENABLE = 0x00000001;
+      __var masterCPU  = 0x00000000;
+      __var CPUCTRL    = 0x40000800;
+
+      // Get MasterCPU
+      value = Read32( CPUCTRL);                           //  CPU Control register: CPUCTRL (0x40000800)
+      value = 0xC0C40000 | (value &amp; 0x0000FFFF);      //  Bit31:16 must be written as 0xC0C4 for the write to have an effect
+      value = value &amp; 0xFFFF807D;                     //  Bit1, Bit7:14 should be 0
+      masterCPU = value &amp; 0x00000001;
+    </block>
+          <control if="Dbg_CR == 0x00000000" info="Stop after bootloader disabled">
+            <block>
+        // Enable Reset Vector Catch in DEMCR
+        value = Read32(DEMCR_Addr);
+        Write32(DEMCR_Addr, (value | 0x00000001));
+      </block>
+          </control>
+          <control if="Dbg_CR == 0x00000001" info="Stop after bootloader enabled">
+            <block>
+        // Run over Bootloader
+        Write32(DEMCR_Addr, 0x00000000);                // Disable Reset Vector Catch
+        Write32(0x40000000, 0x00000002);                // Map Flash to Vectors
+      </block>
+            <control if="masterCPU == 1" info="Cortex-M4 is the master CPU">
+              <block>
+          value = Read32 (0x00000004);                 // Read Reset Vector
+        </block>
+            </control>
+            <control if="masterCPU == 0" info="Cortex-M4 is the slave CPU">
+              <block>
+          value = Read32 (sCPU_ImageEntry + 4);        // Read Reset Vector
+        </block>
+            </control>
+            <control if="value &lt; 0x20000000" info="Set and enable breakpoint">
+              <block>
+          value = ((value &amp; 0x02) ? FPB_BKPT_H : FPB_BKPT_L) | (value &amp; FPB_COMP_M) | FPB_ENABLE ;
+          Write32(0xE0002008, value);                    // Set BP0 to Reset Vector
+          value = FPB_KEY | FPB_ENABLE;
+          Write32(0xe0002000, value);                    // Enable FPB
+        </block>
+            </control>
+            <control if="value &gt;= 0x20000000" info="Enable reset vector catch">
+              <block>
+        // Enable Reset Vector Catch in DEMCR
+        value = Read32(DEMCR_Addr);
+        Write32(DEMCR_Addr, (value | 0x00000001));
+        </block>
+            </control>
+          </control>
+          <block>
+      Read32(DHCSR_Addr);                               // Read DHCSR to clear potentially set DHCSR.S_RESET_ST bit
+    </block>
+        </sequence>
+        <sequence name="ResetCatchSet_LPC5411x_M0">
+          <block>
+      __var SCS_Addr   = 0xE000E000;
+      __var DHCSR_Addr = SCS_Addr + 0xDF0;
+      __var DEMCR_Addr = SCS_Addr + 0xDFC;
+      __var value      = 0;
+      __var FPB_BKPT_H = 0x80000000;
+      __var FPB_BKPT_L = 0x40000000;
+      __var FPB_COMP_M = 0x1FFFFFFC;
+      __var FPB_KEY    = 0x00000002;
+      __var FPB_ENABLE = 0x00000001;
+      __var masterCPU  = 0x00000000;
+      __var CPUCTRL    = 0x40000800;
+
+      // Get MasterCPU
+      value = Read32( CPUCTRL);                           //  CPU Control register: CPUCTRL (0x40000800)
+      value = 0xC0C40000 | (value &amp; 0x0000FFFF);      //  Bit31:16 must be written as 0xC0C4 for the write to have an effect
+      value = value &amp; 0xFFFF807D;                     //  Bit1, Bit7:14 should be 0
+      masterCPU = value &amp; 0x00000001;
+    </block>
+          <control if="Dbg_CR == 0x00000000" info="Stop after bootloader disabled">
+            <block>
+        // Enable Reset Vector Catch in DEMCR
+        value = Read32(DEMCR_Addr);
+        Write32(DEMCR_Addr, (value | 0x00000001));
+      </block>
+          </control>
+          <control if="Dbg_CR == 0x00000001" info="Stop after bootloader enabled">
+            <block>
+        // Run over Bootloader
+        Write32(DEMCR_Addr, 0x00000000);                // Disable Reset Vector Catch
+        Write32(0x40000000, 0x00000002);                // Map Flash to Vectors
+      </block>
+            <control if="masterCPU == 1" info="Cortex-M0 is the slave CPU">
+              <block>
+          value = Read32 (sCPU_ImageEntry + 4);         // Read Reset Vector
+        </block>
+            </control>
+            <control if="masterCPU == 0" info="Cortex-M0 is the master CPU">
+              <block>
+          value = Read32 (0x00000004);                  // Read Reset Vector
+        </block>
+            </control>
+            <control if="value &lt; 0x20000000" info="Set and enable breakpoint">
+              <block>
+          value = ((value &amp; 0x02) ? FPB_BKPT_H : FPB_BKPT_L) | (value &amp; FPB_COMP_M) | FPB_ENABLE ;
+          Write32(0xE0002008, value);                   // Set BP0
+          value = FPB_KEY | FPB_ENABLE;                 // Set BP0 to Reset Vector
+          Write32(0xe0002000, value);                   // Enable FPB
+        </block>
+            </control>
+            <control if="value &gt;= 0x20000000" info="Enable reset vector catch">
+              <block>
+        // Enable Reset Vector Catch in DEMCR
+        value = Read32(DEMCR_Addr);
+        Write32(DEMCR_Addr, (value | 0x00000001));
+        </block>
+            </control>
+          </control>
+          <block>
+      Read32(DHCSR_Addr);                               // Read DHCSR to clear potentially set DHCSR.S_RESET_ST bit
+    </block>
+        </sequence>
+        <sequence name="ResetProcessor_LPC5411x_M4">
+          <block>
+      __var value      = 0;
+      __var masterCPU  = 0;
+      __var resetCPU   = 0;
+      __var CPUCTRL    = 0x40000800;
+      __var CPBOOT     = 0x40000804;
+      __var CPSTACK    = 0x40000808;
+      __var slaveBOOT  = 0;
+      __var slaveSTACK = 0;
+
+      // Get MasterCPU
+      value = Read32( CPUCTRL);                           //  CPU Control register: CPUCTRL (0x40000800)
+      value = 0xC0C40000 | (value &amp; 0x0000FFFF);      //  Bit31:16 must be written as 0xC0C4 for the write to have an effect
+      value = value &amp; 0xFFFF807D;                     //  Bit1, Bit7:14 should be 0
+      masterCPU = value &amp; 0x00000001;
+    </block>
+          <control if="masterCPU == 1" info="Cortex-M4 is the master CPU">
+            <block>
+        Write32(0xE000ED0C, 0x05FA0001);                // Reset Cortex-M4, execute VECTRESET via AIRCR
+      </block>
+          </control>
+          <control if="masterCPU == 0" info="Cortex-M4 is the slave CPU">
+            <block>
+        slaveBOOT = Read32( sCPU_ImageEntry + 4);
+        slaveSTACK = Read32( sCPU_ImageEntry);
+
+        __ap = 1;                                       // Access via masterCPU access port
+        Write32( CPBOOT, slaveBOOT);                    // Set slave boot address
+        Write32( CPSTACK, slaveSTACK);                  // Set slave stack address
+
+        resetCPU = value | 0x00000010;
+        Write32( CPUCTRL, resetCPU);                    // Reset Cortex-M0 via CPUCTRL, CM0RSTEN(Bit5)
+        Write32( CPUCTRL, value);                       // Release Cortex-M0 from reset
+        __ap = 0;
+      </block>
+          </control>
+        </sequence>
+        <sequence name="ResetProcessor_LPC5411x_M0">
+          <block>
+      __var value      = 0;
+      __var masterCPU  = 0;
+      __var resetCPU   = 0;
+      __var CPUCTRL    = 0x40000800;
+      __var CPBOOT     = 0x40000804;
+      __var CPSTACK    = 0x40000808;
+      __var slaveBOOT  = 0;
+      __var slaveSTACK = 0;
+
+      // Get MasterCPU
+      value = Read32( CPUCTRL);                         //  CPU Control register: CPUCTRL (0x40000800)
+      value = 0xC0C40000 | (value &amp; 0x0000FFFF);    //  Bit31:16 must be written as 0xC0C4 for the write to have an effect
+      value = value &amp; 0xFFFF807D;                   //  Bit1, Bit7:14 should be 0
+      masterCPU = value &amp; 0x00000001;
+    </block>
+          <control if="masterCPU == 1" info="Cortex-M0 is the slave CPU">
+            <block>
+        slaveBOOT = Read32( sCPU_ImageEntry + 4);
+        slaveSTACK = Read32( sCPU_ImageEntry);
+
+        __ap = 0;                                       // Access via masterCPU access port
+        Write32( CPBOOT, slaveBOOT);                    // Set slave boot address
+        Write32( CPSTACK, slaveSTACK);                  // Set slave stack address
+
+        resetCPU = value | 0x00000020;
+        Write32( CPUCTRL, resetCPU);                    // Reset Cortex-M0 via CPUCTRL, CM0RSTEN(Bit5)
+        Write32( CPUCTRL, value);                       // Release Cortex-M0 from reset
+        __ap = 1;
+      </block>
+          </control>
+          <control if="masterCPU == 0" info="Cortex-M0 is the master CPU">
+            <block>
+        //Write32(0xE000ED0C, 0x05FA0001);              // Reset Cortex-M0, execute VECTRESET via AIRCR, !!! THERE IS NO VECTRESET IN AIRCR
+                                                        // DOES NOT SUPPORTED
+      </block>
+          </control>
+        </sequence>
+      </sequences>
+      <debugvars configfile="arm/LPC541xx.dbgconf">
+  // Debug Access Variables, can be modified by user via copies of DBGCONF files as created by uVision. Also see sub-family level.
+  __var LPC541xx_SWO_Pin      = 0;                    // Serial Wire Output pin: 0 = PIO0_15, 1 = PIO1_1
+  __var Dbg_CR                = 0x00000000;           // DBG_CR
+  __var sCPU_ImageEntry       = 0x00020000;           // Slave CPU Image Start Entry
+</debugvars>
+      <description>Low Power 32-bit Microcontroller based on ARM Cortex-M4</description>
+      <device Dname="LPC54114J256">
+        <processor Pname="cm0plus" Dcore="Cortex-M0+" Dfpu="NO_FPU" Dmpu="NO_MPU" Dendian="Little-endian" Dclock="150000000"/>
+        <processor Pname="cm4" Dcore="Cortex-M4" Dfpu="SP_FPU" Dmpu="MPU" Dendian="Little-endian" Dclock="150000000"/>
+        <environment Pname="cm0plus" name="iar">
+          <file category="linkerfile" name="iar/LPC54114J256_cm0plus.icf"/>
+        </environment>
+        <environment Pname="cm4" name="iar">
+          <file category="linkerfile" name="iar/LPC54114J256_cm4.icf"/>
+        </environment>
+        <sequences>
+          <sequence name="ResetProcessor" Pname="cm4">
+            <block>
+      Sequence("ResetProcessor_LPC5411x_M4");
+    </block>
+          </sequence>
+          <sequence name="ResetProcessor" Pname="cm0plus">
+            <block>
+      Sequence("ResetProcessor_LPC5411x_M0");
+    </block>
+          </sequence>
+          <sequence name="ResetCatchSet" Pname="cm4">
+            <block>
+      Sequence("ResetCatchSet_LPC5411x_M4");
+    </block>
+          </sequence>
+          <sequence name="ResetCatchSet" Pname="cm0plus">
+            <block>
+      Sequence("ResetCatchSet_LPC5411x_M0");
+    </block>
+          </sequence>
+          <sequence name="TraceStart" Pname="cm4">
+            <block>
+      Sequence("TraceStart_CM4");
+    </block>
+          </sequence>
+          <sequence name="TraceStart" Pname="cm0plus">
+            <block>
+
+    </block>
+          </sequence>
+        </sequences>
+        <memory name="PROGRAM_FLASH" start="0x00000000" size="0x040000" access="rx" default="1" startup="1"/>
+        <memory name="SRAM0" start="0x20000000" size="0x010000" access="rw" default="1"/>
+        <memory name="SRAM1" start="0x20010000" size="0x010000" access="rw" default="1"/>
+        <memory name="SRAM2" start="0x20020000" size="0x8000" access="rw" default="1"/>
+        <memory name="SRAMX" start="0x04000000" size="0x8000" access="rw" default="1"/>
+        <algorithm name="arm/LPC5411x_256.FLM" start="0x00000000" size="0x00040000" RAMstart="0x20000000" RAMsize="0x00001000" default="1"/>
+        <debug svd="LPC54114_cm0plus.xml" Pname="cm0plus" __dp="0" __ap="1"/>
+        <debug svd="LPC54114_cm4.xml" Pname="cm4" __dp="0" __ap="0"/>
+        <variant Dvariant="LPC54114J256BD64">
+          <compile Pname="cm0plus" header="fsl_device_registers.h" define="CPU_LPC54114J256BD64_cm0plus"/>
+          <compile Pname="cm4" header="fsl_device_registers.h" define="CPU_LPC54114J256BD64_cm4"/>
+        </variant>
+        <variant Dvariant="LPC54114J256UK49">
+          <compile Pname="cm0plus" header="fsl_device_registers.h" define="CPU_LPC54114J256UK49_cm0plus"/>
+          <compile Pname="cm4" header="fsl_device_registers.h" define="CPU_LPC54114J256UK49_cm4"/>
+        </variant>
+      </device>
+    </family>
+  </devices>
+  <conditions>
+    <condition id="device.LPC54114">
+      <accept Dname="LPC54114J256" Dvariant="LPC54114J256BD64" Dvendor="NXP:11"/>
+      <accept Dname="LPC54114J256BD64" Dvendor="NXP:11"/>
+      <accept Dname="LPC54114J256" Dvariant="LPC54114J256UK49" Dvendor="NXP:11"/>
+      <accept Dname="LPC54114J256UK49" Dvendor="NXP:11"/>
+    </condition>
+    <condition id="component.serial_manager_AND_utility.debug_console">
+      <require Cclass="Device" Cgroup="SDK Utilities" Csub="debug_console"/>
+      <require Cclass="Device" Cgroup="SDK Utilities" Csub="serial_manager"/>
+    </condition>
+    <condition id="_component.serial_manager_AND_utility.debug_console__OR_utility.debug_console_lite">
+      <accept condition="component.serial_manager_AND_utility.debug_console"/>
+      <accept Cclass="Device" Cgroup="SDK Utilities" Csub="debug_console_lite"/>
+    </condition>
+    <condition id="device.LPC54114_AND___component.serial_manager_AND_utility.debug_console__OR_utility.debug_console_lite__AND_component.usart_adapter_AND_device.LPC54114_startup_AND_driver.clock_AND_driver.common_AND_driver.flexcomm_AND_driver.flexcomm_usart_AND_driver.lpc_gpio_AND_driver.lpc_iocon_AND_driver.power">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="usart"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="usart_adapter"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="flexcomm"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="iocon"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="gpio"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="power"/>
+      <require Cclass="Device" Cgroup="Startup"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="clock"/>
+      <require condition="_component.serial_manager_AND_utility.debug_console__OR_utility.debug_console_lite"/>
+    </condition>
+    <condition id="device.LPC54114_AND_driver.lpc_dma">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="dma"/>
+    </condition>
+    <condition id="device.LPC54114_AND_component.lpc_gpio_adapter_AND_component.timer_manager_AND_driver.common">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="timer_manager"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="lpc_gpio_adapter"/>
+    </condition>
+    <condition id="device.LPC54114_AND_driver.codec_AND_driver.cs42888">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="cs42888"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="codec"/>
+    </condition>
+    <condition id="device.LPC54114_AND_driver.codec_AND_driver.dialog7212">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="dialog7212"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="codec"/>
+    </condition>
+    <condition id="device.LPC54114_AND_component.flexcomm_i2c_adapter_AND_driver.common">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="flexcomm_i2c_adapter"/>
+    </condition>
+    <condition id="device.LPC54114_AND_driver.codec_AND_driver.sgtl5000">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="sgtl5000"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="codec"/>
+    </condition>
+    <condition id="device.LPC54114_AND_driver.codec_AND_driver.wm8904">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="wm8904"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="codec"/>
+    </condition>
+    <condition id="device.LPC54114_AND_driver.codec_AND_driver.wm8960">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="wm8960"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="codec"/>
+    </condition>
+    <condition id="device.LPC54114_AND_component.osa_AND_driver.common">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="osa"/>
+    </condition>
+    <condition id="device.LPC54114_AND_driver.common_AND_driver.ctimer">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="ctimer"/>
+    </condition>
+    <condition id="device.LPC54114_AND_driver.common_AND_driver.flexcomm_i2c">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="i2c"/>
+    </condition>
+    <condition id="device.LPC54114_AND_driver.gint">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="gint"/>
+    </condition>
+    <condition id="device.LPC54114_AND_driver.common">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+    </condition>
+    <condition id="device.LPC54114_AND_driver.common_AND_utility.debug_console">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Utilities" Csub="debug_console"/>
+    </condition>
+    <condition id="device.LPC54114_AND_component.log_AND_driver.common_AND_utility.debug_console">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="log"/>
+      <require Cclass="Device" Cgroup="SDK Utilities" Csub="debug_console"/>
+    </condition>
+    <condition id="device.LPC54114_AND_component.log_AND_driver.common">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="log"/>
+    </condition>
+    <condition id="device.LPC54114_AND_driver.common_AND_driver.lpc_crc">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="lpc_crc"/>
+    </condition>
+    <condition id="device.LPC54114_AND_driver.inputmux_AND_driver.lpc_gpio_AND_driver.pint">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="gpio"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="inputmux"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="pint"/>
+    </condition>
+    <condition id="device.LPC54114_AND_component.lists_AND_driver.common">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="lists"/>
+    </condition>
+    <condition id="device.LPC54114_AND_driver.common_AND_driver.mrt">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="mrt"/>
+    </condition>
+    <condition id="component.serial_manager_swo_OR_component.serial_manager_uart_OR_component.serial_manager_virtual">
+      <accept Cclass="Device" Cgroup="SDK Utilities" Csub="serial_manager_uart"/>
+      <accept Cclass="Device" Cgroup="SDK Utilities" Csub="serial_manager_swo"/>
+      <accept Cclass="Device" Cgroup="SDK Utilities" Csub="serial_manager_virtual"/>
+    </condition>
+    <condition id="device.LPC54114_AND__component.serial_manager_swo_OR_component.serial_manager_uart_OR_component.serial_manager_virtual__AND_component.lists_AND_driver.common">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="lists"/>
+      <require condition="component.serial_manager_swo_OR_component.serial_manager_uart_OR_component.serial_manager_virtual"/>
+    </condition>
+    <condition id="device.LPC54114_AND_component.serial_manager_AND_core_type.cm4f_AND_driver.common">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Utilities" Csub="serial_manager"/>
+      <require Dcore="Cortex-M4" Dfpu="SP_FPU"/>
+    </condition>
+    <condition id="device.LPC54114_AND_component.serial_manager_AND_component.usart_adapter_AND_driver.flexcomm_usart">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="usart_adapter"/>
+      <require Cclass="Device" Cgroup="SDK Utilities" Csub="serial_manager"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="usart"/>
+    </condition>
+    <condition id="device.LPC54114_AND_component.serial_manager_AND_driver.common">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Utilities" Csub="serial_manager"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+    </condition>
+    <condition id="component.ctimer_adapter_OR_component.mrt_adapter">
+      <accept Cclass="Device" Cgroup="SDK Drivers" Csub="ctimer_adapter"/>
+      <accept Cclass="Device" Cgroup="SDK Drivers" Csub="mrt_adapter"/>
+    </condition>
+    <condition id="device.LPC54114_AND__component.ctimer_adapter_OR_component.mrt_adapter__AND_component.lists_AND_driver.common">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="lists"/>
+      <require condition="component.ctimer_adapter_OR_component.mrt_adapter"/>
+    </condition>
+    <condition id="device.LPC54114_AND_driver.common_AND_driver.flexcomm_AND_driver.flexcomm_usart">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="usart"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="flexcomm"/>
+    </condition>
+    <condition id="CMSIS_Include_core_cm0plus_OR_CMSIS_Include_core_cm4">
+      <accept Cclass="CMSIS" Cgroup="CORE"/>
+      <accept Cclass="CMSIS" Cgroup="CORE"/>
+    </condition>
+    <condition id="device.LPC54114_AND_CMSIS_Include_core_cm0plus_OR_CMSIS_Include_core_cm4">
+      <require condition="device.LPC54114"/>
+      <require condition="CMSIS_Include_core_cm0plus_OR_CMSIS_Include_core_cm4"/>
+    </condition>
+    <condition id="core_type.cm0p">
+      <require Dcore="Cortex-M0+" Dfpu="NO_FPU"/>
+    </condition>
+    <condition id="core_type.cm4f">
+      <require Dcore="Cortex-M4" Dfpu="SP_FPU"/>
+    </condition>
+    <condition id="armclang_OR_iar">
+      <accept Tcompiler="ARMCC" Toptions="AC6"/>
+      <accept Tcompiler="IAR"/>
+    </condition>
+    <condition id="device.LPC54114_AND__armclang_OR_iar__AND_device.LPC54114_system">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="CMSIS" Csub="LPC54114_system"/>
+      <require condition="armclang_OR_iar"/>
+    </condition>
+    <condition id="core_type.cm0p_AND_mdk">
+      <require Tcompiler="ARMCC"/>
+      <require Dcore="Cortex-M0+" Dfpu="NO_FPU"/>
+    </condition>
+    <condition id="core_type.cm4f_AND_mdk">
+      <require Tcompiler="ARMCC"/>
+      <require Dcore="Cortex-M4" Dfpu="SP_FPU"/>
+    </condition>
+    <condition id="core_type.cm0p_AND_iar">
+      <require Tcompiler="IAR"/>
+      <require Dcore="Cortex-M0+" Dfpu="NO_FPU"/>
+    </condition>
+    <condition id="core_type.cm4f_AND_iar">
+      <require Tcompiler="IAR"/>
+      <require Dcore="Cortex-M4" Dfpu="SP_FPU"/>
+    </condition>
+    <condition id="device.LPC54114_AND_device.LPC54114_CMSIS">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="CMSIS" Csub="LPC54114_header"/>
+    </condition>
+    <condition id="device.LPC54114_AND_driver.common_AND_driver.power">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="power"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+    </condition>
+    <condition id="device.LPC54114_AND_CMSIS_Driver_Include.I2C_AND_RTE_Device_AND_driver.flexcomm_i2c_dma">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="i2c_dma"/>
+      <require Cclass="CMSIS Driver" Cgroup="I2C" Capiversion="2.3.0"/>
+      <require Cclass="Device" Cgroup="SDK Project Template" Csub="RTE_Device"/>
+    </condition>
+    <condition id="device.LPC54114_AND_CMSIS_Driver_Include.SPI_AND_RTE_Device_AND_driver.flexcomm_spi_dma">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="spi_dma"/>
+      <require Cclass="CMSIS Driver" Cgroup="SPI" Capiversion="2.2.0"/>
+      <require Cclass="Device" Cgroup="SDK Project Template" Csub="RTE_Device"/>
+    </condition>
+    <condition id="device.LPC54114_AND_CMSIS_Driver_Include.USART_AND_RTE_Device_AND_driver.flexcomm_usart_dma">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="usart_dma"/>
+      <require Cclass="CMSIS Driver" Cgroup="USART" Capiversion="2.3.0"/>
+      <require Cclass="Device" Cgroup="SDK Project Template" Csub="RTE_Device"/>
+    </condition>
+    <condition id="component.codec_cs42888_adapter_OR_component.codec_da7212_adapter_OR_component.codec_sgtl_adapter_OR_component.codec_wm8904_adapter_OR_component.codec_wm8960_adapter_OR_component.cs42888_adapter_OR_component.da7212_adapter_OR_component.sgtl_adapter_OR_component.wm8904_adapter_OR_component.wm8960_adapter">
+      <accept Cclass="Device" Cgroup="SDK Drivers" Csub="wm8904_adapter"/>
+      <accept Cclass="Device" Cgroup="SDK Drivers" Csub="codec_cs42888_adapter"/>
+      <accept Cclass="Device" Cgroup="SDK Drivers" Csub="codec_da7212_adapter"/>
+      <accept Cclass="Device" Cgroup="SDK Drivers" Csub="codec_sgtl_adapter"/>
+      <accept Cclass="Device" Cgroup="SDK Drivers" Csub="codec_wm8960_adapter"/>
+      <accept Cclass="Device" Cgroup="SDK Drivers" Csub="codec_wm8904_adapter"/>
+      <accept Cclass="Device" Cgroup="SDK Drivers" Csub="cs42888_adapter"/>
+      <accept Cclass="Device" Cgroup="SDK Drivers" Csub="da7212_adapter"/>
+      <accept Cclass="Device" Cgroup="SDK Drivers" Csub="sgtl_adapter"/>
+      <accept Cclass="Device" Cgroup="SDK Drivers" Csub="wm8960_adapter"/>
+    </condition>
+    <condition id="device.LPC54114_AND__component.codec_cs42888_adapter_OR_component.codec_da7212_adapter_OR_component.codec_sgtl_adapter_OR_component.codec_wm8904_adapter_OR_component.codec_wm8960_adapter_OR_component.cs42888_adapter_OR_component.da7212_adapter_OR_component.sgtl_adapter_OR_component.wm8904_adapter_OR_component.wm8960_adapter__AND_driver.common">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require condition="component.codec_cs42888_adapter_OR_component.codec_da7212_adapter_OR_component.codec_sgtl_adapter_OR_component.codec_wm8904_adapter_OR_component.codec_wm8960_adapter_OR_component.cs42888_adapter_OR_component.da7212_adapter_OR_component.sgtl_adapter_OR_component.wm8904_adapter_OR_component.wm8960_adapter"/>
+    </condition>
+    <condition id="device.LPC54114_AND_device.LPC54114_CMSIS_AND_driver.clock_AND_driver.reset">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="clock"/>
+      <require Cclass="Device" Cgroup="CMSIS" Csub="LPC54114_header"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="reset"/>
+    </condition>
+    <condition id="device.LPC54114_AND_component.codec_i2c_AND_driver.common">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="codec_i2c"/>
+    </condition>
+    <condition id="device.LPC54114_AND_driver.dmic_AND_driver.lpc_dma">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="dmic"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="dma"/>
+    </condition>
+    <condition id="device.LPC54114_AND_driver.common_AND_driver.dmic">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="dmic"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+    </condition>
+    <condition id="device.LPC54114_AND_driver.common_AND_driver.flexcomm">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="flexcomm"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+    </condition>
+    <condition id="device.LPC54114_AND_driver.common_AND_driver.flexcomm_AND_driver.flexcomm_i2c_AND_driver.lpc_dma">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="flexcomm"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="i2c"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="dma"/>
+    </condition>
+    <condition id="device.LPC54114_AND_driver.flexcomm_i2s_AND_driver.lpc_dma">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="flexcomm_i2s"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="dma"/>
+    </condition>
+    <condition id="device.LPC54114_AND_driver.flexcomm_AND_driver.flexcomm_spi_AND_driver.lpc_dma">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="flexcomm"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="spi"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="dma"/>
+    </condition>
+    <condition id="device.LPC54114_AND_driver.flexcomm">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="flexcomm"/>
+    </condition>
+    <condition id="device.LPC54114_AND_driver.flexcomm_AND_driver.flexcomm_usart_AND_driver.lpc_dma">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="flexcomm"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="usart"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="dma"/>
+    </condition>
+    <condition id="device.LPC54114_AND_CMSIS_Driver_Include.I2C">
+      <require condition="device.LPC54114"/>
+      <require Cclass="CMSIS Driver" Cgroup="I2C" Capiversion="2.3.0"/>
+    </condition>
+    <condition id="device.LPC54114_AND_driver.common_AND_driver.inputmux_connections">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="inputmux_connections"/>
+    </condition>
+    <condition id="device.LPC54114_AND_utility.debug_console">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Utilities" Csub="debug_console"/>
+    </condition>
+    <condition id="device.LPC54114_AND_utility.debug_console_lite">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Utilities" Csub="debug_console_lite"/>
+    </condition>
+    <condition id="device.LPC54114_AND_component.usart_adapter_AND_driver.common">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="usart_adapter"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+    </condition>
+    <condition id="mdk">
+      <require Tcompiler="ARMCC"/>
+    </condition>
+    <condition id="device.LPC54114_AND_component.lists_AND_driver.common_AND_utility.debug_console">
+      <require condition="device.LPC54114"/>
+      <require Cclass="Device" Cgroup="SDK Utilities" Csub="debug_console"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="lists"/>
+      <require Cclass="Device" Cgroup="SDK Drivers" Csub="common"/>
+    </condition>
+  </conditions>
+  <components>
+    <component Cclass="Board Support" Cgroup="SDK Project Template" Csub="project_template" Cvariant="LPC54114" Cversion="1.0.0" condition="device.LPC54114_AND___component.serial_manager_AND_utility.debug_console__OR_utility.debug_console_lite__AND_component.usart_adapter_AND_device.LPC54114_startup_AND_driver.clock_AND_driver.common_AND_driver.flexcomm_AND_driver.flexcomm_usart_AND_driver.lpc_gpio_AND_driver.lpc_iocon_AND_driver.power" isDefaultVariant="1">
+      <description>Devices_project_template LPC54114; {for-development:SDK-Manifest-ID: project_template.LPC54114.LPC54114}</description>
+      <files>
+        <file category="header" attr="config" name="project_template/board.h" version="1.0.0"/>
+        <file category="sourceC" attr="config" name="project_template/board.c" version="1.0.0"/>
+        <file category="header" attr="config" name="project_template/clock_config.h" version="1.0.0"/>
+        <file category="sourceC" attr="config" name="project_template/clock_config.c" version="1.0.0"/>
+        <file category="header" attr="config" name="project_template/pin_mux.h" version="1.0.0"/>
+        <file category="sourceC" attr="config" name="project_template/pin_mux.c" version="1.0.0"/>
+        <file category="header" attr="config" name="project_template/peripherals.h" version="1.0.0"/>
+        <file category="sourceC" attr="config" name="project_template/peripherals.c" version="1.0.0"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Project Template" Csub="RTE_Device" Cversion="1.0.0" condition="device.LPC54114_AND_driver.lpc_dma">
+      <description>Rte_device; {for-development:SDK-Manifest-ID: RTE_Device.LPC54114}</description>
+      <files>
+        <file category="header" attr="config" name="template/RTE_Device.h" version="1.0.0"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="button" Cversion="1.0.0" condition="device.LPC54114_AND_component.lpc_gpio_adapter_AND_component.timer_manager_AND_driver.common">
+      <description>Component button; {for-development:SDK-Manifest-ID: component.button.LPC54114}</description>
+      <files>
+        <file category="header" name="components/button/fsl_component_button.h"/>
+        <file category="sourceC" name="components/button/fsl_component_button.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="codec_cs42888_adapter" Cversion="2.2.1" condition="device.LPC54114_AND_driver.codec_AND_driver.cs42888">
+      <description>Component cs42888 adapter for multi codecs; {for-development:SDK-Manifest-ID: component.codec_cs42888_adapter.LPC54114}</description>
+      <files>
+        <file category="sourceC" name="components/codec/port/fsl_cs42888_adapter.c"/>
+        <file category="header" name="components/codec/port/fsl_cs42888_adapter.h"/>
+        <file category="sourceC" name="components/codec/port/fsl_codec_adapter.c"/>
+        <file category="header" name="components/codec/port/fsl_codec_adapter.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="codec_da7212_adapter" Cversion="2.2.0" condition="device.LPC54114_AND_driver.codec_AND_driver.dialog7212">
+      <description>Component da7212 adapter for multi codecs; {for-development:SDK-Manifest-ID: component.codec_da7212_adapter.LPC54114}</description>
+      <files>
+        <file category="sourceC" name="components/codec/port/fsl_da7212_adapter.c"/>
+        <file category="header" name="components/codec/port/fsl_da7212_adapter.h"/>
+        <file category="sourceC" name="components/codec/port/fsl_codec_adapter.c"/>
+        <file category="header" name="components/codec/port/fsl_codec_adapter.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="codec_i2c" Cversion="2.1.0" condition="device.LPC54114_AND_component.flexcomm_i2c_adapter_AND_driver.common">
+      <description>Component codec_i2c; {for-development:SDK-Manifest-ID: component.codec_i2c.LPC54114}</description>
+      <files>
+        <file category="header" name="components/codec/i2c/fsl_codec_i2c.h"/>
+        <file category="sourceC" name="components/codec/i2c/fsl_codec_i2c.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="codec_sgtl_adapter" Cversion="2.2.0" condition="device.LPC54114_AND_driver.codec_AND_driver.sgtl5000">
+      <description>Component sgtl5000 adapter for multi codecs; {for-development:SDK-Manifest-ID: component.codec_sgtl_adapter.LPC54114}</description>
+      <files>
+        <file category="sourceC" name="components/codec/port/fsl_sgtl_adapter.c"/>
+        <file category="header" name="components/codec/port/fsl_sgtl_adapter.h"/>
+        <file category="sourceC" name="components/codec/port/fsl_codec_adapter.c"/>
+        <file category="header" name="components/codec/port/fsl_codec_adapter.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="codec_wm8904_adapter" Cversion="2.2.0" condition="device.LPC54114_AND_driver.codec_AND_driver.wm8904">
+      <description>Component wm8904 adapter for multi codecs; {for-development:SDK-Manifest-ID: component.codec_wm8904_adapter.LPC54114}</description>
+      <files>
+        <file category="sourceC" name="components/codec/port/fsl_wm8904_adapter.c"/>
+        <file category="header" name="components/codec/port/fsl_wm8904_adapter.h"/>
+        <file category="sourceC" name="components/codec/port/fsl_codec_adapter.c"/>
+        <file category="header" name="components/codec/port/fsl_codec_adapter.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="codec_wm8960_adapter" Cversion="2.2.0" condition="device.LPC54114_AND_driver.codec_AND_driver.wm8960">
+      <description>Component wm8960 adapter for multi codecs; {for-development:SDK-Manifest-ID: component.codec_wm8960_adapter.LPC54114}</description>
+      <files>
+        <file category="sourceC" name="components/codec/port/fsl_wm8960_adapter.c"/>
+        <file category="header" name="components/codec/port/fsl_wm8960_adapter.h"/>
+        <file category="sourceC" name="components/codec/port/fsl_codec_adapter.c"/>
+        <file category="header" name="components/codec/port/fsl_codec_adapter.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="common_task" Cversion="1.0.0" condition="device.LPC54114_AND_component.osa_AND_driver.common">
+      <description>Component common_task; {for-development:SDK-Manifest-ID: component.common_task.LPC54114}</description>
+      <files>
+        <file category="header" name="components/common_task/fsl_component_common_task.h"/>
+        <file category="sourceC" name="components/common_task/fsl_component_common_task.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="cs42888_adapter" Cversion="2.2.1" condition="device.LPC54114_AND_driver.codec_AND_driver.cs42888">
+      <description>Component cs42888 adapter for single codec; {for-development:SDK-Manifest-ID: component.cs42888_adapter.LPC54114}</description>
+      <files>
+        <file category="sourceC" name="components/codec/port/cs42888/fsl_codec_adapter.c"/>
+        <file category="header" name="components/codec/port/cs42888/fsl_codec_adapter.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="ctimer_adapter" Cversion="1.0.0" condition="device.LPC54114_AND_driver.common_AND_driver.ctimer">
+      <description>Component ctimer_adapter; {for-development:SDK-Manifest-ID: component.ctimer_adapter.LPC54114}</description>
+      <files>
+        <file category="header" name="components/timer/fsl_adapter_timer.h"/>
+        <file category="sourceC" name="components/timer/fsl_adapter_ctimer.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="da7212_adapter" Cversion="2.2.0" condition="device.LPC54114_AND_driver.codec_AND_driver.dialog7212">
+      <description>Component da7212 adapter for single codec; {for-development:SDK-Manifest-ID: component.da7212_adapter.LPC54114}</description>
+      <files>
+        <file category="sourceC" name="components/codec/port/da7212/fsl_codec_adapter.c"/>
+        <file category="header" name="components/codec/port/da7212/fsl_codec_adapter.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="flexcomm_i2c_adapter" Cversion="1.0.0" condition="device.LPC54114_AND_driver.common_AND_driver.flexcomm_i2c">
+      <description>Component flexcomm_i2c_adapter; {for-development:SDK-Manifest-ID: component.flexcomm_i2c_adapter.LPC54114}</description>
+      <files>
+        <file category="header" name="components/i2c/fsl_adapter_i2c.h"/>
+        <file category="sourceC" name="components/i2c/fsl_adapter_flexcomm_i2c.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="gint_adapter" Cversion="1.0.0" condition="device.LPC54114_AND_driver.gint">
+      <description>Component gint_adapter; {for-development:SDK-Manifest-ID: component.gint_adapter.LPC54114}</description>
+      <files>
+        <file category="header" name="components/gpio/fsl_adapter_gpio.h"/>
+        <file category="sourceC" name="components/gpio/fsl_adapter_gint.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="led" Cversion="1.0.0" condition="device.LPC54114_AND_component.lpc_gpio_adapter_AND_component.timer_manager_AND_driver.common">
+      <description>Component led; {for-development:SDK-Manifest-ID: component.led.LPC54114}</description>
+      <files>
+        <file category="header" name="components/led/fsl_component_led.h"/>
+        <file category="sourceC" name="components/led/fsl_component_led.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="lists" Cversion="1.0.0" condition="device.LPC54114_AND_driver.common">
+      <description>Component lists; {for-development:SDK-Manifest-ID: component.lists.LPC54114}</description>
+      <files>
+        <file category="header" name="components/lists/fsl_component_generic_list.h"/>
+        <file category="sourceC" name="components/lists/fsl_component_generic_list.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="log" Cversion="1.0.0" condition="device.LPC54114_AND_driver.common_AND_utility.debug_console">
+      <description>Component log; {for-development:SDK-Manifest-ID: component.log.LPC54114}</description>
+      <files>
+        <file category="header" name="components/log/fsl_component_log.h"/>
+        <file category="header" name="components/log/fsl_component_log_config.h"/>
+        <file category="sourceC" name="components/log/fsl_component_log.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="debugconsole" Cversion="1.0.0" condition="device.LPC54114_AND_component.log_AND_driver.common_AND_utility.debug_console">
+      <description>Component log backend debug console; {for-development:SDK-Manifest-ID: component.log.backend.debugconsole.LPC54114}</description>
+      <files>
+        <file category="sourceC" name="components/log/fsl_component_log_backend_debugconsole.c"/>
+        <file category="header" name="components/log/fsl_component_log_backend_debugconsole.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="ringbuffer" Cversion="1.0.0" condition="device.LPC54114_AND_component.log_AND_driver.common">
+      <description>Component log backend ring buffer; {for-development:SDK-Manifest-ID: component.log.backend.ringbuffer.LPC54114}</description>
+      <files>
+        <file category="sourceC" name="components/log/fsl_component_log_backend_ringbuffer.c"/>
+        <file category="header" name="components/log/fsl_component_log_backend_ringbuffer.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="lpc_crc_adapter" Cversion="1.0.0" condition="device.LPC54114_AND_driver.common_AND_driver.lpc_crc">
+      <description>Component lpc_crc_adapter; {for-development:SDK-Manifest-ID: component.lpc_crc_adapter.LPC54114}</description>
+      <files>
+        <file category="header" name="components/crc/fsl_adapter_crc.h"/>
+        <file category="sourceC" name="components/crc/fsl_adapter_lpc_crc.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="lpc_gpio_adapter" Cversion="1.0.0" condition="device.LPC54114_AND_driver.inputmux_AND_driver.lpc_gpio_AND_driver.pint">
+      <description>Component lpc_gpio_adapter; {for-development:SDK-Manifest-ID: component.lpc_gpio_adapter.LPC54114}</description>
+      <files>
+        <file category="header" name="components/gpio/fsl_adapter_gpio.h"/>
+        <file category="sourceC" name="components/gpio/fsl_adapter_lpc_gpio.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="mem_manager" Cversion="1.0.0" condition="device.LPC54114_AND_component.lists_AND_driver.common">
+      <description>Component mem_manager; {for-development:SDK-Manifest-ID: component.mem_manager.LPC54114}</description>
+      <files>
+        <file category="header" name="components/mem_manager/fsl_component_mem_manager.h"/>
+        <file category="sourceC" name="components/mem_manager/fsl_component_mem_manager.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="mem_manager_light" Cversion="1.0.0" condition="device.LPC54114_AND_component.lists_AND_driver.common">
+      <description>Component mem_manager_light; {for-development:SDK-Manifest-ID: component.mem_manager_light.LPC54114}</description>
+      <files>
+        <file category="header" name="components/mem_manager/fsl_component_mem_manager.h"/>
+        <file category="sourceC" name="components/mem_manager/fsl_component_mem_manager_light.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="mrt_adapter" Cversion="1.0.0" condition="device.LPC54114_AND_driver.common_AND_driver.mrt">
+      <description>Component mrt_adapter; {for-development:SDK-Manifest-ID: component.mrt_adapter.LPC54114}</description>
+      <files>
+        <file category="header" name="components/timer/fsl_adapter_timer.h"/>
+        <file category="sourceC" name="components/timer/fsl_adapter_mrt.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="osa" Cversion="1.0.0" condition="device.LPC54114_AND_component.lists_AND_driver.common">
+      <description>Component osa; {for-development:SDK-Manifest-ID: component.osa.LPC54114}</description>
+      <files>
+        <file category="header" name="components/osa/fsl_os_abstraction.h"/>
+        <file category="header" name="components/osa/fsl_os_abstraction_config.h"/>
+        <file category="header" name="components/osa/fsl_os_abstraction_bm.h"/>
+        <file category="sourceC" name="components/osa/fsl_os_abstraction_bm.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="osa_bm" Cversion="1.0.0" condition="device.LPC54114_AND_component.lists_AND_driver.common">
+      <description>Component osa_bm; {for-development:SDK-Manifest-ID: component.osa_bm.LPC54114}</description>
+      <files>
+        <file category="header" name="components/osa/fsl_os_abstraction.h"/>
+        <file category="header" name="components/osa/fsl_os_abstraction_bm.h"/>
+        <file category="header" name="components/osa/fsl_os_abstraction_config.h"/>
+        <file category="sourceC" name="components/osa/fsl_os_abstraction_bm.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="panic" Cversion="1.0.0" condition="device.LPC54114_AND_driver.common_AND_utility.debug_console">
+      <description>Component panic; {for-development:SDK-Manifest-ID: component.panic.LPC54114}</description>
+      <files>
+        <file category="header" name="components/panic/fsl_component_panic.h"/>
+        <file category="sourceC" name="components/panic/fsl_component_panic.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="pwm_ctimer_adapter" Cversion="1.0.0" condition="device.LPC54114_AND_driver.common_AND_driver.ctimer">
+      <description>Component pwm_ctimer_adapter; {for-development:SDK-Manifest-ID: component.pwm_ctimer_adapter.LPC54114}</description>
+      <files>
+        <file category="header" name="components/pwm/fsl_adapter_pwm.h"/>
+        <file category="sourceC" name="components/pwm/fsl_adapter_pwm_ctimer.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Utilities" Csub="serial_manager" Cversion="1.0.0" condition="device.LPC54114_AND__component.serial_manager_swo_OR_component.serial_manager_uart_OR_component.serial_manager_virtual__AND_component.lists_AND_driver.common">
+      <description>Component serial_manager; {for-development:SDK-Manifest-ID: component.serial_manager.LPC54114}</description>
+      <files>
+        <file category="header" name="components/serial_manager/fsl_component_serial_manager.h"/>
+        <file category="header" name="components/serial_manager/fsl_component_serial_port_internal.h"/>
+        <file category="sourceC" name="components/serial_manager/fsl_component_serial_manager.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Utilities" Csub="serial_manager_swo" Cversion="1.0.0" condition="device.LPC54114_AND_component.serial_manager_AND_core_type.cm4f_AND_driver.common">
+      <description>Component serial_manager_swo; {for-development:SDK-Manifest-ID: component.serial_manager_swo.LPC54114}</description>
+      <RTE_Components_h>
+#define SERIAL_PORT_TYPE_SWO 1
+</RTE_Components_h>
+      <files>
+        <file category="header" name="components/serial_manager/fsl_component_serial_port_swo.h"/>
+        <file category="sourceC" name="components/serial_manager/fsl_component_serial_port_swo.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Utilities" Csub="serial_manager_uart" Cversion="1.0.0" condition="device.LPC54114_AND_component.serial_manager_AND_component.usart_adapter_AND_driver.flexcomm_usart">
+      <description>Component serial_manager_uart; {for-development:SDK-Manifest-ID: component.serial_manager_uart.LPC54114}</description>
+      <RTE_Components_h>
+#define SERIAL_PORT_TYPE_UART 1
+</RTE_Components_h>
+      <files>
+        <file category="header" name="components/serial_manager/fsl_component_serial_port_uart.h"/>
+        <file category="sourceC" name="components/serial_manager/fsl_component_serial_port_uart.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Utilities" Csub="serial_manager_virtual" Cversion="1.0.0" condition="device.LPC54114_AND_component.serial_manager_AND_driver.common">
+      <description>Component serial_manager_virtual; {for-development:SDK-Manifest-ID: component.serial_manager_virtual.LPC54114}</description>
+      <RTE_Components_h>
+#define SERIAL_PORT_TYPE_VIRTUAL 1
+#define DEBUG_CONSOLE_TRANSFER_NON_BLOCKING
+</RTE_Components_h>
+      <files>
+        <file category="header" name="components/serial_manager/fsl_component_serial_port_virtual.h"/>
+        <file category="sourceC" name="components/serial_manager/fsl_component_serial_port_virtual.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="sgtl_adapter" Cversion="2.2.0" condition="device.LPC54114_AND_driver.codec_AND_driver.sgtl5000">
+      <description>Component sgtl5000 adapter for single codec; {for-development:SDK-Manifest-ID: component.sgtl_adapter.LPC54114}</description>
+      <files>
+        <file category="sourceC" name="components/codec/port/sgtl5000/fsl_codec_adapter.c"/>
+        <file category="header" name="components/codec/port/sgtl5000/fsl_codec_adapter.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="software_crc_adapter" Cversion="1.0.0" condition="device.LPC54114_AND_driver.common">
+      <description>Component software_crc_adapter; {for-development:SDK-Manifest-ID: component.software_crc_adapter.LPC54114}</description>
+      <files>
+        <file category="header" name="components/crc/fsl_adapter_crc.h"/>
+        <file category="sourceC" name="components/crc/fsl_adapter_software_crc.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="software_rng_adapter" Cversion="1.0.0" condition="device.LPC54114_AND_driver.common">
+      <description>Component software_rng_adapter; {for-development:SDK-Manifest-ID: component.software_rng_adapter.LPC54114}</description>
+      <files>
+        <file category="header" name="components/rng/fsl_adapter_rng.h"/>
+        <file category="sourceC" name="components/rng/fsl_adapter_software_rng.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="timer_manager" Cversion="1.0.0" condition="device.LPC54114_AND__component.ctimer_adapter_OR_component.mrt_adapter__AND_component.lists_AND_driver.common">
+      <description>Component timer_manager; {for-development:SDK-Manifest-ID: component.timer_manager.LPC54114}</description>
+      <files>
+        <file category="header" name="components/timer_manager/fsl_component_timer_manager.h"/>
+        <file category="sourceC" name="components/timer_manager/fsl_component_timer_manager.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="usart_adapter" Cversion="1.0.0" condition="device.LPC54114_AND_driver.common_AND_driver.flexcomm_AND_driver.flexcomm_usart">
+      <description>Component usart_adapter; {for-development:SDK-Manifest-ID: component.usart_adapter.LPC54114}</description>
+      <files>
+        <file category="header" name="components/uart/fsl_adapter_uart.h"/>
+        <file category="sourceC" name="components/uart/fsl_adapter_usart.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="wm8904_adapter" Cversion="2.2.0" condition="device.LPC54114_AND_driver.codec_AND_driver.wm8904">
+      <description>Component wm8904 adapter for single codec; {for-development:SDK-Manifest-ID: component.wm8904_adapter.LPC54114}</description>
+      <files>
+        <file category="sourceC" name="components/codec/port/wm8904/fsl_codec_adapter.c"/>
+        <file category="header" name="components/codec/port/wm8904/fsl_codec_adapter.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="wm8960_adapter" Cversion="2.2.0" condition="device.LPC54114_AND_driver.codec_AND_driver.wm8960">
+      <description>Component wm8960 adapter for single codecs; {for-development:SDK-Manifest-ID: component.wm8960_adapter.LPC54114}</description>
+      <files>
+        <file category="sourceC" name="components/codec/port/wm8960/fsl_codec_adapter.c"/>
+        <file category="header" name="components/codec/port/wm8960/fsl_codec_adapter.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="CMSIS" Csub="LPC54114_header" Cversion="1.0.0" condition="device.LPC54114_AND_CMSIS_Include_core_cm0plus_OR_CMSIS_Include_core_cm4">
+      <description>Device LPC54114_cmsis; {for-development:SDK-Manifest-ID: platform.devices.LPC54114_CMSIS.LPC54114}</description>
+      <files>
+        <file category="header" name="fsl_device_registers.h"/>
+        <file condition="core_type.cm0p" category="header" name="LPC54114_cm0plus.h"/>
+        <file condition="core_type.cm0p" category="header" name="LPC54114_cm0plus_features.h"/>
+        <file condition="core_type.cm4f" category="header" name="LPC54114_cm4.h"/>
+        <file condition="core_type.cm4f" category="header" name="LPC54114_cm4_features.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="Startup" Cversion="1.1.0" condition="device.LPC54114_AND__armclang_OR_iar__AND_device.LPC54114_system">
+      <description>Device LPC54114_startup; {for-development:SDK-Manifest-ID: platform.devices.LPC54114_startup.LPC54114}</description>
+      <files>
+        <file condition="core_type.cm0p_AND_mdk" category="sourceAsm" name="arm/startup_LPC54114_cm0plus.S"/>
+        <file condition="core_type.cm4f_AND_mdk" category="sourceAsm" name="arm/startup_LPC54114_cm4.S"/>
+        <file condition="core_type.cm0p_AND_iar" category="sourceAsm" name="iar/startup_LPC54114_cm0plus.s"/>
+        <file condition="core_type.cm4f_AND_iar" category="sourceAsm" name="iar/startup_LPC54114_cm4.s"/>
+        <file condition="core_type.cm0p_AND_mdk" category="linkerScript" attr="config" name="arm/LPC54114J256_cm0plus.scf" version="1.1.0"/>
+        <file condition="core_type.cm0p_AND_mdk" category="linkerScript" attr="config" name="arm/LPC54114J256_cm0plus_ram.scf" version="1.1.0"/>
+        <file condition="core_type.cm4f_AND_mdk" category="linkerScript" attr="config" name="arm/LPC54114J256_cm4.scf" version="1.1.0"/>
+        <file condition="core_type.cm4f_AND_mdk" category="linkerScript" attr="config" name="arm/LPC54114J256_cm4_ram.scf" version="1.1.0"/>
+        <file condition="core_type.cm0p_AND_iar" category="linkerScript" attr="config" name="iar/LPC54114J256_cm0plus.icf" version="1.1.0"/>
+        <file condition="core_type.cm0p_AND_iar" category="linkerScript" attr="config" name="iar/LPC54114J256_cm0plus_ram.icf" version="1.1.0"/>
+        <file condition="core_type.cm4f_AND_iar" category="linkerScript" attr="config" name="iar/LPC54114J256_cm4.icf" version="1.1.0"/>
+        <file condition="core_type.cm4f_AND_iar" category="linkerScript" attr="config" name="iar/LPC54114J256_cm4_ram.icf" version="1.1.0"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="CMSIS" Csub="LPC54114_system" Cversion="1.0.0" condition="device.LPC54114_AND_device.LPC54114_CMSIS">
+      <description>Device LPC54114_system; {for-development:SDK-Manifest-ID: platform.devices.LPC54114_system.LPC54114}</description>
+      <files>
+        <file condition="core_type.cm0p" category="sourceC" name="system_LPC54114_cm0plus.c"/>
+        <file condition="core_type.cm0p" category="header" name="system_LPC54114_cm0plus.h"/>
+        <file condition="core_type.cm4f" category="sourceC" name="system_LPC54114_cm4.c"/>
+        <file condition="core_type.cm4f" category="header" name="system_LPC54114_cm4.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="clock" Cversion="2.2.0" condition="device.LPC54114_AND_driver.common_AND_driver.power">
+      <description>Clock Driver; {for-development:SDK-Manifest-ID: platform.drivers.clock.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_clock.h"/>
+        <file category="sourceC" name="drivers/fsl_clock.c"/>
+      </files>
+    </component>
+    <component Cclass="CMSIS Driver" Cgroup="I2C" Csub="flexcomm_i2c_cmsis" Cversion="2.2.0" condition="device.LPC54114_AND_CMSIS_Driver_Include.I2C_AND_RTE_Device_AND_driver.flexcomm_i2c_dma">
+      <description>I2C CMSIS Driver; {for-development:SDK-Manifest-ID: platform.drivers.flexcomm_i2c_cmsis.LPC54114}</description>
+      <files>
+        <file category="header" name="cmsis_drivers/fsl_i2c_cmsis.h"/>
+        <file category="sourceC" name="cmsis_drivers/fsl_i2c_cmsis.c"/>
+      </files>
+    </component>
+    <component Cclass="CMSIS Driver" Cgroup="SPI" Csub="flexcomm_spi_cmsis" Cversion="2.4.0" condition="device.LPC54114_AND_CMSIS_Driver_Include.SPI_AND_RTE_Device_AND_driver.flexcomm_spi_dma">
+      <description>SPI CMSIS Driver; {for-development:SDK-Manifest-ID: platform.drivers.flexcomm_spi_cmsis.LPC54114}</description>
+      <files>
+        <file category="header" name="cmsis_drivers/fsl_spi_cmsis.h"/>
+        <file category="sourceC" name="cmsis_drivers/fsl_spi_cmsis.c"/>
+      </files>
+    </component>
+    <component Cclass="CMSIS Driver" Cgroup="USART" Csub="flexcomm_usart_cmsis" Cversion="2.2.0" condition="device.LPC54114_AND_CMSIS_Driver_Include.USART_AND_RTE_Device_AND_driver.flexcomm_usart_dma">
+      <description>USART CMSIS Driver; {for-development:SDK-Manifest-ID: platform.drivers.flexcomm_usart_cmsis.LPC54114}</description>
+      <files>
+        <file category="header" name="cmsis_drivers/fsl_usart_cmsis.h"/>
+        <file category="sourceC" name="cmsis_drivers/fsl_usart_cmsis.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="codec" Cversion="2.2.1" condition="device.LPC54114_AND__component.codec_cs42888_adapter_OR_component.codec_da7212_adapter_OR_component.codec_sgtl_adapter_OR_component.codec_wm8904_adapter_OR_component.codec_wm8960_adapter_OR_component.cs42888_adapter_OR_component.da7212_adapter_OR_component.sgtl_adapter_OR_component.wm8904_adapter_OR_component.wm8960_adapter__AND_driver.common">
+      <description>Driver codec; {for-development:SDK-Manifest-ID: driver.codec.LPC54114}</description>
+      <files>
+        <file category="header" name="components/codec/fsl_codec_common.h"/>
+        <file category="sourceC" name="components/codec/fsl_codec_common.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="common" Cversion="2.2.9" condition="device.LPC54114_AND_device.LPC54114_CMSIS_AND_driver.clock_AND_driver.reset">
+      <description>COMMON Driver; {for-development:SDK-Manifest-ID: platform.drivers.common.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_common.h"/>
+        <file category="sourceC" name="drivers/fsl_common.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="cs42888" Cversion="2.1.2" condition="device.LPC54114_AND_component.codec_i2c_AND_driver.common">
+      <description>Driver cs42888; {for-development:SDK-Manifest-ID: driver.cs42888.LPC54114}</description>
+      <files>
+        <file category="header" name="components/codec/cs42888/fsl_cs42888.h"/>
+        <file category="sourceC" name="components/codec/cs42888/fsl_cs42888.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="ctimer" Cversion="2.2.1" condition="device.LPC54114_AND_driver.common">
+      <description>CTimer Driver; {for-development:SDK-Manifest-ID: platform.drivers.ctimer.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_ctimer.h"/>
+        <file category="sourceC" name="drivers/fsl_ctimer.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="dialog7212" Cversion="2.2.2" condition="device.LPC54114_AND_component.codec_i2c_AND_driver.common">
+      <description>Driver dialog7212; {for-development:SDK-Manifest-ID: driver.dialog7212.LPC54114}</description>
+      <files>
+        <file category="header" name="components/codec/da7212/fsl_dialog7212.h"/>
+        <file category="sourceC" name="components/codec/da7212/fsl_dialog7212.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="dmic" Cversion="2.3.0" condition="device.LPC54114_AND_driver.common">
+      <description>DMIC Driver; {for-development:SDK-Manifest-ID: platform.drivers.dmic.LPC54114}</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_dmic.c"/>
+        <file category="header" name="drivers/fsl_dmic.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="dmic_dma" Cversion="2.3.0" condition="device.LPC54114_AND_driver.dmic_AND_driver.lpc_dma">
+      <description>DMIC DMA Driver; {for-development:SDK-Manifest-ID: platform.drivers.dmic_dma.LPC54114}</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_dmic_dma.c"/>
+        <file category="header" name="drivers/fsl_dmic_dma.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="dmic_hwvad" Cversion="2.3.0" condition="device.LPC54114_AND_driver.common_AND_driver.dmic">
+      <description>DMIC HWVAD Driver; {for-development:SDK-Manifest-ID: platform.drivers.dmic_hwvad.LPC54114}</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_dmic.c"/>
+        <file category="header" name="drivers/fsl_dmic.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="flashiap" Cversion="2.0.5" condition="device.LPC54114_AND_driver.common">
+      <description>FLASHIAP Driver; {for-development:SDK-Manifest-ID: platform.drivers.flashiap.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_flashiap.h"/>
+        <file category="sourceC" name="drivers/fsl_flashiap.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="flexcomm" Cversion="2.0.2" condition="device.LPC54114_AND_driver.common">
+      <description>FLEXCOMM Driver; {for-development:SDK-Manifest-ID: platform.drivers.flexcomm.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_flexcomm.h"/>
+        <file category="sourceC" name="drivers/fsl_flexcomm.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="i2c" Cversion="2.1.0" condition="device.LPC54114_AND_driver.common_AND_driver.flexcomm">
+      <description>I2C Driver; {for-development:SDK-Manifest-ID: platform.drivers.flexcomm_i2c.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_i2c.h"/>
+        <file category="sourceC" name="drivers/fsl_i2c.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="i2c_dma" Cversion="2.1.0" condition="device.LPC54114_AND_driver.common_AND_driver.flexcomm_AND_driver.flexcomm_i2c_AND_driver.lpc_dma">
+      <description>I2C Driver; {for-development:SDK-Manifest-ID: platform.drivers.flexcomm_i2c_dma.LPC54114}</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_i2c_dma.c"/>
+        <file category="header" name="drivers/fsl_i2c_dma.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="flexcomm_i2s" Cversion="2.2.2" condition="device.LPC54114_AND_driver.common_AND_driver.flexcomm">
+      <description>I2S Driver; {for-development:SDK-Manifest-ID: platform.drivers.flexcomm_i2s.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_i2s.h"/>
+        <file category="sourceC" name="drivers/fsl_i2s.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="flexcomm_i2s_dma" Cversion="2.2.2" condition="device.LPC54114_AND_driver.flexcomm_i2s_AND_driver.lpc_dma">
+      <description>I2S Driver; {for-development:SDK-Manifest-ID: platform.drivers.flexcomm_i2s_dma.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_i2s_dma.h"/>
+        <file category="sourceC" name="drivers/fsl_i2s_dma.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="spi" Cversion="2.2.1" condition="device.LPC54114_AND_driver.common_AND_driver.flexcomm">
+      <description>SPI Driver; {for-development:SDK-Manifest-ID: platform.drivers.flexcomm_spi.LPC54114}</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_spi.c"/>
+        <file category="header" name="drivers/fsl_spi.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="spi_dma" Cversion="2.1.1" condition="device.LPC54114_AND_driver.flexcomm_AND_driver.flexcomm_spi_AND_driver.lpc_dma">
+      <description>SPI Driver; {for-development:SDK-Manifest-ID: platform.drivers.flexcomm_spi_dma.LPC54114}</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_spi_dma.c"/>
+        <file category="header" name="drivers/fsl_spi_dma.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="usart" Cversion="2.4.0" condition="device.LPC54114_AND_driver.flexcomm">
+      <description>USART Driver; {for-development:SDK-Manifest-ID: platform.drivers.flexcomm_usart.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_usart.h"/>
+        <file category="sourceC" name="drivers/fsl_usart.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="usart_dma" Cversion="2.3.1" condition="device.LPC54114_AND_driver.flexcomm_AND_driver.flexcomm_usart_AND_driver.lpc_dma">
+      <description>USART Driver; {for-development:SDK-Manifest-ID: platform.drivers.flexcomm_usart_dma.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_usart_dma.h"/>
+        <file category="sourceC" name="drivers/fsl_usart_dma.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="fmeas" Cversion="2.1.1" condition="device.LPC54114_AND_driver.common">
+      <description>FMEAS Driver; {for-development:SDK-Manifest-ID: platform.drivers.fmeas.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_fmeas.h"/>
+        <file category="sourceC" name="drivers/fsl_fmeas.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="fro_calib" Cversion="2.0.1" condition="device.LPC54114_AND_driver.common">
+      <description>FRO calibration driver with calibration Lib; {for-development:SDK-Manifest-ID: platform.drivers.fro_calib.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_fro_calib.h"/>
+        <file condition="core_type.cm4f_AND_mdk" category="library" name="arm/keil_lib_fro_calib.lib"/>
+        <file condition="core_type.cm0p_AND_mdk" category="library" name="arm/keil_lib_fro_calib_m0.lib"/>
+        <file condition="core_type.cm4f_AND_iar" category="library" name="iar/iar_lib_fro_calib.a"/>
+        <file condition="core_type.cm0p_AND_iar" category="library" name="iar/iar_lib_fro_calib_m0.a"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="ft6x06" Cversion="1.0.0" condition="device.LPC54114_AND_CMSIS_Driver_Include.I2C">
+      <description>Driver ft6x06; {for-development:SDK-Manifest-ID: driver.ft6x06.LPC54114}</description>
+      <files>
+        <file category="header" name="components/ft6x06/fsl_ft6x06.h"/>
+        <file category="sourceC" name="components/ft6x06/fsl_ft6x06.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="gint" Cversion="2.0.3" condition="device.LPC54114_AND_driver.common">
+      <description>GINT Driver; {for-development:SDK-Manifest-ID: platform.drivers.gint.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_gint.h"/>
+        <file category="sourceC" name="drivers/fsl_gint.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="iap" Cversion="2.0.4" condition="device.LPC54114_AND_driver.common">
+      <description>IAP Driver; {for-development:SDK-Manifest-ID: platform.drivers.iap.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_iap.h"/>
+        <file category="sourceC" name="drivers/fsl_iap.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="ili9341" Cversion="1.0.1" condition="device.LPC54114_AND_driver.common">
+      <description>Driver ili9341; {for-development:SDK-Manifest-ID: driver.ili9341.LPC54114}</description>
+      <files>
+        <file category="header" name="components/ili9341/fsl_ili9341.h"/>
+        <file category="sourceC" name="components/ili9341/fsl_ili9341.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="inputmux" Cversion="2.0.3" condition="device.LPC54114_AND_driver.common_AND_driver.inputmux_connections">
+      <description>INPUTMUX Driver; {for-development:SDK-Manifest-ID: platform.drivers.inputmux.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_inputmux.h"/>
+        <file category="sourceC" name="drivers/fsl_inputmux.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="inputmux_connections" Cversion="2.0.1" condition="device.LPC54114_AND_driver.common">
+      <description>Inputmux_connections Driver; {for-development:SDK-Manifest-ID: platform.drivers.inputmux_connections.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_inputmux_connections.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="adc" Cversion="2.5.0" condition="device.LPC54114_AND_driver.common">
+      <description>ADC Driver; {for-development:SDK-Manifest-ID: platform.drivers.lpc_adc.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_adc.h"/>
+        <file category="sourceC" name="drivers/fsl_adc.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="lpc_crc" Cversion="2.1.1" condition="device.LPC54114_AND_driver.common">
+      <description>CRC Driver; {for-development:SDK-Manifest-ID: platform.drivers.lpc_crc.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_crc.h"/>
+        <file category="sourceC" name="drivers/fsl_crc.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="dma" Cversion="2.4.2" condition="device.LPC54114_AND_driver.common">
+      <description>DMA Driver; {for-development:SDK-Manifest-ID: platform.drivers.lpc_dma.LPC54114}</description>
+      <files>
+        <file category="sourceC" name="drivers/fsl_dma.c"/>
+        <file category="header" name="drivers/fsl_dma.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="gpio" Cversion="2.1.7" condition="device.LPC54114_AND_driver.common">
+      <description>GPIO Driver; {for-development:SDK-Manifest-ID: platform.drivers.lpc_gpio.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_gpio.h"/>
+        <file category="sourceC" name="drivers/fsl_gpio.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="iocon" Cversion="2.1.2" condition="device.LPC54114_AND_driver.common">
+      <description>IOCON Driver; {for-development:SDK-Manifest-ID: platform.drivers.lpc_iocon.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_iocon.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="lpc_rtc" Cversion="2.1.2" condition="device.LPC54114_AND_driver.common">
+      <description>RTC Driver; {for-development:SDK-Manifest-ID: platform.drivers.lpc_rtc.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_rtc.h"/>
+        <file category="sourceC" name="drivers/fsl_rtc.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="mailbox" Cversion="2.0.0" condition="device.LPC54114_AND_driver.common">
+      <description>MAILBOX Driver; {for-development:SDK-Manifest-ID: platform.drivers.mailbox.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_mailbox.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="mrt" Cversion="2.0.3" condition="device.LPC54114_AND_driver.common">
+      <description>MRT Driver; {for-development:SDK-Manifest-ID: platform.drivers.mrt.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_mrt.h"/>
+        <file category="sourceC" name="drivers/fsl_mrt.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="mx25r_flash" Cversion="1.0.0" condition="device.LPC54114">
+      <description>Driver mx25r_flash; {for-development:SDK-Manifest-ID: driver.mx25r_flash.LPC54114}</description>
+      <files>
+        <file category="header" name="components/mx25r_flash/mx25r_flash.h"/>
+        <file category="sourceC" name="components/mx25r_flash/mx25r_flash.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="pint" Cversion="2.1.8" condition="device.LPC54114_AND_driver.common">
+      <description>PINT Driver; {for-development:SDK-Manifest-ID: platform.drivers.pint.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_pint.h"/>
+        <file category="sourceC" name="drivers/fsl_pint.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="power" Cversion="2.0.0" condition="device.LPC54114_AND_driver.common">
+      <description>Power driver with Power Lib Hard ABI; {for-development:SDK-Manifest-ID: platform.drivers.power.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_power.h"/>
+        <file category="sourceC" name="drivers/fsl_power.c"/>
+        <file condition="core_type.cm4f_AND_mdk" category="library" name="arm/keil_lib_power.lib"/>
+        <file condition="core_type.cm0p_AND_mdk" category="library" name="arm/keil_lib_power_m0.lib"/>
+        <file condition="core_type.cm4f_AND_iar" category="library" name="iar/iar_lib_power.a"/>
+        <file condition="core_type.cm0p_AND_iar" category="library" name="iar/iar_lib_power_m0.a"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="reset" Cversion="2.0.1" condition="device.LPC54114_AND_driver.common">
+      <description>Reset Driver; {for-development:SDK-Manifest-ID: platform.drivers.reset.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_reset.h"/>
+        <file category="sourceC" name="drivers/fsl_reset.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="sctimer" Cversion="2.3.0" condition="device.LPC54114_AND_driver.common">
+      <description>SCT Driver; {for-development:SDK-Manifest-ID: platform.drivers.sctimer.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_sctimer.h"/>
+        <file category="sourceC" name="drivers/fsl_sctimer.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="sgtl5000" Cversion="2.1.1" condition="device.LPC54114_AND_component.codec_i2c_AND_driver.common">
+      <description>Driver sgtl5000; {for-development:SDK-Manifest-ID: driver.sgtl5000.LPC54114}</description>
+      <files>
+        <file category="header" name="components/codec/sgtl5000/fsl_sgtl5000.h"/>
+        <file category="sourceC" name="components/codec/sgtl5000/fsl_sgtl5000.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="utick" Cversion="2.0.4" condition="device.LPC54114_AND_driver.common">
+      <description>UTICK Driver; {for-development:SDK-Manifest-ID: platform.drivers.utick.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_utick.h"/>
+        <file category="sourceC" name="drivers/fsl_utick.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="wm8904" Cversion="2.4.3" condition="device.LPC54114_AND_component.codec_i2c_AND_driver.common">
+      <description>Driver wm8904; {for-development:SDK-Manifest-ID: driver.wm8904.LPC54114}</description>
+      <files>
+        <file category="header" name="components/codec/wm8904/fsl_wm8904.h"/>
+        <file category="sourceC" name="components/codec/wm8904/fsl_wm8904.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="wm8960" Cversion="2.1.3" condition="device.LPC54114_AND_component.codec_i2c_AND_driver.common">
+      <description>Driver wm8960; {for-development:SDK-Manifest-ID: driver.wm8960.LPC54114}</description>
+      <files>
+        <file category="header" name="components/codec/wm8960/fsl_wm8960.h"/>
+        <file category="sourceC" name="components/codec/wm8960/fsl_wm8960.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Drivers" Csub="wwdt" Cversion="2.1.9" condition="device.LPC54114_AND_driver.common">
+      <description>WWDT Driver; {for-development:SDK-Manifest-ID: platform.drivers.wwdt.LPC54114}</description>
+      <files>
+        <file category="header" name="drivers/fsl_wwdt.h"/>
+        <file category="sourceC" name="drivers/fsl_wwdt.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Utilities" Csub="assert" Cversion="1.0.0" condition="device.LPC54114_AND_utility.debug_console">
+      <description>Utility assert; {for-development:SDK-Manifest-ID: platform.utilities.assert.LPC54114}</description>
+      <files>
+        <file category="sourceC" name="utilities/fsl_assert.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Utilities" Csub="assert_lite" Cversion="1.0.0" condition="device.LPC54114_AND_utility.debug_console_lite">
+      <description>Utility assert_lite; {for-development:SDK-Manifest-ID: platform.utilities.assert_lite.LPC54114}</description>
+      <files>
+        <file category="sourceC" name="utilities/debug_console_lite/fsl_assert.c"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Utilities" Csub="debug_console" Cversion="1.0.0" condition="device.LPC54114_AND_component.serial_manager_AND_driver.common">
+      <description>Utility debug_console; {for-development:SDK-Manifest-ID: utility.debug_console.LPC54114}</description>
+      <files>
+        <file category="sourceC" name="utilities/str/fsl_str.c"/>
+        <file category="header" name="utilities/str/fsl_str.h"/>
+        <file category="sourceC" name="utilities/debug_console/fsl_debug_console.c"/>
+        <file category="header" name="utilities/debug_console/fsl_debug_console.h"/>
+        <file category="header" name="utilities/debug_console/fsl_debug_console_conf.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Utilities" Csub="debug_console_lite" Cversion="1.0.0" condition="device.LPC54114_AND_component.usart_adapter_AND_driver.common">
+      <description>Utility debug_console_lite; {for-development:SDK-Manifest-ID: utility.debug_console_lite.LPC54114}</description>
+      <files>
+        <file category="sourceC" name="utilities/debug_console_lite/fsl_debug_console.c"/>
+        <file category="header" name="utilities/debug_console_lite/fsl_debug_console.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Utilities" Csub="incbin" Cversion="1.0.0" condition="device.LPC54114">
+      <description>Used to include slave core binary into master core binary.; {for-development:SDK-Manifest-ID: utility.incbin.LPC54114}</description>
+      <files>
+        <file condition="mdk" category="sourceAsm" name="utilities/incbin/fsl_incbin.S"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Utilities" Csub="notifier" Cversion="1.0.0" condition="device.LPC54114_AND_driver.common">
+      <description>Utility notifier; {for-development:SDK-Manifest-ID: platform.utilities.notifier.LPC54114}</description>
+      <files>
+        <file category="sourceC" name="utilities/fsl_notifier.c"/>
+        <file category="header" name="utilities/fsl_notifier.h"/>
+      </files>
+    </component>
+    <component Cclass="Device" Cgroup="SDK Utilities" Csub="shell" Cversion="1.0.0" condition="device.LPC54114_AND_component.lists_AND_driver.common_AND_utility.debug_console">
+      <description>Utility shell; {for-development:SDK-Manifest-ID: utility.shell.LPC54114}</description>
+      <RTE_Components_h>
+#define DEBUG_CONSOLE_RX_ENABLE 0
+</RTE_Components_h>
+      <files>
+        <file category="sourceC" name="utilities/fsl_shell.c"/>
+        <file category="header" name="utilities/fsl_shell.h"/>
+      </files>
+    </component>
+  </components>
+</package>

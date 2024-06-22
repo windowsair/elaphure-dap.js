@@ -1,0 +1,1 @@
+{"initAddr":5,"unInitAddr":35,"eraseChipAddr":39,"eraseSectorAddr":107,"programPageAddr":177,"staticBase":316,"descAddr":320,"descSize":4256,"devDesc":{"Vers":257,"DevName":"LPC5411x IAP 256kB Flash","DevType":1,"DevAdr":0,"szDev":262144,"szPage":1024,"Res":0,"valEmpty":255,"toProg":300,"toErase":3000,"sectors":[{"szSector":32768,"AddrSector":0}]}}
