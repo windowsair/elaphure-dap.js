@@ -31,4 +31,6 @@ Make sure you have LLVM installed and available in the PATH.
 node flashConvert.js
 ```
 
+> Need Node.js v20.0.0+ version
+
 This will generate the `xxx.bin` flash program and the `xxx.json` flash program description database file in the same path as the FLM file.

@@ -57,6 +57,13 @@ async function getLLVMVersion() {
 }
 
 (async () => {
+  // check node version
+  const nodeVersion = process.versions.node.split('.')[0]
+  if (nodeVersion < 20) {
+    console.log('Please update Node.js to v20.0.0+ version.')
+    process.exit(-1)
+  }
+
   const llvmVer = await getLLVMVersion()
   const execAsync = promisify(exec)
 
