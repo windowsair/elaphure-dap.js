@@ -126,6 +126,24 @@ async function getLLVMVersion() {
     return [null, null]
   }
 
+  const get_static_base_by_section = (elf) => {
+    const SHT_PROGBITS = 1
+    const SHT_NOBITS = 8
+    const sections = elf.Sections
+    let ret = null
+
+    for (let i = 0; i < sections.length; i++) {
+      const section = sections[i].Section
+      if (section.Flags.Value == 3) { // SHF_WRITE | SHF_ALLOC
+        if (section.Type.Value == SHT_PROGBITS || section.Type.Value == SHT_NOBITS) {
+          ret = section.Address
+          break
+        }
+      }
+    }
+    return ret
+  }
+
   let files = await fs.readdir('deviceList', { recursive: true })
   let jsonList = files.filter(str => str.endsWith('.json'))
   let flmList = files.filter(str => str.toLowerCase().endsWith('.flm'))
@@ -150,7 +168,11 @@ async function getLLVMVersion() {
     let [dataSectionAddr] = get_symbol_info(elfInfo, 'Section', '.data')
     let [bssSectionAddr] = get_symbol_info(elfInfo, 'Section', '.bss')
 
-    const staticBaseAddr = dataSectionAddr || bssSectionAddr
+    let staticBaseAddr = dataSectionAddr || bssSectionAddr
+    if (staticBaseAddr == null) {
+      staticBaseAddr = get_static_base_by_section(elfInfo)
+    }
+
     if (staticBaseAddr === null) {
       throw new Error(`Failed to get static base:${flmPath}`)
     }
