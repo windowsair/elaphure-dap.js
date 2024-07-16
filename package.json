@@ -9,7 +9,7 @@
     "preview": "vite preview"
   },
   "dependencies": {
-    "@elaphurelink/dapjs": "^2.3.9",
+    "@elaphurelink/dapjs": "^2.3.10",
     "@icon-park/vue-next": "^1.4.2",
     "@vueuse/core": "^10.9.0",
     "crc-32": "^1.2.2",
