@@ -425,12 +425,9 @@ export async function verifyFastCrc(dap: dapjs.CortexM, ctx: DownloadContext,
   return 0
 }
 
-export async function verifyChip(dap: dapjs.CortexM, offset: number, dataRam: MemorySector,
+export async function verifyChip(dap: dapjs.CortexM, ctx: DownloadContext, dataRam: MemorySector,
                                  algo: AlgorithmJson, firmware: Uint8Array): Promise<number> {
-  const initAddr = algo.initAddr + offset
-  const uninitAddr = algo.unInitAddr + offset
   const romAddr = algo.devDesc.DevAdr
-  const xtalClock = 12 * 1000 * 1000 // 12MHz
   let ret
 
   updateProgress(0)
@@ -463,7 +460,6 @@ export async function flash(algo: AlgorithmJson, algoBin: Uint8Array,
 
   const ctx: DownloadContext = new DownloadContext(algo, mainAlgoStartOffset)
 
-  await dap.halt()
   await dap.setTargetResetState(false, false)
   await dap.halt()
 
