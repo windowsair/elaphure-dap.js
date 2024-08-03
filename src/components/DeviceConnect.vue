@@ -79,19 +79,16 @@ const onDAPConnect = async () => {
   }
 
   const clock = downloadOption.value.clock
-  const processor: dapjs.CortexM = new dapjs.CortexM(transport, 0, clock)
-  await processor.connect()
-  await processor.halt(true, 1000)
-
-  const ret = await processor.isHalted()
-  if (!ret) {
-    log(t('devPage.halt_timeout_info'))
-    return
+  let processor: dapjs.CortexM
+  try {
+    processor = new dapjs.CortexM(transport, 0, clock)
+    await processor.connect()
+    logSuccess(t('devPage.success_connect_info'))
+    dapContext.value = processor
+    isDeviceConnect.value = true
+  } catch (err) {
+    logErr(String(err))
   }
-
-  logSuccess(t('devPage.success_connect_info'))
-  dapContext.value = processor
-  isDeviceConnect.value = true
 }
 
 </script>
