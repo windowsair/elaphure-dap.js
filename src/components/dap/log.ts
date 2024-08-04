@@ -91,6 +91,14 @@ export class dapLog {
     log(this.t('dap.success_convert_info'))
   }
 
+  public static ihexDetected() {
+    log(this.t('dap.ihex_detect_info'))
+  }
+
+  public static ihexFailConvert() {
+    log(this.t('dap.ihex_fail_convert'))
+  }
+
   public static convertFileSizeInfo(size: number) {
     let sizeStr = ''
     if (size < 1024) {

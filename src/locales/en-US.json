@@ -49,6 +49,8 @@
     "elf_detect_info": "ELF file format detected, convert it to a BIN file...",
     "fail_convert_info": "Failed to convert elf!",
     "success_convert_info": "Success to convert to BIN.",
+    "ihex_detect_info": "Intel Hex file format detected, convert it to a BIN file...",
+    "ihex_fail_convert": "Intel Hex format failed to convert!",
     "file_size_info": "Converted file size:",
     "firmware_too_large": "Firmware size too large!"
   }

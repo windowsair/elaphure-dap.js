@@ -48,6 +48,8 @@
     "fail_load_file": "加载文件失败!",
     "elf_detect_info": "检测到 ELF 格式，正在转换为 BIN 格式...",
     "fail_convert_info": "转换 ELF 格式失败!",
+    "ihex_detect_info": "检测到 Intel Hex 格式，正在转换为 BIN 格式...",
+    "ihex_fail_convert": "Intel Hex 格式转换失败!",
     "success_convert_info": "成功转换为 BIN 格式.",
     "file_size_info": "转换后的文件大小：",
     "firmware_too_large": "固件大小太大！"
